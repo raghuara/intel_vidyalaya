@@ -21,6 +21,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import { loginSuccess } from '../Redux/Slices/AuthSlice';
 import { generateToken } from '../Components/Notification/Firebase';
 import productLogo from '../Images/Login/SchoolMate Logo.png'
+import SchoolLogo from '../Images/Login/Intel vidyalaya logo.png'
 
 
 export default function LoginPage() {
@@ -43,7 +44,6 @@ export default function LoginPage() {
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
-
 
     const settings = {
         dots: true,
@@ -176,7 +176,7 @@ export default function LoginPage() {
                                 <Grid item xs={8} md={8} lg={8}>
                                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pt: 5 }}>
                                          {/* <img src={websiteSettings.logo} height={100} alt="Logo" />  */}
-                                        <img src={productLogo} height={100} alt="Logo" />
+                                        <img src={SchoolLogo} height={100} alt="Logo" />
                                     </Box>
 
                                     <Typography sx={{ mt: 7, fontWeight: 600 }} variant='h5'> Log Into your </Typography>
