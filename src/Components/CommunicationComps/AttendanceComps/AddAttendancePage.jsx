@@ -31,24 +31,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ImageIcon from '@mui/icons-material/Image';
 import SnackBar from "../../SnackBar";
 import fallbackImage from "../../../Images/PagesImage/dummy-image.jpg";
-
-const gradeOptions = [
-    { label: "PreKG", value: "PreKG" },
-    { label: "LKG", value: "LKG" },
-    { label: "UKG", value: "UKG" },
-    { label: "I", value: "I" },
-    { label: "II", value: "II" },
-    { label: "III", value: "III" },
-    { label: "IV", value: "IV" },
-    { label: "V", value: "V" },
-    { label: "VI", value: "VI" },
-    { label: "VII", value: "VII" },
-    { label: "VIII", value: "VIII" },
-    { label: "IX", value: "IX" },
-    { label: "X", value: "X" },
-];
-
-
+import { selectGrades } from "../../../Redux/Slices/DropdownController";
 
 export default function AddAttendancePage() {
     const today = dayjs().format("DD-MM-YYYY");
@@ -57,7 +40,6 @@ export default function AddAttendancePage() {
     const [openCal, setOpenCal] = useState(false);
     const handleOpen = () => setOpenCal(true);
     const handleClose = () => setOpenCal(false);
-
     const token = '123';
     const user = useSelector((state) => state.auth);
     const rollNumber = user.rollNumber
@@ -65,38 +47,40 @@ export default function AddAttendancePage() {
     const userName = user.name
     const [teachersGraphData, setTeachersGraphData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
-
+    const grades = useSelector(selectGrades);
     const [openImage, setOpenImage] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
-
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-
     const websiteSettings = useSelector(selectWebsiteSettings);
-
     const [value, setValue] = useState(0);
-
     const [selectedClass, setSelectedClass] = useState("PreKG");
     const [selectedClassSection, setSelectedClassSection] = useState("A1");
     const [selectedFilter, setSelectedFilter] = useState("OverAll");
-    const [sections, setSections] = useState([]);
     const [attendanceData, setAttendanceData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [attendanceTableData, setAttendanceTableData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
 
     const fileInputRef = useRef(null);
-
-
     const [selectedActions, setSelectedActions] = useState({});
-
     const [open, setOpen] = useState(false);
     const [status, setStatus] = useState(false);
     const [color, setColor] = useState(false);
     const [message, setMessage] = useState('');
+    const [selectedGradeId, setSelectedGradeId] = useState(null);
+    const [selectedGradeSign, setSelectedGradeSign] = useState(null);
+    const [selectedSection, setSelectedSection] = useState(null);
 
+    const selectedGrade = grades.find((grade) => grade.id === selectedGradeId);
+    const sections = selectedGrade?.sections.map((section) => ({ sectionName: section })) || [];
+    useEffect(() => {
+        if (grades && grades.length > 0) {
+            setSelectedGradeId(grades[0].id);
+            setSelectedSection(grades[0].sections[0]);
+        }
+    }, [grades]);
     const handleAttendanceChange = (rollNumber, value) => {
         setSelectedActions((prev) => ({
             ...prev,
@@ -125,11 +109,20 @@ export default function AddAttendancePage() {
 
     const data = { details: prepareAttendanceData() };
 
+const handleGradeChange = (newValue) => {
+        if (newValue) {
+            setSelectedGradeId(newValue.id);
+            setSelectedGradeSign(newValue.sign);
+            setSelectedSection(newValue.sections[0]);
+        } else {
+            setSelectedGradeId(null);
+            setSelectedGradeSign(null);
+            setSelectedSection(null);
+        }
+    };
 
-    const handleSectionChange = (event, value) => {
-        setSelectedActions({});
-        const selectedSection = value ? value.sectionName : "A1";
-        setSelectedClassSection(selectedSection);
+    const handleSectionChange = (event, newValue) => {
+        setSelectedSection(newValue?.sectionName || null);
     };
 
 
@@ -245,32 +238,10 @@ export default function AddAttendancePage() {
         XLSX.writeFile(wb, 'attendance_data.xlsx');
     };
 
-    useEffect(() => {
-        if (selectedClass) {
-            fetchSections(selectedClass);
-        }
-    }, [selectedClass]);
-
-    const fetchSections = async (selectedClass) => {
-        try {
-            const res = await axios.get(sectionsDropdown, {
-                params: {
-                    Grade: selectedClass,
-                },
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            setSections(res.data.sections);
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     useEffect(() => {
         fetchAttendanceTable()
-    }, [formattedDate, selectedClass, selectedClassSection, selectedFilter]);
+    }, [formattedDate, selectedGradeSign, selectedSection, selectedFilter]);
 
     const fetchAttendanceTable = async () => {
         console.log("Loader starts");
@@ -279,8 +250,8 @@ export default function AddAttendancePage() {
             const res = await axios.get(fetchAttendance, {
                 params: {
                     Date: formattedDate,
-                    Grade: selectedClass || "prekg",
-                    Section: selectedClassSection || "A1",
+                    Grade: selectedGradeSign || grades?.[0]?.sign || "",   
+                    Section: selectedSection || grades?.[0]?.sections?.[0] || "", 
                     Status: selectedFilter || "overall",
                 },
                 headers: {
@@ -320,8 +291,8 @@ export default function AddAttendancePage() {
             const res = await axios.post(
                 postAttendance,
                 {
-                    grade: selectedClass,
-                    section: selectedClassSection,
+                    grade: selectedGradeSign || grades?.[0]?.sign || "",
+                    section: selectedSection || grades?.[0]?.sections?.[0] || "",
                     date: today,
                     details: prepareAttendanceData(),
                 },
@@ -353,8 +324,8 @@ export default function AddAttendancePage() {
             const res = await axios.put(
                 updateAttendance,
                 {
-                    grade: selectedClass,
-                    section: selectedClassSection,
+                    grade: selectedGradeSign || grades?.[0]?.sign || "",
+                    section: selectedSection || grades?.[0]?.sections?.[0] || "",
                     date: today,
                     details: prepareAttendanceData(),
                 },
@@ -479,51 +450,42 @@ export default function AddAttendancePage() {
                     <Grid item xs={12} sm={12} md={4} lg={7.5} sx={{ mt: 0.5, pl: 3 }}>
                         <Grid container spacing={1}>
                             <Grid item lg={2.4}>
-                                <Autocomplete
+                            <Autocomplete
                                     disablePortal
-                                    options={gradeOptions}
-                                    getOptionLabel={(option) => option.label}
-                                    value={gradeOptions.find((option) => option.value === selectedClass) || null}
-
-                                    onChange={(event, value) => {
-                                        if (value) {
-                                            setSelectedClass(value.value);
-                                            setSelectedActions({});
-                                        }
+                                    options={grades}
+                                    getOptionLabel={(option) => option.sign}
+                                    value={grades.find((item) => item.id === selectedGradeId) || null}
+                                    onChange={(event, newValue) => {
+                                        handleGradeChange(newValue);
                                     }}
-
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
                                     sx={{ width: "100%" }}
                                     PaperComponent={(props) => (
                                         <Paper
                                             {...props}
                                             style={{
                                                 ...props.style,
-                                                height: '150px',
-                                                backgroundColor: '#000',
-                                                color: '#fff',
+                                                maxHeight: "150px",
+                                                backgroundColor: "#000",
+                                                color: "#fff",
                                             }}
                                         />
                                     )}
                                     renderOption={(props, option) => (
-                                        <li
-                                            {...props}
-                                            className="classdropdownOptions"
-                                            style={{ color: option.color }}
-                                        >
-                                            {option.label}
+                                        <li {...props} className="classdropdownOptions">
+                                            {option.sign}
                                         </li>
                                     )}
                                     renderInput={(params) => (
                                         <TextField
-                                            //  label="Class"
+                                            placeholder="Select Class"
                                             {...params}
                                             fullWidth
                                             InputProps={{
                                                 ...params.InputProps,
-                                                endAdornment: params.InputProps.endAdornment,
                                                 sx: {
                                                     paddingRight: 0,
-                                                    height: '33px',
+                                                    height: "33px",
                                                     fontSize: "13px",
                                                     fontWeight: "600",
                                                 },
@@ -533,30 +495,32 @@ export default function AddAttendancePage() {
                                 />
                             </Grid>
                             <Grid item lg={2.4}>
-                                <Autocomplete
+                            <Autocomplete
                                     disablePortal
                                     options={sections}
                                     getOptionLabel={(option) => option.sectionName}
-                                    value={sections.find((option) => option.sectionName === selectedClassSection) || null}
+                                    value={
+                                        sections.find((option) => option.sectionName === selectedSection) ||
+                                        null
+                                    }
                                     onChange={handleSectionChange}
-                                    isOptionEqualToValue={(option, value) => option.sectionName === value.sectionName}
+                                    isOptionEqualToValue={(option, value) =>
+                                        option.sectionName === value.sectionName
+                                    }
                                     sx={{ width: "100%" }}
                                     PaperComponent={(props) => (
                                         <Paper
                                             {...props}
                                             style={{
                                                 ...props.style,
-                                                height: '150px',
-                                                backgroundColor: '#000',
-                                                color: '#fff',
+                                                maxHeight: "150px",
+                                                backgroundColor: "#000",
+                                                color: "#fff",
                                             }}
                                         />
                                     )}
                                     renderOption={(props, option) => (
-                                        <li
-                                            {...props}
-                                            className="classdropdownOptions"
-                                        >
+                                        <li {...props} className="classdropdownOptions">
                                             {option.sectionName}
                                         </li>
                                     )}
@@ -566,10 +530,9 @@ export default function AddAttendancePage() {
                                             fullWidth
                                             InputProps={{
                                                 ...params.InputProps,
-                                                endAdornment: params.InputProps.endAdornment,
                                                 sx: {
                                                     paddingRight: 0,
-                                                    height: '33px',
+                                                    height: "33px",
                                                     fontSize: "13px",
                                                     fontWeight: "600",
                                                 },
@@ -577,7 +540,6 @@ export default function AddAttendancePage() {
                                         />
                                     )}
                                 />
-
                             </Grid>
 
                             <Grid item lg={2.4}>

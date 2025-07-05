@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Grid, TextField, Typography, Button, Tabs, Tab, Switch, Stack, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, createTheme, ThemeProvider, Autocomplete, Paper, Checkbox, ListItemText, Radio, FormControl, InputLabel, Select, OutlinedInput, MenuItem, Accordion, AccordionSummary, AccordionDetails, Popper, ClickAwayListener, InputAdornment, TextareaAutosize } from "@mui/material";
+import { Box, Grid, TextField, Typography, Button, Tabs, Tab, Switch, Stack, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, createTheme, ThemeProvider, Autocomplete, Paper, Checkbox, ListItemText, Radio, FormControl, InputLabel, Select, OutlinedInput, MenuItem, Accordion, AccordionSummary, AccordionDetails, Popper, ClickAwayListener } from "@mui/material";
 import RichTextEditor from "../../TextEditor";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
@@ -17,7 +17,6 @@ import SimpleTextEditor from "../../EditTextEditor";
 import { selectGrades } from "../../../Redux/Slices/DropdownController";
 import Loader from "../../Loader";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AddIcon from "@mui/icons-material/Add";
 
 export default function CreateMessagesPage() {
     const navigate = useNavigate()
@@ -37,7 +36,6 @@ export default function CreateMessagesPage() {
     const [color, setColor] = useState(false);
     const [message, setMessage] = useState('');
     const [selectedRecipient, setSelectedRecipient] = useState("Everyone");
-    const [specificNo, setSpecificNo] = useState("");
     const [classData, setClassData] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedIds, setSelectedIds] = useState([]);
@@ -50,7 +48,6 @@ export default function CreateMessagesPage() {
     const [changesHappended, setChangesHappended] = useState(false);
     const [formattedDTValue, setFormattedDTValue] = useState(null);
     const websiteSettings = useSelector(selectWebsiteSettings);
-    const [openTextarea, setOpenTextarea] = useState(false);
     // const handleChange = (event) => {
     //     const {
     //         target: { value },
@@ -257,10 +254,6 @@ export default function CreateMessagesPage() {
         }
     };
 
-    const handleOpenTextArea = (value) => {
-        setOpenTextarea(value)
-    };
-
     const handleRichTextChange = (htmlContent) => {
         setChangesHappended(true)
         setNewsContentHTML(htmlContent);
@@ -432,8 +425,8 @@ export default function CreateMessagesPage() {
                 backgroundColor: "#f2f2f2",
                 display: "flex",
                 alignItems: "center",
-                borderBottom: "1px solid #ddd",
-                px: 2,
+                borderBottom:"1px solid #ddd",
+                px:2,
                 width: "100%",
                 py: 1.5,
                 marginTop: "-2px"
@@ -445,13 +438,13 @@ export default function CreateMessagesPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5 }}>Select Recipient</Typography>
                                 <Autocomplete
                                     disablePortal
-                                    options={["Everyone", 'Students', 'Teachers', 'Specific']}
+                                    options={["Everyone", 'Students', 'Teachers']}
                                     value={selectedRecipient}
                                     onChange={handleRecipientChange}
                                     sx={{
@@ -647,103 +640,6 @@ export default function CreateMessagesPage() {
                                     </Box>
                                 </Grid>
                             }
-                            {selectedRecipient === "Specific" &&
-                                <Grid item xs={12} sm={12} md={6} lg={6}>
-                                    <Typography sx={{ mb: 0.5, ml: 1 }}>Add Admission Number</Typography>
-                                    <Box >
-                                        <TextField
-                                            value={specificNo}
-                                            size="small"
-                                            sx={{ width: "100%" }}
-                                            onClick={() => handleOpenTextArea(1)}
-                                            InputProps={{
-                                                readOnly: true,
-                                                endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton onClick={() => handleOpenTextArea(1)} edge="end">
-                                                            <AddIcon />
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-
-                                    </Box>
-                                    <Dialog
-                                        open={openTextarea === 1}
-                                        onClose={() => setOpenTextarea(null)}
-                                        maxWidth="sm"
-                                        fullWidth
-                                    >
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                minHeight: '200px',
-                                                padding: 2,
-                                            }}
-                                        >
-                                            <Box
-                                                sx={{
-                                                    backgroundColor: '#fff',
-                                                    pr: 3,
-                                                    width: '100%',
-                                                }}
-                                            >
-                                                <Typography
-                                                    sx={{
-                                                        fontSize: "14px",
-                                                        fontWeight: 'bold',
-                                                        marginBottom: 1,
-                                                        pb: 1,
-                                                        borderBottom: "1px solid #AFAFAF",
-                                                    }}
-                                                >
-                                                    Add Admission Number
-                                                </Typography>
-                                                <TextareaAutosize
-                                                    minRows={6}
-                                                    placeholder="Type here..."
-                                                    value={specificNo}
-                                                    onChange={(e) =>
-                                                        setSpecificNo(e.target.value)
-                                                    }
-                                                    style={{
-                                                        width: '100%',
-                                                        padding: '12px',
-                                                        borderRadius: '6px',
-                                                        border: '1px solid #ccc',
-                                                        fontSize: '14px',
-                                                        marginBottom: '20px',
-                                                        resize: 'none',
-                                                        border: "none",
-                                                        outline: 'none',
-                                                    }}
-                                                />
-                                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                                    <Button
-                                                        onClick={() => setOpenTextarea(null)}
-                                                        sx={{
-                                                            textTransform: 'none',
-                                                            backgroundColor: websiteSettings.mainColor,
-                                                            color: websiteSettings.textColor,
-                                                            borderRadius: '30px',
-                                                            fontSize: '16px',
-                                                            padding: '0px 35px',
-                                                            '&:hover': {
-                                                                backgroundColor: websiteSettings.mainColor || '#0056b3',
-                                                            },
-                                                        }}
-                                                    >
-                                                        Save
-                                                    </Button>
-                                                </Box>
-                                            </Box>
-                                        </Box>
-                                    </Dialog>
-                                </Grid>
-                            }
                         </Grid>
 
                         <Typography sx={{ mt: 2 }}>Add Heading</Typography>
@@ -807,13 +703,13 @@ export default function CreateMessagesPage() {
                                             border: '1px solid black',
                                             color: 'black',
                                             fontWeight: "600",
-                                            backgroundColor: "#fff",
+                                            backgroundColor:"#fff",
                                         }}
                                         onClick={() => handleInsertMessageData('draft')}>
                                         Save as Draft
                                     </Button>
                                 </Grid>
-                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{ display: "flex", justifyContent: "end" }}>
+                                <Grid item xs={6} sm={6} md={6} lg={2.3}  sx={{display:"flex", justifyContent:"end" }}>
                                     <Button
                                         sx={{
                                             textTransform: 'none',
@@ -828,7 +724,7 @@ export default function CreateMessagesPage() {
                                         Preview
                                     </Button>
                                 </Grid>
-                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{ display: "flex", justifyContent: "end" }}>
+                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{display:"flex", justifyContent:"end" }}>
                                     <Button
                                         sx={{
                                             textTransform: 'none',
@@ -839,7 +735,7 @@ export default function CreateMessagesPage() {
                                             border: '1px solid black',
                                             color: 'black',
                                             fontWeight: "600",
-                                            backgroundColor: "#fff",
+                                            backgroundColor:"#fff",
                                         }}
                                         onClick={handleCancelClick}>
                                         Cancel
@@ -898,10 +794,8 @@ export default function CreateMessagesPage() {
                                 {userType === "superadmin" &&
                                     <>
                                         {!DTValue && (
-                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{
-                                                display: "flex", justifyContent
-                                                    : "end"
-                                            }}>
+                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{display:"flex", justifyContent
+                                                :"end" }}>
                                                 <Button
                                                     sx={{
                                                         textTransform: 'none',
@@ -919,10 +813,8 @@ export default function CreateMessagesPage() {
                                             </Grid>
                                         )}
                                         {DTValue && (
-                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{
-                                                display: "flex", justifyContent
-                                                    : "end"
-                                            }}>
+                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{display:"flex", justifyContent
+                                                :"end" }}> 
                                                 <Button
                                                     sx={{
                                                         textTransform: 'none',
@@ -968,8 +860,8 @@ export default function CreateMessagesPage() {
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
-                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
+                    <Box sx={{ border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

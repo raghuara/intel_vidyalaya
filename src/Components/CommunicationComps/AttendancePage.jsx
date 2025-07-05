@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, createTheme, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, keyframes, Popover, Slide, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, ThemeProvider, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Autocomplete, Box, Button, createTheme, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, keyframes, Paper, Popover, Slide, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, ThemeProvider, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
@@ -21,6 +21,10 @@ import SimpleBarChartPage from "../Chart/SimpleBarChart";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ImageIcon from '@mui/icons-material/Image';
 import { selectWebsiteSettings } from "../../Redux/Slices/websiteSettingsSlice";
+import DownloadIcon from '@mui/icons-material/Download';
+import HomeworkStatusPage from "./AttendanceComps/HomeworkStatusPage";
+import DiaryStatusPage from "./AttendanceComps/DiaryStatusPage";
+import UniformStatusPage from "./AttendanceComps/UniformStatusPage";
 
 export default function AttendancePage() {
     const today = dayjs().format('DD-MM-YYYY');
@@ -63,11 +67,13 @@ export default function AttendancePage() {
     const [value, setValue] = useState(0);
     const [selectedValue, setSelectedValue] = useState(0);
     const [selectedFilter, setSelectedFilter] = useState("overall");
+    const [selectedPage, setSelectedPage] = useState("Attendance");
     const tabValues = ["overall", "below75", "above75"];
     const [openDetailedDialog, setOpenDetailedDialog] = useState(false);
     const [attendanceDetails, setAttendanceDetails] = useState([]);
     const [attendanceTableDetails, setAttendanceTableDetails] = useState([]);
     const websiteSettings = useSelector(selectWebsiteSettings);
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         setFormattedDate1(formattedDate);
@@ -129,7 +135,7 @@ export default function AttendancePage() {
 
     const open = Boolean(anchorEl);
     const id = open ? 'class-dropdown-popover' : undefined;
-    const [isLoading, setIsLoading] = useState(false)
+
     const darkTheme = createTheme({
         palette: {
             mode: 'dark',
@@ -381,50 +387,108 @@ export default function AttendancePage() {
                     <Grid container spacing={2}>
                         <Grid item xs={12} lg={6}>
                             <Box>
-                                <Typography variant="h6" sx={{ fontWeight: "600" }}>
-                                    Students Attendance
-                                </Typography>
-                                <Box sx={{ display: "flex" }}>
-
-
-                                    <ThemeProvider theme={darkTheme}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DatePicker
-                                                open={openCal}
-                                                onClose={handleClose}
-                                                value={selectedDate}
-                                                onChange={(newValue) => {
-                                                    setSelectedDate(newValue);
-                                                    const newFormattedDate = dayjs(newValue).format('DD-MM-YYYY');
-                                                    setFormattedDate(newFormattedDate);
-                                                    setSelectedDate1(newValue);
-                                                    setFormattedDate1(newFormattedDate);
-                                                    handleClose();
-                                                }}
-                                                // disablePast
-                                                views={['year', 'month', 'day']}
-                                                renderInput={() => null}
-                                                sx={{
-                                                    opacity: 0,
-                                                    pointerEvents: 'none',
-                                                    width: "10px",
-                                                    height: "10px",
-                                                    marginTop: "-30px",
-                                                }}
-                                            />
-                                        </LocalizationProvider>
-                                    </ThemeProvider>
-                                    <Box onClick={handleOpen} sx={{ display: "flex", cursor: "pointer" }}>
-                                        <CalendarMonthIcon style={{ marginTop: "0px", fontSize: "20px", marginRight: "5px", textDecoration: "underline" }} />
-                                        <Typography style={{ fontSize: "12px", color: "#777", borderBottom: "1px solid #000" }}>
-                                            {dayjs(selectedDate).format('DD MMMM YYYY')}
-                                        </Typography>
+                                {(!selectedPage || selectedPage === "Attendance") && (
+                                    <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                                        Students Attendance
+                                    </Typography>
+                                )}
+                                {selectedPage === "Homework" &&
+                                    <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                                        Homework Completion Status
+                                    </Typography>
+                                }
+                                {selectedPage === "Diary" &&
+                                    <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                                        Diary Signature Status
+                                    </Typography>
+                                }
+                                {selectedPage === "Dress Code" &&
+                                    <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                                        Dress Code Status
+                                    </Typography>
+                                }
+                                {selectedPage === "Attendance" &&
+                                    <Box sx={{ display: "flex" }}>
+                                        <ThemeProvider theme={darkTheme}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    open={openCal}
+                                                    onClose={handleClose}
+                                                    value={selectedDate}
+                                                    onChange={(newValue) => {
+                                                        setSelectedDate(newValue);
+                                                        const newFormattedDate = dayjs(newValue).format('DD-MM-YYYY');
+                                                        setFormattedDate(newFormattedDate);
+                                                        setSelectedDate1(newValue);
+                                                        setFormattedDate1(newFormattedDate);
+                                                        handleClose();
+                                                    }}
+                                                    views={['year', 'month', 'day']}
+                                                    renderInput={() => null}
+                                                    sx={{
+                                                        opacity: 0,
+                                                        pointerEvents: 'none',
+                                                        width: "10px",
+                                                        height: "10px",
+                                                        marginTop: "-30px",
+                                                    }}
+                                                />
+                                            </LocalizationProvider>
+                                        </ThemeProvider>
+                                        <Box onClick={handleOpen} sx={{ display: "flex", cursor: "pointer" }}>
+                                            <CalendarMonthIcon style={{ marginTop: "0px", fontSize: "20px", marginRight: "5px", textDecoration: "underline" }} />
+                                            <Typography style={{ fontSize: "12px", color: "#777", borderBottom: "1px solid #000" }}>
+                                                {dayjs(selectedDate).format('DD MMMM YYYY')}
+                                            </Typography>
+                                        </Box>
                                     </Box>
-
-                                </Box>
+                                }
                             </Box>
                         </Grid>
                         <Grid item xs={12} lg={6} sx={{ display: "flex", justifyContent: "end" }}>
+                            <Autocomplete
+                                disablePortal
+                                options={["Attendance", "Homework", "Diary", "Dress Code"]}
+                                value={selectedPage}
+                                onChange={(event, value) => setSelectedPage(value)}
+                                sx={{ width: "160px", mr: 3 }}
+                                PaperComponent={(props) => (
+                                    <Paper
+                                        {...props}
+                                        style={{
+                                            ...props.style,
+                                            height: '150px',
+                                            backgroundColor: '#000',
+                                            color: '#fff',
+                                        }}
+                                    />
+                                )}
+                                renderOption={(props, option) => (
+                                    <li style={{ fontSize: "14px" }}
+                                        {...props}
+                                        className="classdropdownOptions"
+                                    >
+                                        {option}
+                                    </li>
+                                )}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+
+                                        fullWidth
+                                        InputProps={{
+                                            ...params.InputProps,
+                                            endAdornment: params.InputProps.endAdornment,
+                                            sx: {
+                                                paddingRight: 0,
+                                                height: '33px',
+
+                                                fontSize: "14px",
+                                            },
+                                        }}
+                                    />
+                                )}
+                            />
                             <Box sx={{ display: "flex", }}>
                                 <Link to="addattendance">
                                     <Button
@@ -439,396 +503,412 @@ export default function AttendancePage() {
 
                                 </Link>
                                 {/* <AddAttendancePage open={isDialog3Open} selectedClass={selectedClassValue} onClose={handleClose3} /> */}
-
-
-
-                                {/* <Button sx={{
-                                    marginLeft: "20px",
-                                    textTransform: "none",
-                                    height: "2rem",
-                                    color: "#000",
-                                    borderColor: "#000"
-                                }} variant="outlined"><DownloadIcon style={{ marginRight: "8px", fontSize: "20px" }} /> Attendance</Button> */}
-                            </Box>
-                        </Grid>
-                    </Grid>
-
-
-                </Box>
-
-                <Box sx={{ backgroundColor: "#fff", mx: 2, borderRadius: "5px", boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.17)" }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} lg={6}>
-                                <Box px={2} pt={2}>
-                                    <Typography sx={{ fontWeight: "550", fontSize: "18px" }}>
-                                        Total Attendance Graph
-                                    </Typography>
-
-                                    <Typography style={{ fontSize: "12px", color: "#000" }}>
-                                        Attendance History
-                                    </Typography>
-
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12} lg={6} sx={{ display: "flex", justifyContent: "end" }}>
-                                <Box sx={{ pt: 2, pr: 2 }}>
+                                <Link to="export">
                                     <Button
-                                        variant="contained"
                                         sx={{
+                                            marginLeft: "20px",
                                             textTransform: "none",
                                             height: "2rem",
-                                            width: "228px",
-                                            boxShadow: "none",
-                                            backgroundColor: "#fff",
                                             color: "#000",
-                                            fontWeight: "600",
-                                            border: "1px solid #a9a9a9",
-                                            "&:hover": {
-                                                boxShadow: "none",
-                                                backgroundColor: "#f5f5f5"
-                                            }
+                                            borderColor: "#000"
                                         }}
-                                        onClick={handleClickSelection}
+                                        variant="outlined"
                                     >
-                                        Select Class <ArrowDropDownIcon />
+                                        <DownloadIcon style={{ marginRight: "8px", fontSize: "20px" }} />
+                                        Attendance
                                     </Button>
+                                </Link>
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Box>
+                {(!selectedPage || selectedPage === "Attendance") && (
+                    <Box>
+                        <Box sx={{ backgroundColor: "#fff", mx: 2, borderRadius: "5px", boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.17)" }}>
+                            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} lg={6}>
+                                        <Box px={2} pt={2}>
+                                            <Typography sx={{ fontWeight: "550", fontSize: "18px" }}>
+                                                Total Attendance Graph
+                                            </Typography>
 
+                                            <Typography style={{ fontSize: "12px", color: "#000" }}>
+                                                Attendance History
+                                            </Typography>
 
-                                    <Popover
-                                        id={id}
-                                        open={open}
-                                        anchorEl={anchorEl}
-                                        onClose={handleClosePopover}
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'center',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'center',
-                                        }}
-                                    >
-                                        <Box sx={{ padding: 1.3, backgroundColor: '#000', color: '#fff', borderRadius: '8px' }}>
-                                            <Typography variant="subtitle1" sx={{ fontSize: "10px" }} >Nursery</Typography>
-                                            <ToggleButtonGroup
-                                                value={selectedClass}
-                                                exclusive
-
-                                                sx={{ display: 'flex', flexWrap: 'wrap', py: 0.5, }}
-                                            >
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    value="PreKG"
-                                                    onClick={(event) => handleClick(event, "PreKG")} >
-                                                    <Box sx={{ backgroundColor: "#4A2086" }} className="Popoverdot" />
-                                                    PreKG
-                                                </ToggleButton>
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    sx={{ marginLeft: "5px !important" }}
-                                                    onClick={(event) => handleClick(event, "LKG")}
-                                                    value="LKG" >
-                                                    <Box sx={{ backgroundColor: "#4A2086" }} className="Popoverdot" />
-                                                    LKG
-                                                </ToggleButton>
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    sx={{ marginLeft: "5px !important" }}
-                                                    onClick={(event) => handleClick(event, "UKG")}
-                                                    value="UKG" >
-                                                    <Box sx={{ backgroundColor: "#4A2086" }}
-                                                        className="Popoverdot" />
-                                                    UKG
-                                                </ToggleButton>
-
-
-                                            </ToggleButtonGroup>
-
-                                            <Typography variant="subtitle1" sx={{ fontSize: "10px" }}>Primary</Typography>
-                                            <ToggleButtonGroup
-                                                value={selectedClass}
-                                                exclusive
-
-                                                sx={{ display: 'flex', flexWrap: 'wrap', py: 0.5 }}
-                                            >
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    value="I" onClick={(event) => handleClick(event, "I")}>
-
-                                                    <Box sx={{ backgroundColor: "#8600BB" }} className="Popoverdot" />
-                                                    I
-                                                </ToggleButton>
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    sx={{ marginLeft: "5px !important" }}
-                                                    value="II" onClick={(event) => handleClick(event, "II")}>
-
-                                                    <Box
-                                                        sx={{ backgroundColor: "#8600BB" }}
-                                                        className="Popoverdot" />
-                                                    II
-                                                </ToggleButton>
-
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    sx={{ marginLeft: "5px !important" }}
-                                                    value="III" onClick={(event) => handleClick(event, "III")}>
-
-                                                    <Box
-                                                        sx={{ backgroundColor: "#8600BB" }}
-                                                        className="Popoverdot" />
-                                                    III
-                                                </ToggleButton>
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    sx={{ marginLeft: "5px !important" }}
-                                                    value="IV" onClick={(event) => handleClick(event, "IV")}>
-
-                                                    <Box sx={{ backgroundColor: "#8600BB" }} className="Popoverdot" />
-                                                    IV
-                                                </ToggleButton>
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    sx={{ marginLeft: "5px !important" }}
-                                                    value="V" onClick={(event) => handleClick(event, "V")}>
-
-                                                    <Box sx={{ backgroundColor: "#8600BB" }}
-                                                        className="Popoverdot" />
-                                                    V
-                                                </ToggleButton>
-
-
-                                            </ToggleButtonGroup>
-
-                                            <Typography variant="subtitle1" sx={{ fontSize: "10px" }}>Secondary</Typography>
-                                            <ToggleButtonGroup
-                                                value={selectedClass}
-                                                exclusive
-
-                                                sx={{ display: 'flex', flexWrap: 'wrap', py: 0.5 }}
-                                            >
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    value="VI" onClick={(event) => handleClick(event, "VI")}>
-
-                                                    <Box sx={{ backgroundColor: "#CE5C00" }}
-                                                        className="Popoverdot" />
-                                                    VI
-                                                </ToggleButton>
-
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    value="VII"
-                                                    onClick={(event) => handleClick(event, "VII")}
-                                                    sx={{ marginLeft: "5px !important" }}>
-                                                    <Box sx={{ backgroundColor: "#CE5C00" }} className="Popoverdot" />
-                                                    VII
-                                                </ToggleButton>
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    value="VIII"
-                                                    onClick={(event) => handleClick(event, "VIII")}
-                                                    sx={{ marginLeft: "5px !important" }}>
-                                                    <Box sx={{ backgroundColor: "#CE5C00" }}
-                                                        className="Popoverdot" />
-                                                    VIII
-                                                </ToggleButton>
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    value="IX"
-                                                    onClick={(event) => handleClick(event, "IX")}
-                                                    sx={{ marginLeft: "5px !important" }}>
-                                                    <Box sx={{ backgroundColor: "#CE5C00" }} className="Popoverdot" />
-                                                    IX
-                                                </ToggleButton>
-
-
-                                                <ToggleButton
-                                                    className="popoverSelection"
-                                                    value="X"
-                                                    onClick={(event) => handleClick(event, "X")}
-                                                    sx={{ marginLeft: "5px !important" }}>
-                                                    <Box sx={{ backgroundColor: "#CE5C00" }} className="Popoverdot" />
-                                                    X
-                                                </ToggleButton>
-
-
-                                            </ToggleButtonGroup>
                                         </Box>
-                                    </Popover>
-                                    {/* <DetailedAttendancePage open={isDialog1Open} sections={sections} selectedClass={selectedClassValue} onClose={handleClose1} /> */}
+                                    </Grid>
+                                    <Grid item xs={12} lg={6} sx={{ display: "flex", justifyContent: "end" }}>
+                                        <Box sx={{ pt: 2, pr: 2 }}>
+                                            <Button
+                                                variant="contained"
+                                                sx={{
+                                                    textTransform: "none",
+                                                    height: "2rem",
+                                                    width: "228px",
+                                                    boxShadow: "none",
+                                                    backgroundColor: "#fff",
+                                                    color: "#000",
+                                                    fontWeight: "600",
+                                                    border: "1px solid #a9a9a9",
+                                                    "&:hover": {
+                                                        boxShadow: "none",
+                                                        backgroundColor: "#f5f5f5"
+                                                    }
+                                                }}
+                                                onClick={handleClickSelection}
+                                            >
+                                                Select Class <ArrowDropDownIcon />
+                                            </Button>
+
+
+                                            <Popover
+                                                id={id}
+                                                open={open}
+                                                anchorEl={anchorEl}
+                                                onClose={handleClosePopover}
+                                                anchorOrigin={{
+                                                    vertical: 'bottom',
+                                                    horizontal: 'center',
+                                                }}
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'center',
+                                                }}
+                                            >
+                                                <Box sx={{ padding: 1.3, backgroundColor: '#000', color: '#fff', borderRadius: '8px' }}>
+                                                    <Typography variant="subtitle1" sx={{ fontSize: "10px" }} >Nursery</Typography>
+                                                    <ToggleButtonGroup
+                                                        value={selectedClass}
+                                                        exclusive
+
+                                                        sx={{ display: 'flex', flexWrap: 'wrap', py: 0.5, }}
+                                                    >
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            value="PreKG"
+                                                            onClick={(event) => handleClick(event, "PreKG")} >
+                                                            <Box sx={{ backgroundColor: "#4A2086" }} className="Popoverdot" />
+                                                            PreKG
+                                                        </ToggleButton>
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            sx={{ marginLeft: "5px !important" }}
+                                                            onClick={(event) => handleClick(event, "LKG")}
+                                                            value="LKG" >
+                                                            <Box sx={{ backgroundColor: "#4A2086" }} className="Popoverdot" />
+                                                            LKG
+                                                        </ToggleButton>
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            sx={{ marginLeft: "5px !important" }}
+                                                            onClick={(event) => handleClick(event, "UKG")}
+                                                            value="UKG" >
+                                                            <Box sx={{ backgroundColor: "#4A2086" }}
+                                                                className="Popoverdot" />
+                                                            UKG
+                                                        </ToggleButton>
+
+
+                                                    </ToggleButtonGroup>
+
+                                                    <Typography variant="subtitle1" sx={{ fontSize: "10px" }}>Primary</Typography>
+                                                    <ToggleButtonGroup
+                                                        value={selectedClass}
+                                                        exclusive
+
+                                                        sx={{ display: 'flex', flexWrap: 'wrap', py: 0.5 }}
+                                                    >
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            value="I" onClick={(event) => handleClick(event, "I")}>
+
+                                                            <Box sx={{ backgroundColor: "#8600BB" }} className="Popoverdot" />
+                                                            I
+                                                        </ToggleButton>
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            sx={{ marginLeft: "5px !important" }}
+                                                            value="II" onClick={(event) => handleClick(event, "II")}>
+
+                                                            <Box
+                                                                sx={{ backgroundColor: "#8600BB" }}
+                                                                className="Popoverdot" />
+                                                            II
+                                                        </ToggleButton>
+
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            sx={{ marginLeft: "5px !important" }}
+                                                            value="III" onClick={(event) => handleClick(event, "III")}>
+
+                                                            <Box
+                                                                sx={{ backgroundColor: "#8600BB" }}
+                                                                className="Popoverdot" />
+                                                            III
+                                                        </ToggleButton>
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            sx={{ marginLeft: "5px !important" }}
+                                                            value="IV" onClick={(event) => handleClick(event, "IV")}>
+
+                                                            <Box sx={{ backgroundColor: "#8600BB" }} className="Popoverdot" />
+                                                            IV
+                                                        </ToggleButton>
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            sx={{ marginLeft: "5px !important" }}
+                                                            value="V" onClick={(event) => handleClick(event, "V")}>
+
+                                                            <Box sx={{ backgroundColor: "#8600BB" }}
+                                                                className="Popoverdot" />
+                                                            V
+                                                        </ToggleButton>
+
+
+                                                    </ToggleButtonGroup>
+
+                                                    <Typography variant="subtitle1" sx={{ fontSize: "10px" }}>Secondary</Typography>
+                                                    <ToggleButtonGroup
+                                                        value={selectedClass}
+                                                        exclusive
+
+                                                        sx={{ display: 'flex', flexWrap: 'wrap', py: 0.5 }}
+                                                    >
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            value="VI" onClick={(event) => handleClick(event, "VI")}>
+
+                                                            <Box sx={{ backgroundColor: "#CE5C00" }}
+                                                                className="Popoverdot" />
+                                                            VI
+                                                        </ToggleButton>
+
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            value="VII"
+                                                            onClick={(event) => handleClick(event, "VII")}
+                                                            sx={{ marginLeft: "5px !important" }}>
+                                                            <Box sx={{ backgroundColor: "#CE5C00" }} className="Popoverdot" />
+                                                            VII
+                                                        </ToggleButton>
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            value="VIII"
+                                                            onClick={(event) => handleClick(event, "VIII")}
+                                                            sx={{ marginLeft: "5px !important" }}>
+                                                            <Box sx={{ backgroundColor: "#CE5C00" }}
+                                                                className="Popoverdot" />
+                                                            VIII
+                                                        </ToggleButton>
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            value="IX"
+                                                            onClick={(event) => handleClick(event, "IX")}
+                                                            sx={{ marginLeft: "5px !important" }}>
+                                                            <Box sx={{ backgroundColor: "#CE5C00" }} className="Popoverdot" />
+                                                            IX
+                                                        </ToggleButton>
+
+
+                                                        <ToggleButton
+                                                            className="popoverSelection"
+                                                            value="X"
+                                                            onClick={(event) => handleClick(event, "X")}
+                                                            sx={{ marginLeft: "5px !important" }}>
+                                                            <Box sx={{ backgroundColor: "#CE5C00" }} className="Popoverdot" />
+                                                            X
+                                                        </ToggleButton>
+
+
+                                                    </ToggleButtonGroup>
+                                                </Box>
+                                            </Popover>
+                                            {/* <DetailedAttendancePage open={isDialog1Open} sections={sections} selectedClass={selectedClassValue} onClose={handleClose1} /> */}
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                            <Box px={2}>
+                                <FullWidthBarChartPage style={{ width: '100%', height: '100px' }} teachersData={teachersGraphData} />
+                            </Box>
+                        </Box>
+
+                        <Grid container mb={2}>
+                            <Grid item xs={12} sm={12} md={12} lg={6} >
+                                <Box sx={{ backgroundColor: "#fff", ml: 2, mr: { sm: 2, md: 2, lg: 0 }, mt: 2, px: 2, pb: 2, borderRadius: "5px", boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.17)", height: "333px" }}>
+                                    <Typography pt={1} sx={{ fontWeight: "550", fontSize: "18px" }}>
+                                        Irregular attendees <span style={{ fontSize: "12px" }}>Overall</span>
+                                    </Typography>
+
+                                    <Box onClick={() => handleOpenPage(0)} sx={{
+                                        backgroundColor: "#F4EBF0", p: 3, position: 'relative', borderRadius: "7px",
+                                        cursor: "pointer", mt: 2,
+                                        '&:hover': {
+                                            '.arrowIcon': {
+                                                opacity: 1,
+                                            },
+                                        }
+                                    }}>
+                                        <Box
+                                            sx={{
+                                                width: '5px',
+                                                backgroundColor: '#D5004D',
+                                                height: '100%',
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 0,
+                                                borderTopLeftRadius: '5px',
+                                                borderBottomLeftRadius: '5px',
+                                            }}
+                                        />
+                                        <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            Absent Students
+                                            <Box sx={{ display: "flex", alignItems: 'center' }}>
+
+                                                <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#D5004D" }} />
+                                            </Box>
+                                        </Typography>
+                                    </Box>
+
+                                    {/* <IrregularAttendeesPage open={isDialog2Open} onClose={handleClose2} PageValue={pageValue} /> */}
+
+                                    <Box onClick={() => handleOpenPage(1)} sx={{
+                                        backgroundColor: "#fcf7fd", p: 3, position: 'relative', borderRadius: "7px",
+                                        cursor: "pointer", mt: 2.5,
+                                        '&:hover': {
+                                            '.arrowIcon': {
+                                                opacity: 1,
+                                            },
+                                        }
+                                    }}>
+                                        <Box
+                                            sx={{
+                                                width: '5px',
+                                                backgroundColor: '#8A09BD',
+                                                height: '100%',
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 0,
+                                                borderTopLeftRadius: '5px',
+                                                borderBottomLeftRadius: '5px',
+                                            }}
+                                        />
+                                        <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            Leave Students
+                                            <Box sx={{ display: "flex", alignItems: 'center' }}>
+
+                                                <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#5964DB" }} />
+                                            </Box>
+                                        </Typography>
+                                    </Box>
+
+                                    <Box onClick={() => handleOpenPage(2)} sx={{
+                                        backgroundColor: "#f9f9fe", p: 3, position: 'relative', borderRadius: "7px",
+                                        cursor: "pointer", mt: 2.5,
+                                        '&:hover': {
+                                            '.arrowIcon': {
+                                                opacity: 1,
+                                            },
+                                        }
+                                    }}>
+                                        <Box
+                                            sx={{
+                                                width: '5px',
+                                                backgroundColor: '#5964DB',
+                                                height: '100%',
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 0,
+                                                borderTopLeftRadius: '5px',
+                                                borderBottomLeftRadius: '5px',
+                                            }}
+                                        />
+                                        <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            Late Students
+                                            <Box sx={{ display: "flex", alignItems: 'center' }}>
+
+                                                <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#8A09BD" }} />
+                                            </Box>
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </Grid>
+
+                            <Grid item xs={12} sm={12} md={12} lg={6}>
+                                <Box sx={{ backgroundColor: "#fff", mx: 2, mt: 2, px: 2, pb: 2, borderRadius: "5px", boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.17)" }}>
+                                    <Typography pt={1} sx={{ fontWeight: "550", fontSize: "18px" }}>
+                                        Students Counts <span style={{ fontSize: "12px" }}>Overall</span>
+                                    </Typography>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                                            <StyledPieChart pieData={pieChartData} primary={true} />
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                                            <StyledPieChart pieData={pieChartData1} primary={false} />
+                                        </Grid>
+                                        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "-20px" }}>
+                                            <Typography sx={{ fontSize: "14px" }}>
+                                                Total Students (Nursery, Primary & Secondary Classes) - {totalSchoolStudents}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "-10px" }}>
+                                            <Typography sx={{ fontSize: "16px", fontWeight: "600", display: "flex" }}>
+                                                <Box sx={{ backgroundColor: "#018535", width: "12px", height: "12px", marginTop: "5px", marginRight: "5px", marginLeft: "20px" }} className="Popoverdot" />
+                                                Present
+                                            </Typography>
+                                            <Typography sx={{ fontSize: "16px", fontWeight: "600", display: "flex" }}>
+                                                <Box sx={{ backgroundColor: "#D84600", width: "12px", height: "12px", marginTop: "5px", marginRight: "5px", marginLeft: "20px" }} className="Popoverdot" />
+                                                Absent
+                                            </Typography>
+                                            <Typography sx={{ fontSize: "16px", fontWeight: "600", display: "flex" }}>
+                                                <Box sx={{ backgroundColor: "#9E35C7", width: "12px", height: "12px", marginTop: "5px", marginRight: "5px", marginLeft: "20px" }} className="Popoverdot" />
+                                                Leave
+                                            </Typography>
+                                            <Typography sx={{ fontSize: "16px", fontWeight: "600", display: "flex" }}>
+                                                <Box sx={{ backgroundColor: "#3D49D6", width: "12px", height: "12px", marginTop: "5px", marginRight: "5px", marginLeft: "20px" }} className="Popoverdot" />
+                                                Late
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+
                                 </Box>
                             </Grid>
                         </Grid>
-
-
                     </Box>
-                    <Box px={2}>
-                        <FullWidthBarChartPage style={{ width: '100%', height: '100px' }} teachersData={teachersGraphData} />
-                    </Box>
-                </Box>
+                )}
 
-                <Grid container mb={2}>
-                    <Grid item xs={12} sm={12} md={12} lg={6} >
-                        <Box sx={{ backgroundColor: "#fff", ml: 2, mr: { sm: 2, md: 2, lg: 0 }, mt: 2, px: 2, pb: 2, borderRadius: "5px", boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.17)", height: "333px" }}>
-                            <Typography pt={1} sx={{ fontWeight: "550", fontSize: "18px" }}>
-                                Irregular attendees <span style={{ fontSize: "12px" }}>Overall</span>
-                            </Typography>
+                {selectedPage === "Homework" &&
+                    <HomeworkStatusPage />
+                }
 
-                            <Box onClick={() => handleOpenPage(0)} sx={{
-                                backgroundColor: "#F4EBF0", p: 3, position: 'relative', borderRadius: "7px",
-                                cursor: "pointer", mt: 2,
-                                '&:hover': {
-                                    '.arrowIcon': {
-                                        opacity: 1,
-                                    },
-                                }
-                            }}>
-                                <Box
-                                    sx={{
-                                        width: '5px',
-                                        backgroundColor: '#D5004D',
-                                        height: '100%',
-                                        position: 'absolute',
-                                        left: 0,
-                                        top: 0,
-                                        borderTopLeftRadius: '5px',
-                                        borderBottomLeftRadius: '5px',
-                                    }}
-                                />
-                                <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    Absent Students
-                                    <Box sx={{ display: "flex", alignItems: 'center' }}>
+                {selectedPage === "Diary" &&
+                    <DiaryStatusPage />
+                }
+                {selectedPage === "Dress Code" &&
+                    <UniformStatusPage />
+                }
 
-                                        <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#D5004D" }} />
-                                    </Box>
-                                </Typography>
-                            </Box>
-
-                            {/* <IrregularAttendeesPage open={isDialog2Open} onClose={handleClose2} PageValue={pageValue} /> */}
-
-                            <Box onClick={() => handleOpenPage(1)} sx={{
-                                backgroundColor: "#fcf7fd", p: 3, position: 'relative', borderRadius: "7px",
-                                cursor: "pointer", mt: 2.5,
-                                '&:hover': {
-                                    '.arrowIcon': {
-                                        opacity: 1,
-                                    },
-                                }
-                            }}>
-                                <Box
-                                    sx={{
-                                        width: '5px',
-                                        backgroundColor: '#8A09BD',
-                                        height: '100%',
-                                        position: 'absolute',
-                                        left: 0,
-                                        top: 0,
-                                        borderTopLeftRadius: '5px',
-                                        borderBottomLeftRadius: '5px',
-                                    }}
-                                />
-                                <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    Leave Students
-                                    <Box sx={{ display: "flex", alignItems: 'center' }}>
-
-                                        <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#5964DB" }} />
-                                    </Box>
-                                </Typography>
-                            </Box>
-
-                            <Box onClick={() => handleOpenPage(2)} sx={{
-                                backgroundColor: "#f9f9fe", p: 3, position: 'relative', borderRadius: "7px",
-                                cursor: "pointer", mt: 2.5,
-                                '&:hover': {
-                                    '.arrowIcon': {
-                                        opacity: 1,
-                                    },
-                                }
-                            }}>
-                                <Box
-                                    sx={{
-                                        width: '5px',
-                                        backgroundColor: '#5964DB',
-                                        height: '100%',
-                                        position: 'absolute',
-                                        left: 0,
-                                        top: 0,
-                                        borderTopLeftRadius: '5px',
-                                        borderBottomLeftRadius: '5px',
-                                    }}
-                                />
-                                <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    Late Students
-                                    <Box sx={{ display: "flex", alignItems: 'center' }}>
-
-                                        <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#8A09BD" }} />
-                                    </Box>
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </Grid>
-
-                    <Grid item xs={12} sm={12} md={12} lg={6}>
-                        <Box sx={{ backgroundColor: "#fff", mx: 2, mt: 2, px: 2, pb: 2, borderRadius: "5px", boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.17)" }}>
-                            <Typography pt={1} sx={{ fontWeight: "550", fontSize: "18px" }}>
-                                Students Counts <span style={{ fontSize: "12px" }}>Overall</span>
-                            </Typography>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={12} md={6} lg={6}>
-                                    <StyledPieChart pieData={pieChartData} primary={true} />
-                                </Grid>
-                                <Grid item xs={12} sm={12} md={6} lg={6}>
-                                    <StyledPieChart pieData={pieChartData1} primary={false} />
-                                </Grid>
-                                <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "-20px" }}>
-                                    <Typography sx={{ fontSize: "14px" }}>
-                                        Total Students (Nursery, Primary & Secondary Classes) - {totalSchoolStudents}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "-10px" }}>
-                                    <Typography sx={{ fontSize: "16px", fontWeight: "600", display: "flex" }}>
-                                        <Box sx={{ backgroundColor: "#018535", width: "12px", height: "12px", marginTop: "5px", marginRight: "5px", marginLeft: "20px" }} className="Popoverdot" />
-                                        Present
-                                    </Typography>
-                                    <Typography sx={{ fontSize: "16px", fontWeight: "600", display: "flex" }}>
-                                        <Box sx={{ backgroundColor: "#D84600", width: "12px", height: "12px", marginTop: "5px", marginRight: "5px", marginLeft: "20px" }} className="Popoverdot" />
-                                        Absent
-                                    </Typography>
-                                    <Typography sx={{ fontSize: "16px", fontWeight: "600", display: "flex" }}>
-                                        <Box sx={{ backgroundColor: "#9E35C7", width: "12px", height: "12px", marginTop: "5px", marginRight: "5px", marginLeft: "20px" }} className="Popoverdot" />
-                                        Leave
-                                    </Typography>
-                                    <Typography sx={{ fontSize: "16px", fontWeight: "600", display: "flex" }}>
-                                        <Box sx={{ backgroundColor: "#3D49D6", width: "12px", height: "12px", marginTop: "5px", marginRight: "5px", marginLeft: "20px" }} className="Popoverdot" />
-                                        Late
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-
-                        </Box>
-                    </Grid>
-                </Grid>
             </Box>
 
             {/* Detailed attendance Popup */}

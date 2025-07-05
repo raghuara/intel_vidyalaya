@@ -90,7 +90,11 @@ const postHomeWork = `${homeWork}postHomeWork`;
 const HomeWorkFetch = `${homeWork}HomeWorkFetch`;
 const FindHomeWork = `${baseApiurl}changeHomeWork/FindHomeWork`;
 const DeleteHomeWork = `${baseApiurl}changeHomeWork/DeleteHomeWork`;
-const updateHomeWork = `${baseApiurl}changeHomeWork/updateHomeWork`;
+const updateHomeWork = `${baseApiurl}changeHomeWork/updateHomeWork`; 
+const fetchHomeworkStatus = `${baseApiurl}changeHomeWork/fetchHomeworkStatus`; 
+const postHomeworkStatus = `${baseApiurl}changeHomeWork/postHomeworkStatus`; 
+const updateHomeworkStatus = `${baseApiurl}changeHomeWork/updateHomeworkStatus`; 
+const homeworkStatusReport = `${baseApiurl}changeHomeWork/homeworkStatusReport`; 
 
 // Exam Time Tables 
 const examtimetable = `${baseApiurl}examtimetable/`;
@@ -160,6 +164,15 @@ const fetchAttendance = `${Attendance}fetchAttendance`;
 const postAttendance = `${Attendance}postAttendance`;
 const updateAttendance = `${Attendance}updateAttendance`;
 const postAttendanceMessage = `${Attendance}postAttendanceMessage`;
+const attendanceReport = `${Attendance}attendanceReport`;
+const postDairyStatus = `${baseApiurl}changeHomeWork/postDairyStatus`;
+const postDresscodeStatus = `${baseApiurl}changeHomeWork/postDresscodeStatus`;
+const fetchDairyStatus = `${baseApiurl}changeHomeWork/fetchDairyStatus`;
+const fetchDressCodeStatus = `${baseApiurl}changeHomeWork/fetchDressCodeStatus`;
+const updateDairyStatus = `${baseApiurl}changeHomeWork/updateDairyStatus`;
+const updateDressCodeStatus = `${baseApiurl}changeHomeWork/updateDressCodeStatus`;
+const dairyStatusReport = `${baseApiurl}changeHomeWork/dairyStatusReport`;
+const dresscodeStatusReport = `${baseApiurl}changeHomeWork/dresscodeStatusReport`;
 
 // Notification 
 const notification = `${baseApiurl}notification/`;
@@ -187,8 +200,21 @@ const GetStudentsInformation = `${studentManagement}GetStudentsInformation`;
 
 export {
     poststudyMaterial,
+    fetchHomeworkStatus,
+    updateHomeworkStatus,
+    fetchDairyStatus,
+    updateDairyStatus,
+    fetchDressCodeStatus,
+    updateDressCodeStatus,
+    homeworkStatusReport,
+    dairyStatusReport,
+    dresscodeStatusReport,
     deleteDashboardSlider,
+    postHomeworkStatus,
     BulkDeleteCircular,
+    postDairyStatus,
+    postDresscodeStatus,
+    attendanceReport,
     BulkDeleteNews,
     BulkDeleteMessage,
     postNotification,

@@ -18,6 +18,7 @@ const initialState = {
         '/dashboardmenu/notification',
         '/dashboardmenu/attendance/addattendance',
         '/dashboardmenu/attendance/irregular',
+        '/dashboardmenu/attendance/export',
         '/dashboardmenu/news/create',
         '/dashboardmenu/news/edit',
         '/dashboardmenu/messages/create',

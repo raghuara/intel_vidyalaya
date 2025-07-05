@@ -30,6 +30,7 @@ import LockResetIcon from '@mui/icons-material/LockReset';
 import GroupsIcon from '@mui/icons-material/Groups';
 import KeyIcon from '@mui/icons-material/Key';
 import { logout } from '../../Redux/Slices/AuthSlice';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function SideBarPage({ mobileOpen, setMobileOpen }) {
   const theme = useTheme();
@@ -60,6 +61,7 @@ function SideBarPage({ mobileOpen, setMobileOpen }) {
   const websiteSettings = useSelector(selectWebsiteSettings);
   const [unreadCount, setUnreadCount] = useState(0);
   const [selectedActive, setSelectedActive] = useState('');
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (!isMobile) {
@@ -258,8 +260,18 @@ function SideBarPage({ mobileOpen, setMobileOpen }) {
                 </IconButton>
               </CustomTooltip>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                  <img src={newsDetails.filepath} width={50} style={{ borderRadius: "50%" }} alt="profile" />
+              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  {!imageError && newsDetails.filepath ? (
+                    <img
+                      src={newsDetails.filepath}
+                      width={50}
+                      alt="profile"
+                      style={{ borderRadius: "50%", }}
+                      onError={() => setImageError(true)}
+                    />
+                  ) : (
+                    <AccountCircleIcon sx={{ fontSize: 40, color: "#777" }} />
+                  )}
                 </Box>
                 <Box sx={{ pl: 1 }}>
                   <Typography sx={{ fontSize: "11px" }}>Welcome Back!</Typography>
@@ -272,7 +284,17 @@ function SideBarPage({ mobileOpen, setMobileOpen }) {
           </>
         ) : (
           <Box sx={{ display: "flex", justifyContent: "center", px: 2, pt:2, pb:6}}>
-            <img src={newsDetails.filepath} width={35} style={{ borderRadius: "50%", marginLeft: "10px" }} alt="profile" />
+            {!imageError && newsDetails.filepath ? (
+              <img
+                src={newsDetails.filepath}
+                width={35}
+                alt="profile"
+                style={{ borderRadius: "50%", marginLeft: "10px" }}
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <AccountCircleIcon sx={{ fontSize: 35, color: '#777', ml: "10px" }} />
+            )}
             {!isMobileOrTablet &&
               (location.pathname !== "/dashboardmenu/student/information/create" &&
                 location.pathname !== "/dashboardmenu/student/information/viewinfo" &&

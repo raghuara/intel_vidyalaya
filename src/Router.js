@@ -89,6 +89,7 @@ import FeeFinancePage from "./Components/StudentComps/FeeFinanceComps/FeeFinance
 import CreateFeePage from "./Components/StudentComps/FeeFinanceComps/CreateFeePage";
 import FeeGradeSelection from "./Components/StudentComps/FeeFinanceComps/FeeGradeSelection";
 import FeeCategories from "./Components/StudentComps/FeeFinanceComps/FeeCategories";
+import ExportAttendancePage from "./Components/CommunicationComps/AttendanceComps/ExportAttendancePage";
 
 
 export default function RouterPage() {
@@ -180,6 +181,7 @@ export default function RouterPage() {
 
                 <Route path="attendance/addattendance" element={<AddAttendancePage />} />
                 <Route path="attendance/irregular" element={<IrregularAttendeesPage />} />
+                <Route path="attendance/export" element={<ExportAttendancePage />} />
 
                 {/* Student */}
                 <Route path="student" element={<StudentPage />} />
