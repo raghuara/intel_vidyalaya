@@ -264,23 +264,23 @@ export default function CircularsApprovalEditPage() {
 
     const getGradeSectionsPayload = () => {
         const gradeMap = new Map();
-    
+
         selectedIds.forEach(id => {
             const [gradeIdStr, section] = id.split("-");
             const gradeId = parseInt(gradeIdStr);
-    
+
             if (!gradeMap.has(gradeId)) {
                 gradeMap.set(gradeId, []);
             }
-    
+
             gradeMap.get(gradeId).push(section);
         });
-    
+
         const gradeSections = Array.from(gradeMap.entries()).map(([gradeId, sections]) => ({
             gradeId,
             sections
         }));
-    
+
         return { gradeSections };
     };
     const gradeSections = getGradeSectionsPayload();
@@ -399,12 +399,12 @@ export default function CircularsApprovalEditPage() {
             sendData.append("FileType", fileType);
             {
                 status == "schedule" &&
-                sendData.append("ScheduleOn", formattedDTValue || dateTimeValue || "");
+                    sendData.append("ScheduleOn", formattedDTValue || dateTimeValue || "");
             }
             sendData.append("UpdatedOn", todayDateTime || "");
             sendData.append("Recipient", selectedRecipient);
             sendData.append("Action", "accept");
-            
+
             const { gradeSections } = getGradeSectionsPayload();
             gradeSections.forEach((item, index) => {
                 sendData.append(`CircularGradeSections[${index}].GradeId`, item.gradeId);
@@ -430,11 +430,11 @@ export default function CircularsApprovalEditPage() {
             console.log("Response:", res.data);
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {
-                setMessage(error.response.data.message); 
+                setMessage(error.response.data.message);
             } else {
                 setMessage("An error occurred while updating the message.");
             }
-        
+
             setOpen(true);
             setColor(false);
             setStatus(false);
@@ -449,101 +449,147 @@ export default function CircularsApprovalEditPage() {
 
     return (
         <Box sx={{ width: "100%" }}>
-        <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
-        <Box sx={{
-            position: "fixed",
-            zIndex: 100,
-            backgroundColor: "#f2f2f2",
-            display: "flex",
-            alignItems: "center",
-            width: "100%",
-            py: 1.5,
-            marginTop: "-2px"
-        }}>
-            <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px' }}>
-                <ArrowBackIcon sx={{ fontSize: 20, color: "#000" }} />
-            </IconButton>
-            <Typography sx={{ fontWeight: "600", fontSize: "20px" }}>Edit Circulars</Typography>
-        </Box>
-        <Grid container >
-            <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                <Box sx={{ border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
-                    <Typography>Add Heading <span style={{ color: "#777", fontSize: "13px", }}> (Required)</span></Typography>
-                    <TextField
-                    sx={{backgroundColor:"#fff"}}
-                        id="outlined-size-small"
-                        size="small"
-                        fullWidth
-                        required
-                        value={heading}
-                        onChange={handleHeadingChange}
-                    />
-                    {isSubmitted && !heading.trim() && (
-                        <span style={{ color: "red", fontSize: "12px" }}>
-                            This field is required
-                        </span>
-                    )}
-                    <Typography sx={{ fontSize: "12px" }} color="textSecondary">
-                        {`${heading.length}/100`}
-                    </Typography>
+            <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
+            <Box sx={{
+                position: "fixed",
+                zIndex: 100,
+                backgroundColor: "#f2f2f2",
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+                py: 1.5,
+                marginTop: "-2px"
+            }}>
+                <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px' }}>
+                    <ArrowBackIcon sx={{ fontSize: 20, color: "#000" }} />
+                </IconButton>
+                <Typography sx={{ fontWeight: "600", fontSize: "20px" }}>Edit Circulars</Typography>
+            </Box>
+            <Grid container >
+                <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                        <Typography>Add Heading <span style={{ color: "#777", fontSize: "13px", }}> (Required)</span></Typography>
+                        <TextField
+                            sx={{ backgroundColor: "#fff" }}
+                            id="outlined-size-small"
+                            size="small"
+                            fullWidth
+                            required
+                            value={heading}
+                            onChange={handleHeadingChange}
+                        />
+                        {isSubmitted && !heading.trim() && (
+                            <span style={{ color: "red", fontSize: "12px" }}>
+                                This field is required
+                            </span>
+                        )}
+                        <Typography sx={{ fontSize: "12px" }} color="textSecondary">
+                            {`${heading.length}/100`}
+                        </Typography>
 
 
-                    <Typography sx={{ pt: 3 }}>Add Description<span style={{ color: "#777", fontSize: "13px" }}> (Required)</span></Typography>
+                        <Typography sx={{ pt: 3 }}>Add Description<span style={{ color: "#777", fontSize: "13px" }}> (Required)</span></Typography>
 
-                    <SimpleTextEditor
-                        value={newsContentHTML}
-                        onContentChange={handleRichTextChange}
-                    />
+                        <SimpleTextEditor
+                            value={newsContentHTML}
+                            onContentChange={handleRichTextChange}
+                        />
 
-                    {isSubmitted && !newsContentHTML.trim() && (
-                        <span style={{ color: "red", fontSize: "12px" }}>
-                            This field is required
-                        </span>
-                    )}
+                        {isSubmitted && !newsContentHTML.trim() && (
+                            <span style={{ color: "red", fontSize: "12px" }}>
+                                This field is required
+                            </span>
+                        )}
 
-                    <Box
-                        sx={{
-                            width: "100%",
-                            backgroundColor: "#fdfdfd",
-                        }}
-                    >
-                        <Typography sx={{ pt: 2 }}>Select Image</Typography>
+                        <Box
+                            sx={{
+                                width: "100%",
+                                backgroundColor: "#fdfdfd",
+                            }}
+                        >
+                            <Typography sx={{ pt: 2 }}>Select Image</Typography>
 
-                        <Box sx={{ mt: 2, textAlign: "center" }}>
-                            <Box
-                                {...getRootProps()}
-                                sx={{
-                                    border: "2px dashed #1976d2",
-                                    borderRadius: "8px",
-                                    p: 1,
-                                    backgroundColor: isDragActive ? "#e3f2fd" : "#e3f2fd",
-                                    textAlign: "center",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png, .pdf" />
-                                <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
-                                <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                    Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Supported Format: JPG, JPEG, WebP, PNG
-                                </Typography>
-                                <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                    Maximum Size: 25MB
-                                </Typography>
-                            </Box>
-                            {uploadedFiles.length > 0 && (
+                            <Box sx={{ mt: 2, textAlign: "center" }}>
                                 <Box
+                                    {...getRootProps()}
                                     sx={{
-                                        mt: 1,
-                                        display: "flex",
-                                        justifyContent: "flex-start",
-                                        alignItems: "center",
-                                        gap: 2,
+                                        border: "2px dashed #1976d2",
+                                        borderRadius: "8px",
+                                        p: 1,
+                                        backgroundColor: isDragActive ? "#e3f2fd" : "#e3f2fd",
+                                        textAlign: "center",
+                                        cursor: "pointer",
                                     }}
                                 >
-                                    {fileType === 'image' ? (
+                                    <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png, .pdf" />
+                                    <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
+                                    <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
+                                        Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                    </Typography>
+                                    <Typography variant="caption" color="textSecondary">
+                                        Supported Format: JPG, JPEG, WebP, PNG
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
+                                        Maximum Size: 25MB
+                                    </Typography>
+                                </Box>
+                                {uploadedFiles.length > 0 && (
+                                    <Box
+                                        sx={{
+                                            mt: 1,
+                                            display: "flex",
+                                            justifyContent: "flex-start",
+                                            alignItems: "center",
+                                            gap: 2,
+                                        }}
+                                    >
+                                        {fileType === 'image' ? (
+                                            <Box
+                                                sx={{
+                                                    position: "relative",
+                                                    width: "100px",
+                                                    height: "100px",
+                                                    border: "1px solid #ddd",
+                                                    borderRadius: "8px",
+                                                }}
+                                            >
+                                                <img
+                                                    src={uploadedFiles[0] instanceof File ? URL.createObjectURL(uploadedFiles[0]) : uploadedFiles[0].url || uploadedFiles[0]}
+                                                    alt="Selected"
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        objectFit: "cover",
+                                                    }}
+                                                />
+                                                {/* Remove Icon */}
+                                                <IconButton
+                                                    sx={{
+                                                        position: "absolute",
+
+                                                        top: -15,
+                                                        right: -15,
+                                                    }}
+                                                    onClick={handleImageClose}
+                                                >
+                                                    <CancelIcon style={{ backgroundColor: "#777", color: "#fff", borderRadius: "30px" }} />
+                                                </IconButton>
+                                            </Box>
+                                        ) : (<Typography variant="body2" color="textSecondary">
+                                            Selected: {uploadedFiles[0].name}
+                                        </Typography>)}
+                                    </Box>
+                                )}
+                                {(fetchedImage && fetchedFile === "image") && (
+                                    <Box
+                                        sx={{
+                                            mt: 1,
+                                            display: "flex",
+                                            justifyContent: "flex-start",
+                                            alignItems: "center",
+                                            gap: 2,
+                                        }}
+                                    >
                                         <Box
                                             sx={{
                                                 position: "relative",
@@ -554,7 +600,7 @@ export default function CircularsApprovalEditPage() {
                                             }}
                                         >
                                             <img
-                                                src={uploadedFiles[0] instanceof File ? URL.createObjectURL(uploadedFiles[0]) : uploadedFiles[0].url || uploadedFiles[0]}
+                                                src={fetchedImage}
                                                 alt="Selected"
                                                 style={{
                                                     width: "100%",
@@ -562,7 +608,6 @@ export default function CircularsApprovalEditPage() {
                                                     objectFit: "cover",
                                                 }}
                                             />
-                                            {/* Remove Icon */}
                                             <IconButton
                                                 sx={{
                                                     position: "absolute",
@@ -570,300 +615,256 @@ export default function CircularsApprovalEditPage() {
                                                     top: -15,
                                                     right: -15,
                                                 }}
-                                                onClick={handleImageClose}
+                                                onClick={handleFetchedCloseImage}
                                             >
                                                 <CancelIcon style={{ backgroundColor: "#777", color: "#fff", borderRadius: "30px" }} />
                                             </IconButton>
                                         </Box>
-                                    ) : (<Typography variant="body2" color="textSecondary">
-                                        Selected: {uploadedFiles[0].name}
-                                    </Typography>)}
-                                </Box>
-                            )}
-                            {(fetchedImage && fetchedFile === "image") && (
-                                <Box
-                                    sx={{
-                                        mt: 1,
-                                        display: "flex",
-                                        justifyContent: "flex-start",
-                                        alignItems: "center",
-                                        gap: 2,
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            position: "relative",
-                                            width: "100px",
-                                            height: "100px",
-                                            border: "1px solid #ddd",
-                                            borderRadius: "8px",
-                                        }}
-                                    >
-                                        <img
-                                            src={fetchedImage}
-                                            alt="Selected"
-                                            style={{
-                                                width: "100%",
-                                                height: "100%",
-                                                objectFit: "cover",
-                                            }}
-                                        />
-                                        <IconButton
-                                            sx={{
-                                                position: "absolute",
-
-                                                top: -15,
-                                                right: -15,
-                                            }}
-                                            onClick={handleFetchedCloseImage}
-                                        >
-                                            <CancelIcon style={{ backgroundColor: "#777", color: "#fff", borderRadius: "30px" }} />
-                                        </IconButton>
                                     </Box>
-                                </Box>
-                            )}
-                            {(fetchedImage && fetchedFile === "pdf") && (
-                                <Typography sx={{ mt: 2 }} variant="body2" color="textSecondary">
-                                    Selected : {fetchedFileName}
-                                </Typography>
+                                )}
+                                {(fetchedImage && fetchedFile === "pdf") && (
+                                    <Typography sx={{ mt: 2 }} variant="body2" color="textSecondary">
+                                        Selected : {fetchedFileName}
+                                    </Typography>
 
-                            )}
+                                )}
 
 
+                            </Box>
                         </Box>
-                    </Box>
-                    {newsStatus === "schedule" &&
-                        <Box mt={2}>
-                            <Typography>Schedule Post</Typography>
-                            <ThemeProvider theme={theme}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <Stack spacing={2}>
-                                        <DateTimePicker
-                                            value={dayjs(DTValue)}
-                                            disablePast
-                                            onChange={handleDateChange}
-                                            renderInput={(params) => <TextField {...params} />}
-                                        />
-                                    </Stack>
-                                </LocalizationProvider>
-                            </ThemeProvider>
-                        </Box>
-                    }
-                    <Box sx={{ mt: 3 }}>
-                        <Grid container>
-                            <Grid item xs={6} sm={6} md={6} lg={4.4}>
+                        {newsStatus === "schedule" &&
+                            <Box mt={2}>
+                                <Typography>Schedule Post</Typography>
+                                <ThemeProvider theme={theme}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <Stack spacing={2}>
+                                            <DateTimePicker
+                                                closeOnSelect={false}
+                                                value={dayjs(DTValue)}
+                                                disablePast
+                                                onChange={handleDateChange}
+                                                renderInput={(params) => <TextField {...params} />}
+                                            />
+                                        </Stack>
+                                    </LocalizationProvider>
+                                </ThemeProvider>
+                            </Box>
+                        }
+                        <Box sx={{ mt: 3 }}>
+                            <Grid container>
+                                <Grid item xs={6} sm={6} md={6} lg={4.4}>
 
-                            </Grid>
-                            <Grid item xs={6} sm={6} md={6} lg={2.3}>
-                                <Button
-                                    sx={{
-                                        textTransform: 'none',
-                                        width: "80px",
-                                        borderRadius: '30px',
-                                        fontSize: '12px',
-                                        py: 0.2,
-                                        color: 'black',
-                                        fontWeight: "600",
-                                    }}
-                                    onClick={handlePreview}>
-                                    Preview
-                                </Button>
-                            </Grid>
-                            <Grid item xs={6} sm={6} md={6} lg={2.3}>
-                                <Button
-                                    sx={{
-                                        textTransform: 'none',
-                                        width: "80px",
-                                        borderRadius: '30px',
-                                        fontSize: '12px',
-                                        py: 0.2,
-                                        border: '1px solid black',
-                                        color: 'black',
-                                        fontWeight: "600",
-                                    }}
-                                    onClick={handleCancelClick}>
-                                    Cancel
-                                </Button>
-                            </Grid>
-
-                            <Dialog open={openAlert} onClose={() => setOpenAlert(false)}>
-                                <Box sx={{ display: "flex", justifyContent: "center", p: 2, backgroundColor: '#fff', }}>
-
-                                    <Box sx={{
-                                        textAlign: 'center',
-                                        backgroundColor: '#fff',
-                                        p: 3,
-                                        width: "70%",
-                                    }}>
-
-                                        <Typography sx={{ fontSize: "20px" }}> Do you really want to cancel? Your changes might not be saved.</Typography>
-                                        <DialogActions sx={{
-                                            justifyContent: 'center',
-                                            backgroundColor: '#fff',
-                                            pt: 2
-                                        }}>
-                                            <Button
-                                                onClick={() => handleCloseDialog(false)}
-                                                sx={{
-                                                    textTransform: 'none',
-                                                    width: "80px",
-                                                    borderRadius: '30px',
-                                                    fontSize: '16px',
-                                                    py: 0.2,
-                                                    border: '1px solid black',
-                                                    color: 'black',
-                                                }}
-                                            >
-                                                No
-                                            </Button>
-                                            <Button
-                                                onClick={() => handleCloseDialog(true)}
-                                                sx={{
-                                                    textTransform: 'none',
-                                                    backgroundColor: websiteSettings.mainColor,
-                                                    width: "90px",
-                                                    borderRadius: '30px',
-                                                    fontSize: '16px',
-                                                    py: 0.2,
-                                                    color: websiteSettings.textColor,
-                                                }}
-                                            >
-                                                Yes
-                                            </Button>
-                                        </DialogActions>
-                                    </Box>
-
-                                </Box>
-                            </Dialog>
-
-                            {userType === "superadmin" &&
-                                <>
-
-                                    {!DTValue && (
-                                        <Grid item xs={6} sm={6} md={6} lg={3}>
-                                            <Button
-                                                sx={{
-                                                    textTransform: 'none',
-                                                    backgroundColor: websiteSettings.mainColor,
-                                                    width: "80px",
-                                                    borderRadius: '30px',
-                                                    fontSize: '12px',
-                                                    py: 0.2,
-                                                    color: websiteSettings.textColor,
-                                                    fontWeight: "600",
-                                                }}
-                                                onClick={() => handleUpdate('post')}>
-                                                Update
-                                            </Button>
-                                        </Grid>
-                                    )}
-                                    {DTValue && (
-                                        <Grid item xs={6} sm={6} md={6} lg={3}>
-                                            <Button
-                                                sx={{
-                                                    textTransform: 'none',
-                                                    backgroundColor: websiteSettings.mainColor,
-                                                    width: "80px",
-                                                    borderRadius: '30px',
-                                                    fontSize: '12px',
-                                                    py: 0.2,
-                                                    color: websiteSettings.textColor,
-                                                    fontWeight: "600",
-                                                }}
-                                                onClick={() => handleUpdate('schedule')}>
-                                                Schedule
-                                            </Button>
-                                        </Grid>
-                                    )}
-                                </>
-                            }
-
-                            {userType !== "superadmin" &&
-                                <>
-                                    <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "center" }}>
-
-                                        <Button
-                                            sx={{
-                                                textTransform: 'none',
-                                                backgroundColor: websiteSettings.mainColor,
-                                                width: "100px",
-                                                borderRadius: '30px',
-                                                fontSize: '12px',
-                                                py: 0.2,
-                                                color: websiteSettings.textColor,
-                                                fontWeight: "600",
-                                            }}
-                                            onClick={() => handleUpdate(DTValue ? 'schedule' : 'post')}>
-                                            Request Now
-                                        </Button>
-                                    </Grid>
-                                </>
-                            }
-                        </Grid>
-                    </Box>
-
-                </Box>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                    <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
-                    <hr style={{ border: "0.5px solid #CFCFCF" }} />
-                    <Box>
-                        {previewData.heading && (
-                            <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                                {previewData.heading}
-                            </Typography>
-                        )}
-
-                        {previewData.content && (
-                            <Typography
-                                sx={{ fontSize: "14px", pt: 1 }}
-                                dangerouslySetInnerHTML={{ __html: previewData.content }}
-                            />
-                        )}
-
-                        {previewData.uploadedFiles.length > 0 ? (
-                            previewData.uploadedFiles.map((file, index) => (
-                                <Grid key={index} item xs={12} sm={12} md={5} lg={12} sx={{ display: "flex", py: 1 }}>
-                                    {file.type.startsWith("image/") ? (
-                                        <img
-                                            src={URL.createObjectURL(file)}
-                                            width="273px"
-                                            height="210px"
-                                            alt={`Uploaded file ${index + 1}`}
-                                        />
-                                    ) : file.type === "application/pdf" ? (
-                                        <iframe
-                                            src={URL.createObjectURL(file)}
-                                            width="400px"
-                                            height="400px"
-                                            title={`Uploaded PDF ${index + 1}`}
-                                        ></iframe>
-                                    ) : null}
                                 </Grid>
-                            ))
-                        ) : previewData.fetchedImage ? (
-                            fetchedFile === "image" ? (
-                                <img
-                                    src={previewData.fetchedImage}
-                                    width="273px"
-                                    height="210px"
-                                    alt="Fetched Image"
-                                />
-                            ) : fetchedFile === "pdf" ? (
-                                <iframe
-                                    src={previewData.fetchedImage}
-                                    width="400px"
-                                    height="400px"
-                                    title="Fetched PDF"
-                                ></iframe>
-                            ) : null
-                        ) : null}
-                    </Box>
+                                <Grid item xs={6} sm={6} md={6} lg={2.3}>
+                                    <Button
+                                        sx={{
+                                            textTransform: 'none',
+                                            width: "80px",
+                                            borderRadius: '30px',
+                                            fontSize: '12px',
+                                            py: 0.2,
+                                            color: 'black',
+                                            fontWeight: "600",
+                                        }}
+                                        onClick={handlePreview}>
+                                        Preview
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={6} sm={6} md={6} lg={2.3}>
+                                    <Button
+                                        sx={{
+                                            textTransform: 'none',
+                                            width: "80px",
+                                            borderRadius: '30px',
+                                            fontSize: '12px',
+                                            py: 0.2,
+                                            border: '1px solid black',
+                                            color: 'black',
+                                            fontWeight: "600",
+                                        }}
+                                        onClick={handleCancelClick}>
+                                        Cancel
+                                    </Button>
+                                </Grid>
 
-                </Box>
+                                <Dialog open={openAlert} onClose={() => setOpenAlert(false)}>
+                                    <Box sx={{ display: "flex", justifyContent: "center", p: 2, backgroundColor: '#fff', }}>
+
+                                        <Box sx={{
+                                            textAlign: 'center',
+                                            backgroundColor: '#fff',
+                                            p: 3,
+                                            width: "70%",
+                                        }}>
+
+                                            <Typography sx={{ fontSize: "20px" }}> Do you really want to cancel? Your changes might not be saved.</Typography>
+                                            <DialogActions sx={{
+                                                justifyContent: 'center',
+                                                backgroundColor: '#fff',
+                                                pt: 2
+                                            }}>
+                                                <Button
+                                                    onClick={() => handleCloseDialog(false)}
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        width: "80px",
+                                                        borderRadius: '30px',
+                                                        fontSize: '16px',
+                                                        py: 0.2,
+                                                        border: '1px solid black',
+                                                        color: 'black',
+                                                    }}
+                                                >
+                                                    No
+                                                </Button>
+                                                <Button
+                                                    onClick={() => handleCloseDialog(true)}
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        backgroundColor: websiteSettings.mainColor,
+                                                        width: "90px",
+                                                        borderRadius: '30px',
+                                                        fontSize: '16px',
+                                                        py: 0.2,
+                                                        color: websiteSettings.textColor,
+                                                    }}
+                                                >
+                                                    Yes
+                                                </Button>
+                                            </DialogActions>
+                                        </Box>
+
+                                    </Box>
+                                </Dialog>
+
+                                {userType === "superadmin" &&
+                                    <>
+
+                                        {!DTValue && (
+                                            <Grid item xs={6} sm={6} md={6} lg={3}>
+                                                <Button
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        backgroundColor: websiteSettings.mainColor,
+                                                        width: "80px",
+                                                        borderRadius: '30px',
+                                                        fontSize: '12px',
+                                                        py: 0.2,
+                                                        color: websiteSettings.textColor,
+                                                        fontWeight: "600",
+                                                    }}
+                                                    onClick={() => handleUpdate('post')}>
+                                                    Update
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                        {DTValue && (
+                                            <Grid item xs={6} sm={6} md={6} lg={3}>
+                                                <Button
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        backgroundColor: websiteSettings.mainColor,
+                                                        width: "80px",
+                                                        borderRadius: '30px',
+                                                        fontSize: '12px',
+                                                        py: 0.2,
+                                                        color: websiteSettings.textColor,
+                                                        fontWeight: "600",
+                                                    }}
+                                                    onClick={() => handleUpdate('schedule')}>
+                                                    Schedule
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                    </>
+                                }
+
+                                {userType !== "superadmin" &&
+                                    <>
+                                        <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "center" }}>
+
+                                            <Button
+                                                sx={{
+                                                    textTransform: 'none',
+                                                    backgroundColor: websiteSettings.mainColor,
+                                                    width: "100px",
+                                                    borderRadius: '30px',
+                                                    fontSize: '12px',
+                                                    py: 0.2,
+                                                    color: websiteSettings.textColor,
+                                                    fontWeight: "600",
+                                                }}
+                                                onClick={() => handleUpdate(DTValue ? 'schedule' : 'post')}>
+                                                Request Now
+                                            </Button>
+                                        </Grid>
+                                    </>
+                                }
+                            </Grid>
+                        </Box>
+
+                    </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                        <hr style={{ border: "0.5px solid #CFCFCF" }} />
+                        <Box>
+                            {previewData.heading && (
+                                <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                                    {previewData.heading}
+                                </Typography>
+                            )}
+
+                            {previewData.content && (
+                                <Typography
+                                    sx={{ fontSize: "14px", pt: 1 }}
+                                    dangerouslySetInnerHTML={{ __html: previewData.content }}
+                                />
+                            )}
+
+                            {previewData.uploadedFiles.length > 0 ? (
+                                previewData.uploadedFiles.map((file, index) => (
+                                    <Grid key={index} item xs={12} sm={12} md={5} lg={12} sx={{ display: "flex", py: 1 }}>
+                                        {file.type.startsWith("image/") ? (
+                                            <img
+                                                src={URL.createObjectURL(file)}
+                                                width="273px"
+                                                height="210px"
+                                                alt={`Uploaded file ${index + 1}`}
+                                            />
+                                        ) : file.type === "application/pdf" ? (
+                                            <iframe
+                                                src={URL.createObjectURL(file)}
+                                                width="400px"
+                                                height="400px"
+                                                title={`Uploaded PDF ${index + 1}`}
+                                            ></iframe>
+                                        ) : null}
+                                    </Grid>
+                                ))
+                            ) : previewData.fetchedImage ? (
+                                fetchedFile === "image" ? (
+                                    <img
+                                        src={previewData.fetchedImage}
+                                        width="273px"
+                                        height="210px"
+                                        alt="Fetched Image"
+                                    />
+                                ) : fetchedFile === "pdf" ? (
+                                    <iframe
+                                        src={previewData.fetchedImage}
+                                        width="400px"
+                                        height="400px"
+                                        title="Fetched PDF"
+                                    ></iframe>
+                                ) : null
+                            ) : null}
+                        </Box>
+
+                    </Box>
+                </Grid>
             </Grid>
-        </Grid>
-    </Box>
+        </Box>
     );
 }

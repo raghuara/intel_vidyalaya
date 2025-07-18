@@ -414,23 +414,23 @@ export default function CircularsDraftEditPage() {
 
     const getGradeSectionsPayload = () => {
         const gradeMap = new Map();
-    
+
         selectedIds.forEach(id => {
             const [gradeIdStr, section] = id.split("-");
             const gradeId = parseInt(gradeIdStr);
-    
+
             if (!gradeMap.has(gradeId)) {
                 gradeMap.set(gradeId, []);
             }
-    
+
             gradeMap.get(gradeId).push(section);
         });
-    
+
         const gradeSections = Array.from(gradeMap.entries()).map(([gradeId, sections]) => ({
             gradeId,
             sections
         }));
-    
+
         return { gradeSections };
     };
     const gradeSections = getGradeSectionsPayload();
@@ -471,12 +471,12 @@ export default function CircularsDraftEditPage() {
             sendData.append("FileType", fileType);
             {
                 status === "schedule" &&
-                sendData.append("ScheduleOn", formattedDTValue || dateTimeValue || "");
+                    sendData.append("ScheduleOn", formattedDTValue || dateTimeValue || "");
             }
             sendData.append("PostedOn", todayDateTime || "");
             sendData.append("UpdatedOn", todayDateTime || "");
             sendData.append("Recipient", selectedRecipient);
-            
+
             const { gradeSections } = getGradeSectionsPayload();
             gradeSections.forEach((item, index) => {
                 sendData.append(`CircularGradeSections[${index}].GradeId`, item.gradeId);
@@ -528,11 +528,11 @@ export default function CircularsDraftEditPage() {
                 zIndex: 100,
                 backgroundColor: "#f2f2f2",
                 display: "flex",
-                borderBottom:"1px solid #ddd", 
+                borderBottom: "1px solid #ddd",
                 alignItems: "center",
                 width: "100%",
                 py: 1.5,
-                px:2,
+                px: 2,
                 marginTop: "-2px"
             }}>
                 <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px' }}>
@@ -542,7 +542,7 @@ export default function CircularsDraftEditPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5 }}>Select Recipient</Typography>
@@ -594,7 +594,7 @@ export default function CircularsDraftEditPage() {
                                                     paddingRight: 0,
                                                     height: '33px',
                                                     fontSize: "15px",
-                                                    backgroundColor:"#fff",
+                                                    backgroundColor: "#fff",
                                                 },
                                             }}
                                         />
@@ -618,7 +618,7 @@ export default function CircularsDraftEditPage() {
                                                 border: "1px solid #ccc",
                                                 height: "40px",
                                                 textAlign: "left",
-                                                backgroundColor:"#fff",
+                                                backgroundColor: "#fff",
                                             }}
                                         >
                                             <Box
@@ -749,7 +749,7 @@ export default function CircularsDraftEditPage() {
 
                         <Typography sx={{ mt: 2 }}>Add Heading <span style={{ color: "#777", fontSize: "13px", }}> (Required)</span></Typography>
                         <TextField
-                        sx={{ backgroundColor:"#fff",}}
+                            sx={{ backgroundColor: "#fff", }}
                             id="outlined-size-small"
                             size="small"
                             fullWidth
@@ -917,6 +917,7 @@ export default function CircularsDraftEditPage() {
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <Stack spacing={2}>
                                         <DateTimePicker
+                                            closeOnSelect={false}
                                             value={dayjs(DTValue)}
                                             disablePast
                                             onChange={handleDateChange}
@@ -1084,8 +1085,8 @@ export default function CircularsDraftEditPage() {
                 </Grid>
 
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5,pr:2 }}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

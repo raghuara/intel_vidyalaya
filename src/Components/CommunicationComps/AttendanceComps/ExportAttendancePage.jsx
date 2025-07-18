@@ -12,7 +12,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import { attendanceReport } from '../../../Api/Api';
-import * as XLSX from 'xlsx';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 export default function ExportAttendancePage() {
     const token = "123"

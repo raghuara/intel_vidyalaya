@@ -374,7 +374,7 @@ export default function NewsApprovalEditPage() {
             sendData.append("Link", pastedLink || '');
             {
                 status == "schedule" &&
-                sendData.append("ScheduleOn", formattedDTValue || dateTimeValue || "");
+                    sendData.append("ScheduleOn", formattedDTValue || dateTimeValue || "");
             }
             sendData.append("UpdatedOn", todayDateTime || "");
             sendData.append("Action", "accept");
@@ -431,10 +431,10 @@ export default function NewsApprovalEditPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
                         <Typography>Add Heading</Typography>
                         <TextField
-                        sx={{backgroundColor:"#fff"}}
+                            sx={{ backgroundColor: "#fff" }}
                             id="outlined-size-small"
                             size="small"
                             fullWidth
@@ -626,6 +626,7 @@ export default function NewsApprovalEditPage() {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Stack spacing={2} >
                                             <DateTimePicker
+                                                closeOnSelect={false}
                                                 value={dayjs(DTValue)}
                                                 disablePast
                                                 onChange={handleDateChange}
@@ -767,8 +768,8 @@ export default function NewsApprovalEditPage() {
                 </Grid>
 
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5 , pr:2}}>
-                    <Box sx={{ border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box p={1}>

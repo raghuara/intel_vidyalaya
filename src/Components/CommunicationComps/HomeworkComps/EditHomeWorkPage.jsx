@@ -298,7 +298,7 @@ export default function EditHomeWorkPage() {
                 backgroundColor: "#f2f2f2",
                 display: "flex",
                 alignItems: "center",
-                borderBottom:"1px solid #ddd",
+                borderBottom: "1px solid #ddd",
                 width: "100%",
                 py: 1.5,
                 px: 2,
@@ -311,7 +311,7 @@ export default function EditHomeWorkPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{ border:"1px solid #E0E0E0",  backgroundColor: "#fbfbfb", py: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", py: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
                         <Grid container spacing={2} sx={{ px: 2 }}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5 }}>Select Recipient</Typography>
@@ -456,6 +456,7 @@ export default function EditHomeWorkPage() {
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <Stack spacing={2} >
                                                 <DateTimePicker
+                                                    closeOnSelect={false}
                                                     sx={{ width: "100%" }}
                                                     value={dayjs(DTValue)}
                                                     disablePast
@@ -518,10 +519,10 @@ export default function EditHomeWorkPage() {
                             </Box>
                         </Dialog>
                         <Box sx={{ mt: 17, }}>
-                            <Grid container spacing={2} sx={{px: 2 }}>
+                            <Grid container spacing={2} sx={{ px: 2 }}>
                                 <Grid item xs={6} sm={6} md={6} lg={5}>
                                 </Grid>
-                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{display:"flex", justifyContent:"end"}}>
+                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{ display: "flex", justifyContent: "end" }}>
                                     <Button
                                         sx={{
                                             textTransform: 'none',
@@ -536,7 +537,7 @@ export default function EditHomeWorkPage() {
                                         Preview
                                     </Button>
                                 </Grid>
-                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{display:"flex", justifyContent:"end"}}>
+                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{ display: "flex", justifyContent: "end" }}>
                                     <Button
                                         sx={{
                                             textTransform: 'none',
@@ -553,7 +554,7 @@ export default function EditHomeWorkPage() {
                                     </Button>
                                 </Grid>
                                 {!DTValue && (
-                                    <Grid item xs={6} sm={6} md={6} lg={2.4} sx={{display:"flex", justifyContent:"end"}}>
+                                    <Grid item xs={6} sm={6} md={6} lg={2.4} sx={{ display: "flex", justifyContent: "end" }}>
                                         <Button
                                             sx={{
                                                 textTransform: 'none',
@@ -571,7 +572,7 @@ export default function EditHomeWorkPage() {
                                     </Grid>
                                 )}
                                 {DTValue && (
-                                    <Grid item xs={6} sm={6} md={6} lg={2.4} sx={{display:"flex", justifyContent:"end"}}>
+                                    <Grid item xs={6} sm={6} md={6} lg={2.4} sx={{ display: "flex", justifyContent: "end" }}>
                                         <Button
                                             sx={{
                                                 textTransform: 'none',
@@ -595,8 +596,8 @@ export default function EditHomeWorkPage() {
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                    <Box sx={{border:"1px solid #E0E0E0",  backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

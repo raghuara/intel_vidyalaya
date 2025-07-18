@@ -293,7 +293,7 @@ export default function MessagesApprovalEditPage() {
                 gradeAssignments: selectedIds,
                 scheduleOn: formattedDTValue || dateTimeValue || "",
                 updatedOn: todayDateTime,
-                action:"accept"
+                action: "accept"
             };
 
             const res = await axios.put(updateMessage, sendData, {
@@ -317,7 +317,7 @@ export default function MessagesApprovalEditPage() {
             } else {
                 setMessage("An error occurred while updating the message.");
             }
-        
+
             setOpen(true);
             setColor(false);
             setStatus(false);
@@ -348,7 +348,7 @@ export default function MessagesApprovalEditPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position:"relative"  }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
 
                         {/* <Typography sx={{ mb:0.5}}>Select</Typography> */}
                         {/* <Grid container spacing={2}>
@@ -514,7 +514,7 @@ export default function MessagesApprovalEditPage() {
 
                         <Typography >Add Heading</Typography>
                         <TextField
-                        sx={{backgroundColor:"#fff"}}
+                            sx={{ backgroundColor: "#fff" }}
                             id="outlined-size-small"
                             size="small"
                             fullWidth
@@ -548,6 +548,7 @@ export default function MessagesApprovalEditPage() {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Stack spacing={2}>
                                             <DateTimePicker
+                                                closeOnSelect={false}
                                                 value={dayjs(DTValue)}
                                                 disablePast
                                                 onChange={handleDateChange}
@@ -561,7 +562,7 @@ export default function MessagesApprovalEditPage() {
                             <Box sx={{ height: "90px" }} />
                         )
                         }
-                        <Box sx={{ mt: 12,}}>
+                        <Box sx={{ mt: 12, }}>
                             <Grid container>
                                 <Grid item xs={6} sm={6} md={6} lg={4.4}>
 
@@ -581,7 +582,7 @@ export default function MessagesApprovalEditPage() {
                                         Preview
                                     </Button>
                                 </Grid>
-                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{display:"flex", justifyContent:"end"}}>
+                                <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{ display: "flex", justifyContent: "end" }}>
                                     <Button
                                         sx={{
                                             textTransform: 'none',
@@ -647,52 +648,52 @@ export default function MessagesApprovalEditPage() {
 
                                     </Box>
                                 </Dialog>
-                            
-                                        {!DTValue && (
-                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
-                                                <Button
-                                                    sx={{
-                                                        textTransform: 'none',
-                                                        backgroundColor: websiteSettings.mainColor,
-                                                        width: "80px",
-                                                        borderRadius: '30px',
-                                                        fontSize: '12px',
-                                                        py: 0.2,
-                                                        color: websiteSettings.textColor,
-                                                        fontWeight: "600",
-                                                    }}
-                                                    onClick={() => handleUpdate('post')}>
-                                                    Accept
-                                                </Button>
-                                            </Grid>
-                                        )}
-                                        {DTValue && (
-                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
-                                                <Button
-                                                    sx={{
-                                                        textTransform: 'none',
-                                                        backgroundColor: websiteSettings.mainColor,
-                                                        width: "80px",
-                                                        borderRadius: '30px',
-                                                        fontSize: '12px',
-                                                        py: 0.2,
-                                                        color: websiteSettings.textColor,
-                                                        fontWeight: "600",
-                                                    }}
-                                                    onClick={() => handleUpdate('schedule')}>
-                                                    Accept
-                                                </Button>
-                                            </Grid>
-                                        )}
-                                   
+
+                                {!DTValue && (
+                                    <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
+                                        <Button
+                                            sx={{
+                                                textTransform: 'none',
+                                                backgroundColor: websiteSettings.mainColor,
+                                                width: "80px",
+                                                borderRadius: '30px',
+                                                fontSize: '12px',
+                                                py: 0.2,
+                                                color: websiteSettings.textColor,
+                                                fontWeight: "600",
+                                            }}
+                                            onClick={() => handleUpdate('post')}>
+                                            Accept
+                                        </Button>
+                                    </Grid>
+                                )}
+                                {DTValue && (
+                                    <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
+                                        <Button
+                                            sx={{
+                                                textTransform: 'none',
+                                                backgroundColor: websiteSettings.mainColor,
+                                                width: "80px",
+                                                borderRadius: '30px',
+                                                fontSize: '12px',
+                                                py: 0.2,
+                                                color: websiteSettings.textColor,
+                                                fontWeight: "600",
+                                            }}
+                                            onClick={() => handleUpdate('schedule')}>
+                                            Accept
+                                        </Button>
+                                    </Grid>
+                                )}
+
                             </Grid>
                         </Box>
 
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5,pr:2 }}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

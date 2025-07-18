@@ -347,15 +347,15 @@ export default function CreateNewsPage() {
                 position: "fixed",
                 zIndex: 100,
                 backgroundColor: "#f2f2f2",
-                borderBottom:"1px solid #ddd",
+                borderBottom: "1px solid #ddd",
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
                 py: 1.5,
                 marginTop: "-2px",
-                px:2,
+                px: 2,
             }}>
-                <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px',}}>
+                <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px', }}>
                     <ArrowBackIcon sx={{ fontSize: 20, color: "#000" }} />
                 </IconButton>
                 <Typography sx={{ fontWeight: "600", fontSize: "20px" }}>Create News</Typography>
@@ -363,7 +363,7 @@ export default function CreateNewsPage() {
             {(userType === "superadmin" || userType === "admin" || userType === "staff") &&
                 <Grid container >
                     <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                        <Box sx={{ border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                        <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
                             <Typography>Add Heading <span style={{ color: "#777", fontSize: "13px" }}> (Required)</span></Typography>
                             <TextField
                                 sx={{ backgroundColor: "#fff" }}
@@ -491,7 +491,7 @@ export default function CreateNewsPage() {
                                 {activeTab === 1 && (
                                     <Box sx={{ mt: 2 }}>
                                         <TextField
-                                        sx={{backgroundColor:"#fff"}}
+                                            sx={{ backgroundColor: "#fff" }}
                                             fullWidth
                                             size="small"
                                             placeholder="Paste your link here"
@@ -519,7 +519,8 @@ export default function CreateNewsPage() {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Stack spacing={2} sx={{ minWidth: "100%" }}>
                                             <DateTimePicker
-                                            sx={{backgroundColor:"#fff"}}
+                                                closeOnSelect={false}
+                                                sx={{ backgroundColor: "#fff" }}
                                                 value={dayjs(DTValue)}
                                                 disablePast
                                                 onChange={handleDateChange}
@@ -544,7 +545,7 @@ export default function CreateNewsPage() {
                                                 border: '1px solid black',
                                                 color: 'black',
                                                 fontWeight: "600",
-                                                backgroundColor:"#fff"
+                                                backgroundColor: "#fff"
                                             }}
                                             onClick={() => handleInsertNewsData('draft')}>
                                             Save as Draft
@@ -576,7 +577,7 @@ export default function CreateNewsPage() {
                                                 border: '1px solid black',
                                                 color: 'black',
                                                 fontWeight: "600",
-                                                backgroundColor:"#fff"
+                                                backgroundColor: "#fff"
                                             }}
                                             onClick={handleCancelClick}>
                                             Cancel
@@ -704,8 +705,8 @@ export default function CreateNewsPage() {
                         </Box>
                     </Grid>
 
-                    <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                        <Box sx={{ backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto", border:"1px solid #E0E0E0" }}>
+                    <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                        <Box sx={{ backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto", border: "1px solid #E0E0E0" }}>
                             <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                             <hr style={{ border: "0.5px solid #CFCFCF" }} />
                             <Box>

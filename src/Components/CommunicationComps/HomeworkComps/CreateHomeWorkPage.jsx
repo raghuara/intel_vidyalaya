@@ -279,18 +279,18 @@ export default function CreateHomeWorkPage() {
                 alignItems: "center",
                 width: "100%",
                 py: 1.5,
-                borderBottom:"1px solid #ddd",
-                px:2,
+                borderBottom: "1px solid #ddd",
+                px: 2,
                 marginTop: "-2px"
             }}>
-                 <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px' }}>
+                <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px' }}>
                     <ArrowBackIcon sx={{ fontSize: 20, color: "#000" }} />
                 </IconButton>
                 <Typography sx={{ fontWeight: "600", fontSize: "20px" }}>Create Homework</Typography>
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", py: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", py: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
                         <Grid container spacing={2} sx={{ px: 2 }}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5 }}>Select Class</Typography>
@@ -331,7 +331,7 @@ export default function CreateHomeWorkPage() {
                                                     height: "33px",
                                                     fontSize: "13px",
                                                     fontWeight: "600",
-                                                    backgroundColor:"#fff",
+                                                    backgroundColor: "#fff",
                                                 },
                                             }}
                                         />
@@ -382,7 +382,7 @@ export default function CreateHomeWorkPage() {
                                                     height: "33px",
                                                     fontSize: "13px",
                                                     fontWeight: "600",
-                                                    backgroundColor:"#fff",
+                                                    backgroundColor: "#fff",
                                                 },
                                             }}
                                         />
@@ -418,59 +418,60 @@ export default function CreateHomeWorkPage() {
                                     </Box>
                                     {uploadedFiles.length > 0 && (
                                         <Box
-                                        sx={{
-                                            mt: 1,
-                                            display: "flex",
-                                            justifyContent: "flex-start",
-                                            alignItems: "center",
-                                            gap: 2,
-                                        }}
-                                    >
-                                        {fileType === 'image' ? (
-                                            <Box
-                                                sx={{
-                                                    position: "relative",
-                                                    width: "100px",
-                                                    height: "100px",
-                                                    border: "1px solid #ddd",
-                                                    borderRadius: "8px",
-                                                }}
-                                            >
-                                                <img
-                                                    src={uploadedFiles[0] instanceof File ? URL.createObjectURL(uploadedFiles[0]) : uploadedFiles[0].url || uploadedFiles[0]}
-                                                    alt="Selected"
-                                                    style={{
-                                                        width: "100%",
-                                                        height: "100%",
-                                                        objectFit: "cover",
-                                                    }}
-                                                />
-                                                {/* Remove Icon */}
-                                                <IconButton
+                                            sx={{
+                                                mt: 1,
+                                                display: "flex",
+                                                justifyContent: "flex-start",
+                                                alignItems: "center",
+                                                gap: 2,
+                                            }}
+                                        >
+                                            {fileType === 'image' ? (
+                                                <Box
                                                     sx={{
-                                                        position: "absolute",
-
-                                                        top: -15,
-                                                        right: -15,
+                                                        position: "relative",
+                                                        width: "100px",
+                                                        height: "100px",
+                                                        border: "1px solid #ddd",
+                                                        borderRadius: "8px",
                                                     }}
-                                                    onClick={handleImageClose}
                                                 >
-                                                    <CancelIcon style={{ backgroundColor: "#777", color: "#fff", borderRadius: "30px" }} />
-                                                </IconButton>
-                                            </Box>
-                                        ) : (<Typography variant="body2" color="textSecondary">
-                                            Selected: {uploadedFiles[0].name}
-                                        </Typography>)}
-                                    </Box>
+                                                    <img
+                                                        src={uploadedFiles[0] instanceof File ? URL.createObjectURL(uploadedFiles[0]) : uploadedFiles[0].url || uploadedFiles[0]}
+                                                        alt="Selected"
+                                                        style={{
+                                                            width: "100%",
+                                                            height: "100%",
+                                                            objectFit: "cover",
+                                                        }}
+                                                    />
+                                                    {/* Remove Icon */}
+                                                    <IconButton
+                                                        sx={{
+                                                            position: "absolute",
+
+                                                            top: -15,
+                                                            right: -15,
+                                                        }}
+                                                        onClick={handleImageClose}
+                                                    >
+                                                        <CancelIcon style={{ backgroundColor: "#777", color: "#fff", borderRadius: "30px" }} />
+                                                    </IconButton>
+                                                </Box>
+                                            ) : (<Typography variant="body2" color="textSecondary">
+                                                Selected: {uploadedFiles[0].name}
+                                            </Typography>)}
+                                        </Box>
                                     )}
                                 </Box>
                             </Grid>
-                            <Grid item lg={12} sx={{width:"100%"}}>
+                            <Grid item lg={12} sx={{ width: "100%" }}>
                                 <Typography sx={{ mt: 2 }}>Schedule Post</Typography>
                                 <ThemeProvider theme={theme}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Stack spacing={2}>
                                             <DateTimePicker
+                                                closeOnSelect={false}
                                                 value={dayjs(DTValue)}
                                                 disablePast
                                                 onChange={handleDateChange}
@@ -532,13 +533,13 @@ export default function CreateHomeWorkPage() {
 
                             </Box>
                         </Dialog>
-                        <Box sx={{ mt: 18.5, px:2}}>
+                        <Box sx={{ mt: 18.5, px: 2 }}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6} sm={6} md={6} lg={4}>
-                                   
+
                                 </Grid>
-                                
-                                <Grid item xs={6} sm={6} md={6} lg={3} sx={{display:"flex", justifyContent:"end"}}>
+
+                                <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
                                     <Button
                                         sx={{
                                             textTransform: 'none',
@@ -553,7 +554,7 @@ export default function CreateHomeWorkPage() {
                                         Preview
                                     </Button>
                                 </Grid>
-                                <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{display:"flex", justifyContent:"end"}}>
+                                <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{ display: "flex", justifyContent: "end" }}>
                                     <Button
                                         sx={{
                                             textTransform: 'none',
@@ -570,7 +571,7 @@ export default function CreateHomeWorkPage() {
                                     </Button>
                                 </Grid>
                                 {!DTValue && (
-                                    <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{display:"flex", justifyContent:"end"}}>
+                                    <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{ display: "flex", justifyContent: "end" }}>
                                         <Button
                                             sx={{
                                                 textTransform: 'none',
@@ -588,7 +589,7 @@ export default function CreateHomeWorkPage() {
                                     </Grid>
                                 )}
                                 {DTValue && (
-                                    <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{display:"flex", justifyContent:"end"}}>
+                                    <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{ display: "flex", justifyContent: "end" }}>
                                         <Button
                                             sx={{
                                                 textTransform: 'none',
@@ -609,13 +610,13 @@ export default function CreateHomeWorkPage() {
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2,pr:2, mt: 6.5 }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, pr: 2, mt: 6.5 }}>
                     <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>
                             <Grid container spacing={2}>
-                            {previewData.uploadedFiles.map((file, index) => (
+                                {previewData.uploadedFiles.map((file, index) => (
                                     <Grid key={index} item xs={12} sm={12} md={5} lg={12} sx={{ display: "flex", py: 1 }}>
                                         {fileType === "image" ? (
                                             <img

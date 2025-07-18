@@ -234,7 +234,7 @@ export default function MessagesDraftEditPage() {
                 return null;
             })
             .filter(Boolean);
-    
+
         return selectedData.length > 0 ? selectedData.join(", ") : "Select Class & Section";
     };
 
@@ -328,7 +328,7 @@ export default function MessagesDraftEditPage() {
                 item.sections.map(section => `${item.gradeId}-${section}`)
             );
             setSelectedIds(transformedGradeDetails);
-            
+
         } catch (error) {
             console.error('Error deleting news:', error);
         } finally {
@@ -338,26 +338,26 @@ export default function MessagesDraftEditPage() {
 
     const getGradeSectionsPayload = () => {
         const gradeMap = new Map();
-    
+
         selectedIds.forEach(id => {
             const [gradeIdStr, section] = id.split("-");
             const gradeId = parseInt(gradeIdStr);
-    
+
             if (!gradeMap.has(gradeId)) {
                 gradeMap.set(gradeId, []);
             }
-    
+
             gradeMap.get(gradeId).push(section);
         });
-    
+
         const gradeSections = Array.from(gradeMap.entries()).map(([gradeId, sections]) => ({
             gradeId,
             sections
         }));
-    
+
         return { gradeSections };
     };
-    
+
     const gradeSections = getGradeSectionsPayload();
     console.log(gradeSections, "ff");
 
@@ -390,7 +390,7 @@ export default function MessagesDraftEditPage() {
                 gradeAssignments: gradeSections.gradeSections,
                 scheduleOn: formattedDTValue || dateTimeValue || "",
                 updatedOn: todayDateTime,
-                postedOn:status === "post" ?  todayDateTime : "",
+                postedOn: status === "post" ? todayDateTime : "",
             };
 
             const res = await axios.put(updateMessage, sendData, {
@@ -426,7 +426,7 @@ export default function MessagesDraftEditPage() {
 
         } catch (error) {
             console.error("Error while inserting news data:", error);
-        
+
             if (error.response && error.response.data) {
                 const errorMessage = error.response.data.message || error.response.data;
                 if (errorMessage.includes("ScheduleOn must be a future date and time")) {
@@ -437,7 +437,7 @@ export default function MessagesDraftEditPage() {
                 }
             }
         }
-         finally {
+        finally {
             setIsLoading(false);
         }
     };
@@ -449,12 +449,12 @@ export default function MessagesDraftEditPage() {
                 position: "fixed",
                 zIndex: 100,
                 backgroundColor: "#f2f2f2",
-                borderBottom:"1px solid #ddd", 
+                borderBottom: "1px solid #ddd",
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
                 py: 1.5,
-                px:2,
+                px: 2,
                 marginTop: "-2px"
             }}>
                 <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px' }}>
@@ -464,7 +464,7 @@ export default function MessagesDraftEditPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
 
                         {/* <Typography sx={{ mb:0.5}}>Select</Typography> */}
                         <Grid container spacing={2}>
@@ -518,7 +518,7 @@ export default function MessagesDraftEditPage() {
                                                     paddingRight: 0,
                                                     height: '33px',
                                                     fontSize: "15px",
-                                                    backgroundColor:"#fff"
+                                                    backgroundColor: "#fff"
                                                 },
                                             }}
                                         />
@@ -538,11 +538,11 @@ export default function MessagesDraftEditPage() {
                                                 justifyContent: "flex-start",
                                                 textTransform: "none",
                                                 overflow: "hidden",
-                                                color:"#000",
-                                                border:"1px solid #ccc",
-                                                height:"40px",
-                                                textAlign:"left",
-                                                backgroundColor:"#fff",
+                                                color: "#000",
+                                                border: "1px solid #ccc",
+                                                height: "40px",
+                                                textAlign: "left",
+                                                backgroundColor: "#fff",
                                             }}
                                         >
                                             <Box
@@ -673,7 +673,7 @@ export default function MessagesDraftEditPage() {
 
                         <Typography sx={{ mt: 2 }}>Add Heading</Typography>
                         <TextField
-                        sx={{ backgroundColor:"#fff",}}
+                            sx={{ backgroundColor: "#fff", }}
                             id="outlined-size-small"
                             size="small"
                             fullWidth
@@ -700,22 +700,23 @@ export default function MessagesDraftEditPage() {
                                 This field is required
                             </span>
                         )}
-                            <Box mt={2}>
-                                <Typography>Schedule</Typography>
-                                <ThemeProvider theme={theme}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <Stack spacing={2}>
-                                            <DateTimePicker
-                                                value={dayjs(DTValue)}
-                                                disablePast
-                                                onChange={handleDateChange}
-                                                renderInput={(params) => <TextField {...params} />}
-                                            />
-                                        </Stack>
-                                    </LocalizationProvider>
-                                </ThemeProvider>
-                            </Box>
-                      
+                        <Box mt={2}>
+                            <Typography>Schedule</Typography>
+                            <ThemeProvider theme={theme}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <Stack spacing={2}>
+                                        <DateTimePicker
+                                            closeOnSelect={false}
+                                            value={dayjs(DTValue)}
+                                            disablePast
+                                            onChange={handleDateChange}
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                    </Stack>
+                                </LocalizationProvider>
+                            </ThemeProvider>
+                        </Box>
+
                         <Box sx={{ mt: 3 }}>
                             <Grid container>
                                 <Grid item xs={6} sm={6} md={6} lg={4.4}>
@@ -805,7 +806,7 @@ export default function MessagesDraftEditPage() {
                                 {userType === "superadmin" &&
                                     <>
                                         {!DTValue && (
-                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{display:"flex", justifyContent:"end"}}>
+                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
                                                 <Button
                                                     sx={{
                                                         textTransform: 'none',
@@ -823,7 +824,7 @@ export default function MessagesDraftEditPage() {
                                             </Grid>
                                         )}
                                         {DTValue && (
-                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{display:"flex", justifyContent:"end"}}>
+                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
                                                 <Button
                                                     sx={{
                                                         textTransform: 'none',
@@ -869,8 +870,8 @@ export default function MessagesDraftEditPage() {
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                    <Box sx={{ border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

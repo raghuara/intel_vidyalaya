@@ -293,7 +293,7 @@ export default function EditNewsPage() {
         }
     }, []);
 
-    
+
 
     const handleInsertNewsData = async (id) => {
         setIsLoading(true);
@@ -360,26 +360,26 @@ export default function EditNewsPage() {
 
     const getGradeSectionsPayload = () => {
         const gradeMap = new Map();
-    
+
         selectedIds.forEach(id => {
             const [gradeIdStr, section] = id.split("-");
             const gradeId = parseInt(gradeIdStr);
-    
+
             if (!gradeMap.has(gradeId)) {
                 gradeMap.set(gradeId, []);
             }
-    
+
             gradeMap.get(gradeId).push(section);
         });
-    
+
         const gradeSections = Array.from(gradeMap.entries()).map(([gradeId, sections]) => ({
             gradeId,
             sections
         }));
-    
+
         return { gradeSections };
     };
-    
+
     const gradeSections = getGradeSectionsPayload();
     console.log(gradeSections);
 
@@ -395,7 +395,7 @@ export default function EditNewsPage() {
             return;
         }
 
-        if (!newsContentHTML.trim()) { 
+        if (!newsContentHTML.trim()) {
             setMessage("Description is required");
             setOpen(true);
             setColor(false);
@@ -461,8 +461,8 @@ export default function EditNewsPage() {
                 position: "fixed",
                 zIndex: 100,
                 backgroundColor: "#f2f2f2",
-                borderBottom:"1px solid #ddd",
-                px:2,
+                borderBottom: "1px solid #ddd",
+                px: 2,
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
@@ -476,10 +476,10 @@ export default function EditNewsPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
                         <Typography >Add Heading <span style={{ color: "#777", fontSize: "13px", }}> (Required)</span></Typography>
                         <TextField
-                         sx={{backgroundColor:"#fff"}}
+                            sx={{ backgroundColor: "#fff" }}
                             id="outlined-size-small"
                             size="small"
                             fullWidth
@@ -647,7 +647,8 @@ export default function EditNewsPage() {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Stack spacing={2}>
                                             <DateTimePicker
-                                             sx={{backgroundColor:"#fff"}}
+                                                closeOnSelect={false}
+                                                sx={{ backgroundColor: "#fff" }}
                                                 value={dayjs(DTValue)}
                                                 disablePast
                                                 onChange={handleDateChange}
@@ -813,8 +814,8 @@ export default function EditNewsPage() {
 
                     </Box>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

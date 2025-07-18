@@ -343,10 +343,10 @@ export default function NotificationPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            
+
             if (status === "post") {
                 setMessage("Notification sent successfully");
-            } else{
+            } else {
                 setMessage("Notification scheduled successfully");
             }
             setOpen(true);
@@ -382,7 +382,7 @@ export default function NotificationPage() {
                 position: "fixed",
                 zIndex: 100,
                 backgroundColor: "#f2f2f2",
-                borderBottom:"1px solid #ddd", 
+                borderBottom: "1px solid #ddd",
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
@@ -394,7 +394,7 @@ export default function NotificationPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5 }}>Select Recipient</Typography>
@@ -634,6 +634,7 @@ export default function NotificationPage() {
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <Stack spacing={2}>
                                         <DateTimePicker
+                                            closeOnSelect={false}
                                             value={dayjs(DTValue)}
                                             disablePast
                                             onChange={handleDateChange}
@@ -749,7 +750,7 @@ export default function NotificationPage() {
                                     </Grid>
                                 )}
                                 {DTValue && (
-                                  <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{ display: "flex", justifyContent: "end" }}>
+                                    <Grid item xs={6} sm={6} md={6} lg={2.3} sx={{ display: "flex", justifyContent: "end" }}>
                                         <Button
                                             sx={{
                                                 textTransform: 'none',
@@ -772,8 +773,8 @@ export default function NotificationPage() {
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2}}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

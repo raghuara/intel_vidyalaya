@@ -446,6 +446,40 @@ export default function AttendancePage() {
                             </Box>
                         </Grid>
                         <Grid item xs={12} lg={6} sx={{ display: "flex", justifyContent: "end" }}>
+                            
+                            {(!selectedPage || selectedPage === "Attendance") && (
+                                <Box sx={{ display: "flex", }}>
+                                    <Link to="addattendance">
+                                        <Button
+                                            variant="contained" sx={{
+                                                textTransform: "none",
+                                                height: "2rem",
+                                                boxShadow: "none",
+                                                backgroundColor: websiteSettings.mainColor,
+                                                color: websiteSettings.textColor,
+                                                fontWeight: "600"
+                                            }}><AddIcon style={{ marginRight: "8px", fontSize: "20px" }} />Attendance</Button>
+
+                                    </Link>
+                                    {/* <AddAttendancePage open={isDialog3Open} selectedClass={selectedClassValue} onClose={handleClose3} /> */}
+                                    <Link to="export">
+                                        <Button
+                                            sx={{
+                                                marginLeft: "20px",
+                                                textTransform: "none",
+                                                height: "2rem",
+                                                color: "#000",
+                                                borderColor: "#000",
+                                                mr:2
+                                            }}
+                                            variant="outlined"
+                                        >
+                                            <DownloadIcon style={{ marginRight: "8px", fontSize: "20px" }} />
+                                            Attendance
+                                        </Button>
+                                    </Link>
+                                </Box>
+                            )}
                             <Autocomplete
                                 disablePortal
                                 options={["Attendance", "Homework", "Diary", "Dress Code"]}
@@ -489,36 +523,6 @@ export default function AttendancePage() {
                                     />
                                 )}
                             />
-                            <Box sx={{ display: "flex", }}>
-                                <Link to="addattendance">
-                                    <Button
-                                        variant="contained" sx={{
-                                            textTransform: "none",
-                                            height: "2rem",
-                                            boxShadow: "none",
-                                            backgroundColor: websiteSettings.mainColor,
-                                            color: websiteSettings.textColor,
-                                            fontWeight: "600"
-                                        }}><AddIcon style={{ marginRight: "8px", fontSize: "20px" }} />Attendance</Button>
-
-                                </Link>
-                                {/* <AddAttendancePage open={isDialog3Open} selectedClass={selectedClassValue} onClose={handleClose3} /> */}
-                                <Link to="export">
-                                    <Button
-                                        sx={{
-                                            marginLeft: "20px",
-                                            textTransform: "none",
-                                            height: "2rem",
-                                            color: "#000",
-                                            borderColor: "#000"
-                                        }}
-                                        variant="outlined"
-                                    >
-                                        <DownloadIcon style={{ marginRight: "8px", fontSize: "20px" }} />
-                                        Attendance
-                                    </Button>
-                                </Link>
-                            </Box>
                         </Grid>
                     </Grid>
                 </Box>
@@ -1278,7 +1282,7 @@ export default function AttendancePage() {
                                                                             Overall
                                                                         </ToggleButton>
                                                                     </Grid>
-                                                                    <Grid item lg={12}>
+                                                                    <Grid  item lg={12}>
                                                                         <ToggleButton
                                                                             className={selectedFilter === "present" ? 'sectionSelected popoverSelection' : 'popoverSelection'}
                                                                             sx={{
@@ -1334,7 +1338,7 @@ export default function AttendancePage() {
                                                                             <Box sx={{ backgroundColor: "#9E35C7" }} className="Popoverdot" />
                                                                             Leave
                                                                         </ToggleButton>
-                                                                    </Grid>
+                                                                    </Grid> 
                                                                     <Grid item lg={12}>
                                                                         <ToggleButton
                                                                             className={selectedFilter === "late" ? 'sectionSelected popoverSelection' : 'popoverSelection'}

@@ -127,182 +127,189 @@ export default function LoginPage() {
     const isButtonEnabled = userId.trim() !== '' && password.trim() !== '';
 
     return (
-        <Box >
-            {isLoading && <Loader />}
-            <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
-            <Box sx={{ height: "60px", display: "flex", alignItems: "center", pl: 2 }}>
-                <img src={productLogo} width={"150px"} alt="logo" />
-            </Box>
-            <Box>
-                <Box sx={{ backgroundColor: websiteSettings.backgroundColor }}>
-                    <Grid container>
-                        <Grid item xs={12} sm={12} md={4} lg={4.25} sx={{ height: "100%" }}>
-                            <Box
-                                sx={{
-                                    borderRadius: "6px",
-                                }}>
-                                <style>
-                                    {`
-                                    .slick-dots{
-                                      padding-bottom:15px !important;
+        <Box
+        sx={{
+            backgroundColor: websiteSettings.backgroundColor,
+            minHeight: "100vh",
+            width: "100%",
+            padding: 0,
+            margin: 0,
+        }}
+    >
+        {isLoading && <Loader />}
+        <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
+        <Box sx={{backgroundColor:"#FFF", height: "60px", display: "flex", alignItems: "center", pl: 2 }}>
+            <img src={productLogo} width={"150px"} alt="logo" />
+        </Box>
+        <Box>
+            <Box >
+                <Grid container>
+                    <Grid item xs={12} sm={12} md={4} lg={4.25} sx={{ height: "100%" }}>
+                        <Box
+                            sx={{
+                                borderRadius: "6px",
+                            }}>
+                            <style>
+                                {`
+                                .slick-dots{
+                                  padding-bottom:15px !important;
+                                }
+                                .slick-dots li button {
+                                    color: #fff !important;
+                                }
+                                .slick-dots li button:before {
+                                    color: #fff !important;
+                                }
+                                .slick-dots li.slick-active button:before {
+                                    background-color: #fff !important;
+                                }
+                                `}
+                            </style>
+                            <Slider style={{ padding: "0px", boxShadow: "none" }} {...settings}>
+                                <Box sx={{ borderRadius: "6px", position: "relative" }}>
+                                    <img width={"100%"} src={slider1} alt="sliderimg" />
+                                </Box>
+                                <Box sx={{ borderRadius: "6px", position: "relative" }}>
+                                    <img width={"100%"} src={slider2} alt="sliderimg" />
+                                </Box>
+                                <Box sx={{ borderRadius: "6px", position: "relative" }}>
+                                    <img width={"100%"} src={slider3} alt="sliderimg" />
+                                </Box>
+                            </Slider>
+                        </Box>
+                    </Grid>
+
+                    <Grid item xs={12} sm={12} md={8} lg={7.5}>
+                        <Grid container spacing={0} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <Grid item xs={8} md={8} lg={8}>
+                                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pt: 5 }}>
+                                    <img src={SchoolLogo} height={110} alt="Logo" />
+                                </Box>
+
+                                <Typography sx={{ mt: 7, fontWeight: 600 }} variant='h5'> Log Into your </Typography>
+                                <Typography sx={{ mt: 1, fontWeight: 700 }} variant='h4'> SchoolMate account </Typography>
+                                <Form onSubmit={handleSubmit}>
+                                    <TextField
+                                        className='textFieldStyle'
+                                        sx={{
+                                            width: "100%",
+                                            mt: 3,
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
+                                                    borderWidth: activateError ? "2px" : activateSuccess ? "2px" : "1px",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
+                                                },
+                                                "& input": {
+                                                    color: activateError ? "red" : activateSuccess ? "green" : "#000",
+                                                },
+                                            }
+                                        }}
+                                        id="outlined-username"
+                                        placeholder="Enter Unique ID"
+                                        variant="outlined"
+                                        value={userId}
+                                        onChange={(e) => setUserId(e.target.value)}
+                                    />
+                                    {activateError &&
+                                        <Typography sx={{ color: "red", mt: 0.5, fontSize: "14px", display: "flex", alignItems: "center" }}>
+                                            <ErrorIcon style={{ fontSize: "20px", marginRight: "5px" }} /> Enter Correct Unique ID</Typography>
                                     }
-                                    .slick-dots li button {
-                                        color: #fff !important;
-                                    }
-                                    .slick-dots li button:before {
-                                        color: #fff !important;
-                                    }
-                                    .slick-dots li.slick-active button:before {
-                                        background-color: #fff !important;
-                                    }
-                                    `}
-                                </style>
-                                <Slider style={{ backgroundColor: "#FFFDF7", padding: "0px", boxShadow: "none" }} {...settings}>
-                                    <Box sx={{ borderRadius: "6px", position: "relative" }}>
-                                        <img width={"100%"} src={slider1} alt="sliderimg" />
-                                    </Box>
-                                    <Box sx={{ borderRadius: "6px", position: "relative" }}>
-                                        <img width={"100%"} src={slider2} alt="sliderimg" />
-                                    </Box>
-                                    <Box sx={{ borderRadius: "6px", position: "relative" }}>
-                                        <img width={"100%"} src={slider3} alt="sliderimg" />
-                                    </Box>
-                                </Slider>
-                            </Box>
-                        </Grid>
 
-                        <Grid item xs={12} sm={12} md={8} lg={7.5}>
-                            <Grid container spacing={0} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                <Grid item xs={8} md={8} lg={8}>
-                                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pt: 5 }}>
-                                         {/* <img src={websiteSettings.logo} height={100} alt="Logo" />  */}
-                                        <img src={SchoolLogo} height={100} alt="Logo" />
-                                    </Box>
-
-                                    <Typography sx={{ mt: 7, fontWeight: 600 }} variant='h5'> Log Into your </Typography>
-                                    <Typography sx={{ mt: 1, fontWeight: 700 }} variant='h4'> SchoolMate account </Typography>
-                                    <Form onSubmit={handleSubmit}>
-                                        <TextField
-                                            className='textFieldStyle'
-                                            sx={{
-                                                width: "100%",
-                                                mt: 3,
-                                                "& .MuiOutlinedInput-root": {
-                                                    "& fieldset": {
-                                                        borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
-                                                        borderWidth: activateError ? "2px" : activateSuccess ? "2px" : "1px",
-                                                    },
-                                                    "&:hover fieldset": {
-                                                        borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
-                                                    },
-                                                    "&.Mui-focused fieldset": {
-                                                        borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
-                                                    },
-                                                    "& input": {
-                                                        color: activateError ? "red" : activateSuccess ? "green" : "#000",
-                                                    },
-                                                }
-                                            }}
-                                            id="outlined-username"
-                                            placeholder="Enter Unique ID"
-                                            variant="outlined"
-                                            value={userId}
-                                            onChange={(e) => setUserId(e.target.value)}
-                                        />
-                                        {activateError &&
-                                            <Typography sx={{ color: "red", mt: 0.5, fontSize: "14px", display: "flex", alignItems: "center" }}>
-                                                <ErrorIcon style={{ fontSize: "20px", marginRight: "5px" }} /> Enter Correct Unique ID</Typography>
-                                        }
-
-                                        <TextField
-                                            className='textFieldStyle'
-                                            sx={{
-                                                width: "100%",
-                                                mt: 3,
-                                                "& .MuiOutlinedInput-root": {
-                                                    "& fieldset": {
-                                                        borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
-                                                        borderWidth: activateError ? "2px" : activateSuccess ? "2px" : "1px",
-                                                    },
-                                                    "&:hover fieldset": {
-                                                        borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
-                                                    },
-                                                    "&.Mui-focused fieldset": {
-                                                        borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
-                                                    },
-                                                    "& input": {
-                                                        color: activateError ? "red" : activateSuccess ? "green" : "#000",
-                                                    },
-                                                }
-                                            }}
-                                            id="outlined-password"
-                                            placeholder="Enter Password"
-                                            variant="outlined"
-                                            type={showPassword ? 'text' : 'password'}
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                            autoComplete='off'
-                                            inputProps={{
-                                                onCopy: (e) => e.preventDefault(),
-                                                onPaste: (e) => e.preventDefault(),
-                                                onCut: (e) => e.preventDefault(),
-                                            }}
-                                            InputProps={{
-                                                endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={togglePasswordVisibility}
-                                                            edge="end"
-                                                        >
-                                                            {showPassword ? <VisibilityIcon style={{ color: '#000' }} /> : <VisibilityOffIcon style={{ color: activateError ? "red" : activateSuccess ? "green" : '#000' }} />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-
-                                        {activateError &&
-                                            <Typography sx={{ color: "red", mt: 0.5, fontSize: "14px", display: "flex", alignItems: "center" }}>
-                                                <ErrorIcon style={{ fontSize: "20px", marginRight: "5px" }} /> Enter Correct Password</Typography>
-                                        }
-
-                                        <Box sx={{ mt: 4 }}>
-                                            <Grid container spacing={0}>
-                                                <Grid item xs={6}>
-                                                    <Button
-                                                        type='submit'
-                                                        disabled={!isButtonEnabled}
-                                                        sx={{
-                                                            backgroundColor: isButtonEnabled ? websiteSettings.mainColor : websiteSettings.lightColor,
-                                                            color: websiteSettings.textColor,
-                                                            "&.Mui-disabled": {
-                                                                backgroundColor: websiteSettings.lightColor
-                                                            }
-                                                        }}
-                                                        className='LoginButton'
-                                                        variant="contained"
+                                    <TextField
+                                        className='textFieldStyle'
+                                        sx={{
+                                            width: "100%",
+                                            mt: 3,
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
+                                                    borderWidth: activateError ? "2px" : activateSuccess ? "2px" : "1px",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: activateError ? "red" : activateSuccess ? "green" : "black",
+                                                },
+                                                "& input": {
+                                                    color: activateError ? "red" : activateSuccess ? "green" : "#000",
+                                                },
+                                            }
+                                        }}
+                                        id="outlined-password"
+                                        placeholder="Enter Password"
+                                        variant="outlined"
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        autoComplete='off'
+                                        inputProps={{
+                                            onCopy: (e) => e.preventDefault(),
+                                            onPaste: (e) => e.preventDefault(),
+                                            onCut: (e) => e.preventDefault(),
+                                        }}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={togglePasswordVisibility}
+                                                        edge="end"
                                                     >
-                                                        Login
-                                                    </Button>
-                                                </Grid>
+                                                        {showPassword ? <VisibilityIcon style={{ color: '#000' }} /> : <VisibilityOffIcon style={{ color: activateError ? "red" : activateSuccess ? "green" : '#000' }} />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
 
-                                                <Grid item xs={6} sx={{ display: "flex", justifyContent: "end" }}>
-                                                    <Typography sx={{ p: 3 }}> Forgot Password? <span style={{ color: "#ffb71e" }}>
-                                                        <Link style={{ color: websiteSettings.mainColor, textDecoration: "none" }}>
-                                                            Click here
-                                                        </Link></span> </Typography>
-                                                </Grid>
+                                    {activateError &&
+                                        <Typography sx={{ color: "red", mt: 0.5, fontSize: "14px", display: "flex", alignItems: "center" }}>
+                                            <ErrorIcon style={{ fontSize: "20px", marginRight: "5px" }} /> Enter Correct Password</Typography>
+                                    }
+
+                                    <Box sx={{ mt: 4 }}>
+                                        <Grid container spacing={0}>
+                                            <Grid item xs={6}>
+                                                <Button
+                                                    type='submit'
+                                                    disabled={!isButtonEnabled}
+                                                    sx={{
+                                                        backgroundColor: isButtonEnabled ? websiteSettings.mainColor : websiteSettings.lightColor,
+                                                        color: websiteSettings.textColor,
+                                                        "&.Mui-disabled": {
+                                                            backgroundColor: websiteSettings.lightColor
+                                                        }
+                                                    }}
+                                                    className='LoginButton'
+                                                    variant="contained"
+                                                >
+                                                    Login
+                                                </Button>
                                             </Grid>
-                                        </Box>
-                                    </Form>
-                                </Grid>
+
+                                            <Grid item xs={6} sx={{ display: "flex", justifyContent: "end" }}>
+                                                <Typography sx={{ p: 3 }}> Forgot Password? <span style={{ color: "#ffb71e" }}>
+                                                    <Link style={{ color: websiteSettings.mainColor, textDecoration: "none" }}>
+                                                        Click here
+                                                    </Link></span> </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                </Form>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Box>
+                </Grid>
             </Box>
         </Box>
+    </Box>
     );
 }

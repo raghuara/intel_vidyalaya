@@ -344,12 +344,12 @@ export default function EditMessagesPage() {
                 position: "fixed",
                 zIndex: 100,
                 backgroundColor: "#f2f2f2",
-                borderBottom:"1px solid #ddd",
+                borderBottom: "1px solid #ddd",
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
                 py: 1.5,
-                px:2,
+                px: 2,
                 marginTop: "-2px"
             }}>
                 <IconButton onClick={handleBackClick} sx={{ width: "27px", height: "27px", marginTop: '2px' }}>
@@ -359,7 +359,7 @@ export default function EditMessagesPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
 
                         {/* <Typography sx={{ mb:0.5}}>Select</Typography> */}
                         {/* <Grid container spacing={2}>
@@ -558,6 +558,7 @@ export default function EditMessagesPage() {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Stack spacing={2}>
                                             <DateTimePicker
+                                                closeOnSelect={false}
                                                 sx={{ backgroundColor: "#fff" }}
                                                 value={dayjs(DTValue)}
                                                 disablePast
@@ -601,7 +602,7 @@ export default function EditMessagesPage() {
                                             fontSize: '12px',
                                             py: 0.2,
                                             border: '1px solid black',
-                                            backgroundColor:"#fff",
+                                            backgroundColor: "#fff",
                                             color: 'black',
                                             fontWeight: "600",
                                         }}
@@ -724,8 +725,8 @@ export default function EditMessagesPage() {
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                    <Box sx={{ border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

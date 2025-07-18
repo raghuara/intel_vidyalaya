@@ -321,26 +321,26 @@ export default function CreateNewsPage() {
 
     const getGradeSectionsPayload = () => {
         const gradeMap = new Map();
-    
+
         selectedIds.forEach(id => {
             const [gradeIdStr, section] = id.split("-");
             const gradeId = parseInt(gradeIdStr);
-    
+
             if (!gradeMap.has(gradeId)) {
                 gradeMap.set(gradeId, []);
             }
-    
+
             gradeMap.get(gradeId).push(section);
         });
-    
+
         const gradeSections = Array.from(gradeMap.entries()).map(([gradeId, sections]) => ({
             gradeId,
             sections
         }));
-    
+
         return { gradeSections };
     };
-    
+
     const gradeSections = getGradeSectionsPayload();
     console.log(gradeSections);
 
@@ -452,9 +452,9 @@ export default function CreateNewsPage() {
                 position: "fixed",
                 zIndex: 100,
                 backgroundColor: "#f2f2f2",
-                borderBottom:"1px solid #ddd",
+                borderBottom: "1px solid #ddd",
                 display: "flex",
-                px:2,
+                px: 2,
                 alignItems: "center",
                 width: "100%",
                 py: 1.5,
@@ -467,7 +467,7 @@ export default function CreateNewsPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5 }}>Select Recipient</Typography>
@@ -519,7 +519,7 @@ export default function CreateNewsPage() {
                                                     paddingRight: 0,
                                                     height: '33px',
                                                     fontSize: "15px",
-                                                    backgroundColor:"#FFF"
+                                                    backgroundColor: "#FFF"
                                                 },
                                             }}
                                         />
@@ -543,7 +543,7 @@ export default function CreateNewsPage() {
                                                 border: "1px solid #ccc",
                                                 height: "40px",
                                                 textAlign: "left",
-                                                backgroundColor:"#fff",
+                                                backgroundColor: "#fff",
                                             }}
                                         >
                                             <Box
@@ -674,7 +674,7 @@ export default function CreateNewsPage() {
 
                         <Typography sx={{ mt: 2 }}>Add Heading <span style={{ color: "#777", fontSize: "13px", }}> (Required)</span></Typography>
                         <TextField
-                        sx={{backgroundColor:"#fff",}}
+                            sx={{ backgroundColor: "#fff", }}
                             id="outlined-size-small"
                             size="small"
                             fullWidth
@@ -792,7 +792,8 @@ export default function CreateNewsPage() {
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <Stack spacing={2}>
                                         <DateTimePicker
-                                        sx={{backgroundColor:"#fff"}}
+                                            closeOnSelect={false}
+                                            sx={{ backgroundColor: "#fff" }}
                                             value={dayjs(DTValue)}
                                             disablePast
                                             onChange={handleDateChange}
@@ -817,7 +818,7 @@ export default function CreateNewsPage() {
                                             border: '1px solid black',
                                             color: 'black',
                                             fontWeight: "600",
-                                            backgroundColor:"#fff"
+                                            backgroundColor: "#fff"
                                         }}
                                         onClick={() => handleInsertNewsData('draft')}>
                                         Save as Draft
@@ -849,7 +850,7 @@ export default function CreateNewsPage() {
                                             border: '1px solid black',
                                             color: 'black',
                                             fontWeight: "600",
-                                            backgroundColor:"#fff"
+                                            backgroundColor: "#fff"
                                         }}
                                         onClick={handleCancelClick}>
                                         Cancel
@@ -975,8 +976,8 @@ export default function CreateNewsPage() {
                 </Grid>
 
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
                         <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>

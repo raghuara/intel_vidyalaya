@@ -276,7 +276,7 @@ export default function EditConsentFormsPage() {
     }
     return (
         <Box sx={{ width: "100%" }}>
-             {isLoading && <Loader />}
+            {isLoading && <Loader />}
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
             <Box sx={{
                 position: "fixed",
@@ -440,6 +440,7 @@ export default function EditConsentFormsPage() {
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <Stack spacing={2} sx={{ minWidth: 305 }}>
                                         <DateTimePicker
+                                            closeOnSelect={false}
                                             value={dayjs(DTValue)}
                                             disablePast
                                             onChange={handleDateChange}
