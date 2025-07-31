@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { selectWebsiteSettings } from "../../Redux/Slices/websiteSettingsSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -21,6 +21,7 @@ import Loader from "../Loader";
 import SnackBar from "../SnackBar";
 import NoData from '../../Images/Login/No Data.png'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { selectGrades } from "../../Redux/Slices/DropdownController";
 
 export default function ConsentFormPage() {
     const today = dayjs();
@@ -31,15 +32,12 @@ export default function ConsentFormPage() {
     const [openCal, setOpenCal] = useState(false);
     const navigate = useNavigate();
     const websiteSettings = useSelector(selectWebsiteSettings);
-
-    const [selectedFilter, setSelectedFilter] = useState("Communication");
     const [openAlert, setOpenAlert] = useState(false);
     const [openImage, setOpenImage] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
-
-
+    const dispatch = useDispatch();
+    const grades = useSelector(selectGrades);
     const [newsData, setNewsData] = useState([]);
-
     const user = useSelector((state) => state.auth);
     const rollNumber = user.rollNumber
     const userType = user.userType
@@ -134,10 +132,22 @@ export default function ConsentFormPage() {
     const boxRef = useRef(null);
 
 
-    function isYouTubeLink(url) {
-        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/[^\/]+\/|(?:v|e(?:mbed)?)\/|(?:watch\?v=|.+\/videoseries\?v=))|youtu\.be\/)[^&?\/\s]+/;
-        return youtubeRegex.test(url);
-    }
+    const getGradeNames = (gradeSegments) => {
+        return gradeSegments
+            .map((segment) => {
+                const grade = grades.find((g) => g.id === segment.gradeId);
+                if (!grade) return null;
+
+                const sections = segment.sections?.length
+                    ? `(${segment.sections.join(', ')})`
+                    : '';
+
+                // return `${grade.sign} ${sections}`;
+                return `${grade.sign}`;
+            })
+            .filter(Boolean)
+            .join(', ');
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -229,13 +239,13 @@ export default function ConsentFormPage() {
         <Box sx={{ width: "100%", }}>
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
             {isLoading && <Loader />}
-            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px",   borderBottom:"1px solid #ddd",}}>
+            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px", borderBottom: "1px solid #ddd", }}>
                 <Grid container>
                     <Grid item xs={6} sm={6} md={3} lg={3} sx={{ display: "flex", alignItems: "center" }}>
                         <Typography sx={{ fontWeight: "600", fontSize: "20px" }} >Consent Forms</Typography>
                     </Grid>
 
-                    <Grid item xs={6} sm={6} md={3} lg={2} sx={{display:"flex", alignItems:"center"}}>
+                    <Grid item xs={6} sm={6} md={3} lg={2} sx={{ display: "flex", alignItems: "center" }}>
                         {userType !== "teacher" &&
                             (
                                 <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -316,7 +326,7 @@ export default function ConsentFormPage() {
                     </Grid>
 
                     <Grid item xs={8} sm={8} md={3} lg={3} sx={{ display: "flex", justifyContent: "end", alignItems: "center", px: 1 }}>
-                        <Box sx={{width:"100px" }}>
+                        <Box sx={{ width: "100px" }}>
                             <ThemeProvider theme={darkTheme}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
@@ -355,21 +365,21 @@ export default function ConsentFormPage() {
                                         <CalendarMonthIcon style={{ color: "#000" }} />
                                     </IconButton>
                                     {selectedDate ? (
-                                      <Tooltip title="Clear Date">
-                                      <IconButton sx={{
-                                          marginTop: '10px', 
-                                          width: '40px',
-                                          mt: 0.8,
-                                          height: '40px',
-                                          transition: 'color 0.3s, background-color 0.3s',
-                                          '&:hover': {
-                                              color: '#fff',
-                                              backgroundColor: 'rgba(0,0,0,0.1)',
-                                          },
-                                      }} onClick={handleClearDate}>
-                                          <HighlightOffIcon style={{ color: "#000" }} />
-                                      </IconButton>
-                                  </Tooltip>
+                                        <Tooltip title="Clear Date">
+                                            <IconButton sx={{
+                                                marginTop: '10px',
+                                                width: '40px',
+                                                mt: 0.8,
+                                                height: '40px',
+                                                transition: 'color 0.3s, background-color 0.3s',
+                                                '&:hover': {
+                                                    color: '#fff',
+                                                    backgroundColor: 'rgba(0,0,0,0.1)',
+                                                },
+                                            }} onClick={handleClearDate}>
+                                                <HighlightOffIcon style={{ color: "#000" }} />
+                                            </IconButton>
+                                        </Tooltip>
                                     ) : (
                                         <Box sx={{ width: "80px" }}>
                                         </Box>
@@ -390,8 +400,8 @@ export default function ConsentFormPage() {
                                     color: "#fff",
                                     textTransform: "none",
                                     border: "none",
-                                    display:"flex",
-                                    alignItems:"center"
+                                    display: "flex",
+                                    alignItems: "center"
 
                                 }}
                             >
@@ -495,7 +505,7 @@ export default function ConsentFormPage() {
                                                                 sx={{
                                                                     fontWeight: "600",
                                                                     fontSize: "12px",
-                                                                    color: "#000",
+                                                                    color: websiteSettings.textColor,
                                                                     textAlign: "center",
                                                                 }}
                                                             >
@@ -522,11 +532,20 @@ export default function ConsentFormPage() {
                                                                 xs={12}
                                                                 sm={12}
                                                                 lg={9}
-                                                                sx={{ display: "flex", alignItems: "center" }}
+                                                                sx={{  }}
                                                             >
                                                                 <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
                                                                     {newsItem.heading}
                                                                 </Typography>
+                                                                <Typography sx={{ fontSize: '12px', color: '#777' }}>
+                                                                    Delivered to:
+                                                                    {newsItem.consentGradeSegments?.length > 0 && (
+                                                                        <span style={{ fontSize: "10px" }}>
+                                                                            ({getGradeNames(newsItem.consentGradeSegments)})
+                                                                        </span>
+                                                                    )}
+                                                                </Typography>
+
                                                             </Grid>
                                                             <Grid
                                                                 item

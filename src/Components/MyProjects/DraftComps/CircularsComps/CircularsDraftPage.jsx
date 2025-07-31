@@ -605,13 +605,16 @@ export default function CircularsDraftPage() {
                                                                     {circularItem.headLine || ""}
                                                                 </Typography>
                                                                 <Typography sx={{ fontSize: '12px', color: '#777' }}>
-                                                                        Delivered to: {capitalizeFirstLetter(circularItem.recipient)}&nbsp;
-                                                                        {circularItem.recipient === "Students" &&
-                                                                            <span style={{ fontSize: "10px" }}>
-                                                                                ( {getGradeNames(circularItem.circularGradeSegments)} )
-                                                                            </span>
-                                                                        }
-                                                                    </Typography>
+                                                                    Delivered to: {
+                                                                        circularItem.everyone === "Y"
+                                                                            ? "Everyone"
+                                                                            : [
+                                                                                circularItem.students === "Y" ? "Students" : null,
+                                                                                circularItem.staffs === "Y" ? "Staffs" : null,
+                                                                                circularItem.specific === "Y" ? "Specific" : null
+                                                                            ].filter(Boolean).join(", ")
+                                                                    }
+                                                                </Typography>
                                                             </Box>
                                                         </Grid>
                                                     </Grid>

@@ -62,6 +62,8 @@ export default function CircularsPage() {
     const grades = useSelector(selectGrades);
     const [selectedMessageIds, setSelectedMessageIds] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
+    const [openDeliveredAlert, setOpenDeliveredAlert] = useState(false);
+    const [messageDetails, setMessageDetails] = useState(null);
 
     const toggleReadMore = (id) => {
         setExpandedMessageId((prevId) => (prevId === id ? null : id));
@@ -97,6 +99,16 @@ export default function CircularsPage() {
         setEditId(id)
         setOpenEditAlert(true);
 
+    };
+
+    const handleDeliver = (messageItem) => {
+        setMessageDetails(messageItem)
+        setOpenDeliveredAlert(true);
+
+    };
+
+    const handleDeliveredCloseDialog = () => {
+        setOpenDeliveredAlert(false);
     };
 
     const handleDelete = (id) => {
@@ -776,7 +788,7 @@ export default function CircularsPage() {
                                                             sx={{
                                                                 fontWeight: "600",
                                                                 fontSize: "12px",
-                                                                color: "#000",
+                                                                color: websiteSettings.textColor,
                                                                 textAlign: "center",
                                                             }}
                                                         >
@@ -824,15 +836,36 @@ export default function CircularsPage() {
                                                                     {circularItem.headLine}
 
                                                                 </Typography>
-
-                                                                <Typography sx={{ fontSize: '12px', color: '#777' }}>
-                                                                    Delivered to: {capitalizeFirstLetter(circularItem.recipient)}&nbsp;
-                                                                    {circularItem.recipient === "Students" &&
-                                                                        <span style={{ fontSize: "10px" }}>
-                                                                            ( {getGradeNames(circularItem.circularGradeSegments)} )
-                                                                        </span>
-                                                                    }
-                                                                </Typography>
+                                                                <Box sx={{ display: "flex" }}>
+                                                                    <Typography sx={{ fontSize: '12px', color: '#777' }}>
+                                                                        Delivered to: {
+                                                                            circularItem.everyone === "Y"
+                                                                                ? "Everyone"
+                                                                                : [
+                                                                                    circularItem.students === "Y" ? "Students" : null,
+                                                                                    circularItem.staffs === "Y" ? "Staffs" : null,
+                                                                                    circularItem.specific === "Y" ? "Specific" : null
+                                                                                ].filter(Boolean).join(", ")
+                                                                        }
+                                                                    </Typography>
+                                                                    <Button
+                                                                        variant="outlined"
+                                                                        sx={{
+                                                                            textTransform: "none",
+                                                                            width: "50px",
+                                                                            height: "20px",
+                                                                            borderRadius: "30px",
+                                                                            fontSize: "10px",
+                                                                            border: "1px solid #777",
+                                                                            color: '#777',
+                                                                            fontWeight: "600",
+                                                                            ml: 2
+                                                                        }}
+                                                                        onClick={() => handleDeliver(circularItem)}
+                                                                    >
+                                                                        &nbsp;View
+                                                                    </Button>
+                                                                </Box>
                                                             </Box>
                                                         </Grid>
                                                         <Grid
@@ -1375,6 +1408,82 @@ export default function CircularsPage() {
                     </IconButton>
                 </DialogActions>
             </Dialog>
+            <Dialog open={openDeliveredAlert} onClose={() => setOpenDeliveredAlert(false)}>
+                <Box sx={{ display: "flex", justifyContent: "center", p: 2, backgroundColor: '#fff', }}>
+
+                    <Box sx={{
+                        backgroundColor: '#fff',
+                        p: 1,
+                    }}>
+                        <Typography sx={{ fontWeight: "600" }}>Delivered Details</Typography>
+                        <hr />
+                        <Box sx={{ maxHeight: "400px", overflowY: "auto", minHeight: "100px", minWidth: "400px" }}>
+                            {messageDetails?.everyone === "Y" ? (
+                                <Typography sx={{ fontWeight: "600", fontSize: "14px" }}>For everyone</Typography>
+                            ) : (
+                                <>
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Students:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "11.5px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.circularGradeSegments?.length > 0
+                                                ? getGradeNames(messageDetails.circularGradeSegments)
+                                                : "No students selected"}
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Staffs:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "12px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.staffUserTypes?.length > 0
+                                                ? messageDetails.staffUserTypes
+                                                    .map((type) => {
+                                                        if (type === "teaching") return "Teaching";
+                                                        if (type === "nonteaching") return "Non - Teaching";
+                                                        if (type === "supporting") return "Supporting";
+                                                        return type;
+                                                    })
+                                                    .join(', ')
+                                                : "No staff selected"}
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Users:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "12px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.specificUsers?.length > 0
+                                                ? messageDetails.specificUsers.join(', ')
+                                                : "No users selected"}
+                                        </Box>
+                                    </Typography>
+                                </>
+                            )}
+                        </Box>
+
+
+                        <DialogActions sx={{
+                            justifyContent: 'center',
+                            backgroundColor: '#fff',
+                            pt: 2
+                        }}>
+                            <Button
+                                onClick={() => handleDeliveredCloseDialog(false)}
+                                sx={{
+                                    textTransform: 'none',
+                                    width: "70px",
+                                    borderRadius: '30px',
+                                    fontSize: '12px',
+                                    py: 0.2,
+                                    border: '1px solid black',
+                                    color: 'black',
+                                }}
+                            >
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Box>
+
+                </Box>
+            </Dialog >
         </Box>
     );
 }

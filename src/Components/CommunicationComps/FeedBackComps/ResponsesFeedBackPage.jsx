@@ -26,6 +26,8 @@ import AverageEmoji from '../../../Images/emoji/average.png'
 import GoodEmoji from '../../../Images/emoji/good.png'
 import ExcellentEmoji from '../../../Images/emoji/excellent.png'
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import * as XLSX from 'xlsx';
 
 export default function ResponsesFeedBackPage() {
     const today = dayjs();
@@ -170,13 +172,6 @@ export default function ResponsesFeedBackPage() {
         setOpenImage(true);
     };
 
-    const handleViewAnswer = (url) => {
-
-        setResponseText(url);
-        setOpenResponse(true);
-
-    };
-
     const handleImageClose = () => {
         setOpenImage(false);
     };
@@ -230,6 +225,39 @@ export default function ResponsesFeedBackPage() {
             });
         }
     };
+
+    const handleExport = (item) => {
+        const header = ['S.No', 'Roll Number', 'Student Name', 'Class', 'Section', 'Response'];
+
+        const data = item.feedBackAnswers.map((row, index) => {
+            const response = item?.feedBackType === "ratings"
+                ? row.responses === "1" ? "Poor"
+                    : row.responses === "2" ? "Average"
+                        : row.responses === "3" ? "Good"
+                            : row.responses === "4" ? "Excellent"
+                                : "-"
+                : row.responses || "";
+
+            return [
+                index + 1,
+                row.rollNumber,
+                row.studentName,
+                row.class,
+                row.section,
+                response
+            ];
+        });
+
+        const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Feedback');
+
+        const timestamp = dayjs().format("DD-MM-YYYY_HH-mm-ss");
+        const fileName = `feedback_export_${timestamp}.xlsx`;
+
+        XLSX.writeFile(wb, fileName);
+    };
+
 
     useEffect(() => {
         fetchData()
@@ -300,13 +328,13 @@ export default function ResponsesFeedBackPage() {
                                 <ArrowBackIcon sx={{ fontSize: 20, color: "#000" }} />
                             </IconButton>
                         </Link>
-                        <Typography sx={{ fontWeight: "600", fontSize: "20px" }} >Received Feedback</Typography>
+                        <Typography sx={{ fontWeight: "600", fontSize: "20px" }} >Responses Received</Typography>
                     </Grid>
                     <Grid item xs={12} sm={12} md={3} lg={4} sx={{ py: 1, display: "flex", justifyContent: "center", alignItems: "center", pr: 2 }}>
                         <TextField
                             fullWidth
                             variant="outlined"
-                            placeholder="Search News by Event Name"
+                            placeholder="Search Feedback by Question"
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -675,7 +703,7 @@ export default function ResponsesFeedBackPage() {
                                                         {/* Display selected emoji (if any) */}
 
                                                         {selectedEmoji && item?.feedBackType === "ratings" && (
-                                                            <Box onClick={handleIconClick} sx={{ display: "flex", alignItems: "center", gap: 1, cursor:"pointer" }}>
+                                                            <Box onClick={handleIconClick} sx={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer" }}>
                                                                 <img src={selectedEmoji} alt="selected emoji" width={25} />
                                                             </Box>
                                                         )}
@@ -739,29 +767,27 @@ export default function ResponsesFeedBackPage() {
                                                         </Box>
                                                     </Box>
 
+                                                    {/* <Box sx={{ display: "flex", justifyContent: "end" }}>
+                                                        <Button
+                                                            variant="outlined"
+                                                            onClick={() => handleExport(item)}
+                                                            sx={{
+                                                                border: "none",
+                                                                border:"1px solid black",
+                                                                backgroundColor: "#fff",
+                                                                py: 0.3,
+                                                                width: "100px",
+                                                                color: "#000",
+                                                                textTransform: "none",
+                                                                borderRadius: "3px",
+                                                                mb:2
+                                                            }}
+                                                        >
+                                                            <ExitToAppIcon sx={{ fontSize: "18px" }} />
+                                                            &nbsp;Export
+                                                        </Button>
+                                                    </Box> */}
 
-
-                                                    {/* <Grid container justifyContent="space-between">
-                                                        <Grid item xs={12} sm={12} md={6} lg={4}>
-                                                            <Box sx={{ display: "flex", border: "1px solid #eee" }}>
-                                                                <Typography
-                                                                    sx={{
-                                                                        fontSize: "12px",
-                                                                        color: "#fff",
-                                                                        backgroundColor: "#105990",
-                                                                        padding: "0px 5px",
-                                                                        borderRadius: "4px 0px 0px 0px",
-                                                                        fontWeight: "600",
-                                                                    }}
-                                                                >
-                                                                    {selectedGradeId} - {selectedSection}
-                                                                </Typography>
-                                                                <Typography sx={{ fontSize: "12px", color: "#000", px: 1 }}>
-                                                                    Class Teacher - {filteredData[0]?.classTeacher || "Not Assigned"}
-                                                                </Typography>
-                                                            </Box>
-                                                        </Grid>
-                                                    </Grid> */}
                                                     <TableContainer
                                                         sx={{
                                                             border: '1px solid #E8DDEA',

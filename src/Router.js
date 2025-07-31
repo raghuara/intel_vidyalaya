@@ -85,11 +85,11 @@ import MainStudyMaterialsPage from "./Components/CommunicationComps/StudyMateria
 import ManagementPage from "./Components/DashBoard/ManagementPage";
 import NotificationPage from "./Components/CommunicationComps/NotificationPage";
 import DashboardCreatePage from "./Components/DashBoard/DashboardCreatePage";
-import FeeFinancePage from "./Components/StudentComps/FeeFinanceComps/FeeFinancePage";
-import CreateFeePage from "./Components/StudentComps/FeeFinanceComps/CreateFeePage";
-import FeeGradeSelection from "./Components/StudentComps/FeeFinanceComps/FeeGradeSelection";
-import FeeCategories from "./Components/StudentComps/FeeFinanceComps/FeeCategories";
 import ExportAttendancePage from "./Components/CommunicationComps/AttendanceComps/ExportAttendancePage";
+import HomeworkApprovalPage from "./Components/Approvals/ApprovalPages/HomeworkApprovalPage";
+import ApprovalStatusHomeworkPage from "./Components/MyProjects/ApprovalStatusComps/ApprovalStatusHomework";
+import AccessControlPage from "./Components/AccessControlComps/AccessControlPage";
+import UsersPage from "./Components/AccessControlComps/UsersComps/UsersPage";
 
 
 export default function RouterPage() {
@@ -118,6 +118,7 @@ export default function RouterPage() {
                 <Route path="erp" element={<ERPPage />} />
                 <Route path="myprojects" element={<MyProjectPage />} />
                 <Route path="approvals" element={<ApprovalPage />} />
+                <Route path="access" element={<AccessControlPage />} />
                 <Route path="dashboard/page" element={<ManagementPage />} />
 
                 {/* Sub Pages */}
@@ -190,11 +191,9 @@ export default function RouterPage() {
                 <Route path="student/information/create" element={<CreateStudentInfoPage />} />
                 <Route path="student/information/edit" element={<EditStudentInfoPage />} />
                 
+                
+                {/* Sub Pages */}
                 {/* Student Fee & Finance */}
-                <Route path="student/fee" element={<FeeFinancePage />} />
-                <Route path="student/fee/grade" element={<FeeGradeSelection />} />
-                <Route path="student/fee/categories" element={<FeeCategories />} />
-                <Route path="student/fee/create" element={<CreateFeePage />} />
                 <Route path="stationary/create" element={<CreateStationaryDetailsPage />} />
 
                 {/* My Projects */}
@@ -205,6 +204,7 @@ export default function RouterPage() {
                 <Route path="status/news" element={<ApprovalStatusNewsPage />} />
                 <Route path="status/messages" element={<ApprovalStatusMessagesPage />} />
                 <Route path="status/circulars" element={<ApprovalStatusCircularsPage />} />
+                <Route path="status/homework" element={<ApprovalStatusHomeworkPage />} />
 
                 <Route path="draft/news" element={<NewsDraftPage />} />
                 <Route path="draft/news/edit" element={<NewsDraftEditPage />} />
@@ -225,10 +225,14 @@ export default function RouterPage() {
                 <Route path="approvals/news" element={<NewsApprovalPage />} />
                 <Route path="approvals/messages" element={<MessagesApprovalPage />} />
                 <Route path="approvals/circulars" element={<CircularsApprovalPage />} />
+                <Route path="approvals/homework" element={<HomeworkApprovalPage />} />
 
                 <Route path="approvals/news/edit" element={<NewsApprovalEditPage />} />
                 <Route path="approvals/messages/edit" element={<MessagesApprovalEditPage />} />
                 <Route path="approvals/circulars/edit" element={<CircularsApprovalEditPage />} />
+
+                {/* Access Control */}
+                <Route path="access/users" element={<UsersPage />} />
 
             </Route>
         </Routes>

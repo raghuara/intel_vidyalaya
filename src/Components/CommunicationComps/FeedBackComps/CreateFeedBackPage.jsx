@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Box, Grid, TextField, Typography, Button, Tabs, Tab, Switch, Stack, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, createTheme, ThemeProvider, Autocomplete, Paper, Checkbox, ListItemText, Radio, FormControl, InputLabel, Select, OutlinedInput, MenuItem, TextareaAutosize, Grid2 } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { Box, Grid, TextField, Typography, Button, Tabs, Tab, Switch, Stack, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, createTheme, ThemeProvider, Autocomplete, Paper, Checkbox, ListItemText, Radio, FormControl, InputLabel, Select, OutlinedInput, MenuItem, TextareaAutosize, Grid2, Popper, ClickAwayListener, AccordionSummary, AccordionDetails, Accordion } from "@mui/material";
 import RichTextEditor from "../../TextEditor";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
@@ -18,6 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { selectGrades } from "../../../Redux/Slices/DropdownController";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import Loader from "../../Loader";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default function CreateFeedBackPage() {
     const navigate = useNavigate()
@@ -55,13 +56,17 @@ export default function CreateFeedBackPage() {
     const [gradeIds, setGradeIds] = useState([]);
     const [selectedGradeId, setSelectedGradeId] = useState(null);
     const [questionsValue, setQuestionsValue] = useState('');
-
     const [selectedSectionIds, setSelectedSectionIds] = useState([]);
-    const [questionType, setQuestionType] = useState("Ratings");
+    const [questionType, setQuestionType] = useState("");
     const [selectedSections, setSelectedSections] = useState([]);
     const [formattedSectionData, setFormattedSectionData] = useState("");
     const [filter, setFilter] = useState('Students');
     const [options, setOptions] = useState(["", "", "", ""]);
+    const ref = useRef();
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [isEveryone, setIsEveryone] = useState(false);
+    const [expandedGrade, setExpandedGrade] = useState(null);
+    const [isPreview, setIsPreview] = useState(false);
 
     const [previewData, setPreviewData] = useState({
         heading: '',
@@ -77,25 +82,6 @@ export default function CreateFeedBackPage() {
         { label: "Open-Ended", value: "openended" }
     ];
 
-    const handleGradeChange = (newValue) => {
-        if (newValue) {
-            setSelectedGradeId(newValue.id);
-            setSelectedSections(newValue.sections || []);
-            setSelectedSectionIds([]);
-        } else {
-            setSelectedGradeId(null);
-            setSelectedSections([]);
-            setSelectedSectionIds([]);
-        }
-    };
-
-    const handleSectionChange = (event) => {
-        const value = event.target.value;
-        setSelectedSectionIds(Array.isArray(value) ? value : []);
-        const formattedValue = value.length > 0 ? value.join(',') : "";
-        sendSectionData(formattedValue);
-    };
-
     const sendSectionData = (sectionData) => {
         console.log({ section: sectionData });
         setFormattedSectionData(sectionData)
@@ -105,7 +91,6 @@ export default function CreateFeedBackPage() {
         setQuestionType(newValue ? newValue.value : "");
         setOptions(["", ""]);
     };
-
 
     const handleHeadingChange = (e) => {
         const newValue = e.target.value;
@@ -137,6 +122,7 @@ export default function CreateFeedBackPage() {
     }, {});
 
     const handlePreview = () => {
+        setIsPreview(true)
         const filteredOptions = Object.values(options).filter((opt) => opt.trim() !== "");
         setPreviewData({
             heading,
@@ -162,8 +148,100 @@ export default function CreateFeedBackPage() {
         setQuestionsValue(event.target.value);
     };
 
+    const toggleDropdown = (event) => {
+        setAnchorEl(anchorEl ? null : ref.current);
+    };
 
+    const handleClickAway = () => {
+        setAnchorEl(null);
+    };
 
+    const handleShow = (event) => {
+        setIsPreview(false)
+    };
+
+    const isGradeSelected = (grade) => {
+        return grade.sections.every(section => selectedIds.includes(`${grade.id}-${section}`));
+    };
+
+    const handleGradeToggle = (grade) => {
+        const allSectionIds = grade.sections.map(section => `${grade.id}-${section}`);
+        const isSelected = isGradeSelected(grade);
+        const updated = isSelected
+            ? selectedIds.filter(id => !allSectionIds.includes(id))
+            : [...selectedIds, ...allSectionIds];
+        setSelectedIds(updated);
+    };
+
+    const handleSectionToggle = (gradeId, section) => {
+        const sectionId = `${gradeId}-${section}`;
+        setSelectedIds(prev =>
+            prev.includes(sectionId)
+                ? prev.filter(id => id !== sectionId)
+                : [...prev, sectionId]
+        );
+    };
+
+    const handleSelectAll = () => {
+        const allSectionIds = grades.flatMap(grade =>
+            grade.sections.map(section => `${grade.id}-${section}`)
+        );
+        const allSelected = selectedIds.length === allSectionIds.length;
+        setSelectedIds(allSelected ? [] : allSectionIds);
+    };
+
+    const isEveryoneChecked = () => {
+        const allIds = grades.flatMap(grade =>
+            grade.sections.map(section => `${grade.id}-${section}`)
+        );
+        return selectedIds.length === allIds.length;
+    };
+
+    const isEveryoneIndeterminate = () => {
+        const allIds = grades.flatMap(grade =>
+            grade.sections.map(section => `${grade.id}-${section}`)
+        );
+        return selectedIds.length > 0 && selectedIds.length < allIds.length;
+    };
+
+    const renderValue = () => {
+        const selectedData = grades
+            .map((grade) => {
+                const selectedSections = grade.sections.filter((section) =>
+                    selectedIds.includes(`${grade.id}-${section}`)
+                );
+                if (selectedSections.length > 0) {
+                    return `${grade.sign} (${selectedSections.join(", ")})`;
+                }
+                return null;
+            })
+            .filter(Boolean);
+        return selectedData.length > 0 ? selectedData.join(", ") : "Choose Class and Sections";
+    };
+
+    const getGradeSectionsPayload = () => {
+        const gradeMap = new Map();
+
+        selectedIds.forEach(id => {
+            const [gradeIdStr, section] = id.split("-");
+            const gradeId = parseInt(gradeIdStr);
+
+            if (!gradeMap.has(gradeId)) {
+                gradeMap.set(gradeId, []);
+            }
+
+            gradeMap.get(gradeId).push(section);
+        });
+
+        const gradeSections = Array.from(gradeMap.entries()).map(([gradeId, sections]) => ({
+            gradeId,
+            sections
+        }));
+
+        return { gradeSections };
+    };
+
+    const { gradeSections } = getGradeSectionsPayload();
 
     useEffect(() => {
         if (!uploadedFiles && !pastedLink.trim()) {
@@ -191,33 +269,24 @@ export default function CreateFeedBackPage() {
         }
     }
 
-
     const handleInsertNewsData = async (status) => {
-        // const filledOptions = options.filter((opt) => opt.trim() !== "");
 
-        // if (filledOptions.length < 2) {
-        //     setMessage("Please fill the options");
-        //     setOpen(true);
-        //     setStatus(false);
-        //     setColor(false);
-        //     return;
-        // }
-        if (!selectedGradeId || selectedGradeId === "") {
-            setMessage("Please select a class.");
+        if (selectedIds.length === 0) {
+            setMessage("Please select class & sections");
             setOpen(true);
-            setStatus(false);
             setColor(false);
+            setStatus(false);
             return;
         }
 
-        if (selectedGradeId !== "0" && selectedSectionIds.length === 0) {
-            setMessage("Please select the section");
+        if (!questionType) {
+            setMessage("Please select a question type");
             setOpen(true);
-            setStatus(false);
             setColor(false);
+            setStatus(false);
             return;
         }
-
+        
         if (!heading.trim()) {
             setMessage("Headline is required");
             setOpen(true);
@@ -225,6 +294,7 @@ export default function CreateFeedBackPage() {
             setStatus(false);
             return;
         }
+
         if (status === "post" || status === "schedule") {
             if (!questionsValue.trim()) {
                 setMessage("Question is required");
@@ -234,6 +304,27 @@ export default function CreateFeedBackPage() {
                 return;
             }
         }
+
+        if (questionType === "multiplechoice") {
+            const optionValues = Object.values(options).map(opt => opt.trim());
+        
+            if (!optionValues[0]) {
+                setMessage("Option 1 is required");
+                setOpen(true);
+                setColor(false);
+                setStatus(false);
+                return;
+            }
+        
+            if (!optionValues[1]) {
+                setMessage("Option 2 is required");
+                setOpen(true);
+                setColor(false);
+                setStatus(false);
+                return;
+            }
+        }
+        
         setIsLoading(true);
 
         try {
@@ -241,16 +332,15 @@ export default function CreateFeedBackPage() {
 
                 userType: userType,
                 rollNumber: rollNumber,
-                recipient: "Students",
-                gradeId: filter === "Students" ? selectedGradeId : "",
-                section: filter === "Students" ? formattedSectionData : "",
                 heading: heading,
                 question: questionsValue,
+                recipient: "students",
                 FeedBackType: questionType || "ratings",
                 ...formattedOptions,
                 status: status,
                 postedOn: status === "post" ? todayDateTime : "",
                 draftedOn: status === "draft" ? todayDateTime : "",
+                feedbackGradeSection: gradeSections
             };
 
             const res = await axios.post(postFeedBack, sendData, {
@@ -279,18 +369,18 @@ export default function CreateFeedBackPage() {
 
     return (
         <Box sx={{ width: "100%" }}>
-              {isLoading && <Loader />}
+            {isLoading && <Loader />}
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
             <Box sx={{
                 position: "fixed",
                 zIndex: 100,
                 backgroundColor: "#f2f2f2",
-                borderBottom:"1px solid #ddd",
+                borderBottom: "1px solid #ddd",
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
                 py: 1.5,
-                px:2,
+                px: 2,
                 marginTop: "-2px"
             }}>
                 <Link style={{ textDecoration: "none" }} to="/dashboardmenu/feedback">
@@ -302,120 +392,154 @@ export default function CreateFeedBackPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
 
                         <Grid container spacing={2}>
 
                             <Grid item xs={12} sm={12} md={6} lg={6}>
-                                {filter === "Students" && (
-                                    <Box>
-                                        <Typography sx={{ mb: 0.5 }}>Select Class</Typography>
-                                        <Autocomplete
-                                            disablePortal
-                                            options={[{ id: '0', sign: 'EVERYONE' }, ...grades]}
-                                            getOptionLabel={(option) => option.sign}
-                                            value={
-                                                [{ id: '0', sign: 'EVERYONE' }, ...grades].find(
-                                                    (item) => item.id === selectedGradeId
-                                                ) || null
-                                            }
-                                            onChange={(event, newValue) => {
-                                                handleGradeChange(newValue);
+                                <Box>
+                                    <Button
+                                        variant="outlined"
+                                        ref={ref}
+                                        onClick={toggleDropdown}
+                                        sx={{
+                                            width: "100%",
+                                            justifyContent: "flex-start",
+                                            textTransform: "none",
+                                            overflow: "hidden",
+                                            color: "#000",
+                                            border: "1px solid #ccc",
+                                            height: "40px",
+                                            textAlign: "left",
+                                            backgroundColor: "#fff",
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                width: "100%",
                                             }}
-                                            isOptionEqualToValue={(option, value) => option.id === value.id}
-                                            sx={{ width: '100%' }}
-                                            PaperComponent={(props) => (
-                                                <Paper
-                                                    {...props}
-                                                    style={{
-                                                        ...props.style,
-                                                        maxHeight: '150px',
-                                                        backgroundColor: '#000',
-                                                        color: '#fff',
-                                                    }}
-                                                />
-                                            )}
-                                            renderOption={(props, option) => (
-                                                <li {...props} className="classdropdownOptions">
-                                                    {option.sign}
-                                                </li>
-                                            )}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    placeholder="Select Class"
-                                                    {...params}
-                                                    fullWidth
-                                                    InputProps={{
-                                                        ...params.InputProps,
-                                                        sx: {
-                                                            paddingRight: 0,
-                                                            height: '40px',
-                                                            fontSize: '13px',
-                                                            fontWeight: '600',
-                                                            backgroundColor:"#fff"
-                                                        },
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </Box>
-                                )}
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                {filter === "Students" && (
+                                        >
+                                            {renderValue()}
+                                        </Box>
+                                    </Button>
 
-                                    selectedGradeId !== "" && selectedGradeId !== "0" && (
-                                        <>
-                                            <Typography sx={{ mb: 0.5, ml: 1 }}>Select Section</Typography>
-                                            <FormControl disabled={!selectedGradeId} sx={{ width: '100%' }}>
-                                                <Select
-                                                    multiple
-                                                    value={selectedSectionIds}
-                                                    onChange={handleSectionChange}
-                                                    input={<OutlinedInput />}
-                                                    sx={{
-                                                        height: '40px',
-                                                        fontSize: '15px',
-                                                        backgroundColor:"#fff"
-                                                    }}
-                                                    renderValue={(selected) =>
-                                                        selected.join(', ')
-                                                    }
-                                                    MenuProps={{
-                                                        PaperProps: {
-                                                            sx: {
-                                                                maxHeight: 250,
-                                                                overflow: 'auto',
-                                                                backgroundColor: '#000',
-                                                                color: '#fff',
-                                                                '& .MuiMenuItem-root': {
-                                                                    fontSize: '15px',
-                                                                },
-                                                            },
-                                                        },
-                                                    }}
+                                    <Popper
+                                        open={Boolean(anchorEl)}
+                                        anchorEl={ref.current}
+                                        placement="bottom-start"
+                                        style={{ zIndex: 1300, width: ref.current?.offsetWidth }}
+                                    >
+                                        <ClickAwayListener onClickAway={handleClickAway}>
+                                            <Paper sx={{ maxHeight: 400, overflowY: "auto", bgcolor: "#000", color: "#fff", p: 1 }}>
+
+                                                <MenuItem
+                                                    onClick={handleSelectAll}
+                                                    sx={{ padding: "0px", mb: 1 }}
                                                 >
-                                                    {selectedSections.map((section) => (
-                                                        <MenuItem key={section} value={section}>
-                                                            <Checkbox
-                                                                checked={selectedSectionIds.includes(section)}
-                                                                size="small"
-                                                                sx={{
-                                                                    padding: '0 5px',
-                                                                    color: '#fff',
-                                                                    '&.Mui-checked': {
-                                                                        color: '#fff',
-                                                                    },
-                                                                }}
-                                                            />
-                                                            <Typography sx={{ fontSize: '14px', ml: 1 }}>{section}</Typography>
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                        </>
-                                    ))}
+                                                    <Box sx={{
+                                                        border: "1px solid #fff",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        backgroundColor: "#111",
+                                                        borderRadius: "3px",
+                                                        boxShadow: "none",
+                                                        border: "1px solid #333",
+                                                        width: "100%"
+                                                    }}>
+                                                        <Checkbox
+                                                            checked={isEveryoneChecked()}
+                                                            indeterminate={isEveryoneIndeterminate()}
+                                                            sx={{ color: "#fff", "&.Mui-checked": { color: "#fff" } }}
+                                                        />
+                                                        <Typography sx={{ fontSize: "14px" }}>Everyone</Typography>
+                                                    </Box>
+                                                </MenuItem>
+                                                {grades.map((grade) => (
+                                                    <Box key={grade.id} sx={{ mb: 1 }}>
+                                                        <Accordion
+                                                            expanded={expandedGrade === grade.id}
+                                                            onChange={() => { }}
+                                                            sx={{
+                                                                backgroundColor: "#111",
+                                                                boxShadow: "none",
+                                                                border: "1px solid #333",
+                                                            }}
+                                                        >
+                                                            <AccordionSummary
+                                                                sx={{ px: 1, pointerEvents: "none", }}
+                                                                expandIcon={
+                                                                    <ExpandMoreIcon
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            setExpandedGrade(
+                                                                                expandedGrade === grade.id ? null : grade.id
+                                                                            );
+                                                                        }}
+                                                                        sx={{ color: "#fff", pointerEvents: "auto" }}
+                                                                    />
+                                                                }
+                                                            >
+                                                                <Box
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleGradeToggle(grade);
+                                                                    }}
+                                                                    sx={{
+                                                                        display: "flex",
+                                                                        alignItems: "center",
+                                                                        cursor: "pointer",
+                                                                        pointerEvents: "auto",
+                                                                    }}
+                                                                >
+                                                                    <Checkbox
+                                                                        checked={isGradeSelected(grade)}
+                                                                        indeterminate={
+                                                                            grade.sections.some((section) =>
+                                                                                selectedIds.includes(`${grade.id}-${section}`)
+                                                                            ) && !isGradeSelected(grade)
+                                                                        }
+                                                                        sx={{ color: "#fff", padding: "0px 10px 0px 0px", "&.Mui-checked": { color: "#fff" } }}
+                                                                    />
+                                                                    <Typography sx={{ fontSize: "14px", color: "white" }}>
+                                                                        {grade.sign}
+                                                                    </Typography>
+                                                                </Box>
+                                                            </AccordionSummary>
+                                                            <AccordionDetails>
+                                                                {grade.sections.map((section) => (
+                                                                    <MenuItem
+                                                                        key={section}
+                                                                        sx={{
+                                                                            padding: "0px 10px 0px 30px",
+                                                                            display: "flex",
+                                                                            alignItems: "center",
+                                                                            color: "#fff",
+                                                                        }}
+                                                                        onClick={() => handleSectionToggle(grade.id, section)}
+                                                                    >
+                                                                        <Checkbox
+                                                                            checked={selectedIds.includes(`${grade.id}-${section}`)}
+                                                                            sx={{ color: "#fff", padding: "0px 10px 0px 0px", "&.Mui-checked": { color: "#fff" } }}
+                                                                        />
+                                                                        <Typography>{section}</Typography>
+                                                                    </MenuItem>
+                                                                ))}
+                                                            </AccordionDetails>
+                                                        </Accordion>
+                                                    </Box>
+                                                ))}
+                                            </Paper>
+                                        </ClickAwayListener>
+                                    </Popper>
+                                </Box>
+                                {isPreview &&
+                                    <Box onClick={handleShow} sx={{ fontSize: "13px", ml: 0, mt: 0.5, cursor: "pointer", color: "#777", textDecoration: "underline" }}>Show selected items ᐅ</Box>
+                                }
                             </Grid>
+
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Autocomplete
                                     disablePortal
@@ -445,9 +569,8 @@ export default function CreateFeedBackPage() {
                                                 sx: {
                                                     paddingRight: 0,
                                                     height: "40px",
-                                                    fontSize: "13px",
-                                                    fontWeight: "600",
-                                                    backgroundColor:"#fff"
+                                                    fontSize: "16px",
+                                                    backgroundColor: "#fff"
                                                 },
                                             }}
                                         />
@@ -457,7 +580,7 @@ export default function CreateFeedBackPage() {
                             </Grid>
                         </Grid>
 
-                        <Typography sx={{ mt: 2 }}>Add Heading</Typography>
+                        <Typography sx={{ mt: 2 }}>Question Title</Typography>
 
                         <TextField
                             id="outlined-size-small"
@@ -472,7 +595,7 @@ export default function CreateFeedBackPage() {
                         </Typography>
                         <Box>
                             <Box sx={{ mb: 2, boxSizing: "border-box", width: "100%" }}>
-                                <Typography>Question</Typography>
+                                <Typography>Enter Question</Typography>
                                 <TextareaAutosize
                                     minRows={5}
                                     value={questionsValue}
@@ -541,7 +664,7 @@ export default function CreateFeedBackPage() {
                             <Box sx={{ height: "130px" }} />
                         )
                         }
-                        <Box sx={{ mt: 3, }}>
+                        <Box sx={{ mt: 11, }}>
                             <Grid container>
                                 <Grid item xs={6} sm={6} md={6} lg={5}>
                                     {/* <Button
@@ -671,41 +794,63 @@ export default function CreateFeedBackPage() {
                     </Box>
                 </Grid>
 
-
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
-                        <Box>
-                            {previewData.heading && (
-                                <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                                    {previewData.heading}
-                                </Typography>
-                            )}
-
-                            {previewData.content && (
-                                <Typography sx={{ fontSize: "14px", pt: 1 }}>
-                                    {previewData.content}
-                                </Typography>
-                            )}
-
-                            {previewData.options.length > 0 && (
-                                <Box sx={{ pt: 1 }}>
-                                    {previewData.options.map((option, index) => (
-                                        <Typography key={index} sx={{ fontSize: "14px" }}>
-                                            {index + 1}. {option}
-                                        </Typography>
-                                    ))}
+                        {!isPreview &&
+                            <Box
+                                sx={{
+                                    backgroundColor: "#f9f9f9",
+                                    borderRadius: "8px",
+                                    p: 2,
+                                    border: "1px solid #ddd",
+                                    boxShadow: "0px 1px 3px rgba(0,0,0,0.05)",
+                                }}
+                            >
+                                <Box sx={{ mb: 2 }}>
+                                    <Typography sx={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                        Selected Class & Sections
+                                    </Typography>
+                                    <Typography
+                                        sx={{
+                                            fontSize: "13px",
+                                            color: "#555",
+                                            mt: 0.5,
+                                            wordBreak: "break-word",
+                                        }}
+                                    >
+                                        {renderValue() || "None"}
+                                    </Typography>
                                 </Box>
-                            )}
+                            </Box>
+                        }
 
-
-                        </Box>
+                        {isPreview &&
+                            <Box>
+                                {previewData.heading && (
+                                    <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                                        {previewData.heading}
+                                    </Typography>
+                                )}
+                                {previewData.content && (
+                                    <Typography sx={{ fontSize: "14px", pt: 1 }}>
+                                        {previewData.content}
+                                    </Typography>
+                                )}
+                                {previewData.options.length > 0 && (
+                                    <Box sx={{ pt: 1 }}>
+                                        {previewData.options.map((option, index) => (
+                                            <Typography key={index} sx={{ fontSize: "14px" }}>
+                                                {index + 1}. {option}
+                                            </Typography>
+                                        ))}
+                                    </Box>
+                                )}
+                            </Box>
+                        }
                     </Box>
                 </Grid>
-
-
-
             </Grid>
         </Box>
     );

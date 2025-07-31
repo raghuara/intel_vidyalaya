@@ -650,7 +650,7 @@ export default function NewsPage() {
                     </Box>
                 </Dialog>
                 {userType === "superadmin" &&
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 4, alignItems:"center" }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 4, alignItems: "center" }}>
                         {selectedMessageIds.length > 0 ? (
                             <Button
                                 variant="contained"
@@ -703,7 +703,7 @@ export default function NewsPage() {
 
                     {filteredNews.length > 0 ? (
                         filteredNews.map((dateGroup, index) => (
-                            <Box key={index} sx={{ mb: 2, px: 2.2, pb:2, pt:0.5 }}>
+                            <Box key={index} sx={{ mb: 2, px: 2.2, pb: 2, pt: 0.5 }}>
                                 <Typography
                                     sx={{
                                         fontSize: "11px",
@@ -764,7 +764,7 @@ export default function NewsPage() {
                                                             sx={{
                                                                 fontWeight: "600",
                                                                 fontSize: "12px",
-                                                                color: "#000",
+                                                                color: websiteSettings.textColor,
                                                                 textAlign: "center",
                                                             }}
                                                         >
@@ -784,7 +784,7 @@ export default function NewsPage() {
                                                         position: "relative",
                                                     }}
                                                 >
-                                                     {userType === "superadmin" &&
+                                                    {userType === "superadmin" &&
                                                         <Checkbox
                                                             checked={selectedMessageIds.includes(newsItem.id)}
                                                             onChange={(e) => {
@@ -808,14 +808,27 @@ export default function NewsPage() {
                                                                 {newsItem.headLine === null ? "" : newsItem.headLine}
                                                             </Typography>
                                                         </Grid2>
+
                                                         <Grid2
                                                             size={{ xs: 12, sm: 12, lg: 3 }}
                                                             sx={{ textAlign: "right" }}
                                                         >
-                                                            <Typography sx={{ fontSize: "11px", color: "#8a8a8a" }}>
+                                                            <Typography sx={{ fontSize: "10px", color: "#8a8a8a" }}>
                                                                 Posted by: {newsItem.name}
                                                             </Typography>
-                                                            <Typography sx={{ fontSize: "11px", color: "#8a8a8a" }}>
+
+                                                            {/* {newsItem.editedBy && (
+                                                                <Typography sx={{ fontSize: "10px", color: "#8a8a8a" }}>
+                                                                    Edited by: {newsItem.editedBy}
+                                                                </Typography>
+                                                            )} */}
+
+                                                            {/* {newsItem.approvedByName && (
+                                                                <Typography sx={{ fontSize: "10px", color: "#8a8a8a" }}>
+                                                                    Approved by: {newsItem.approvedByName}
+                                                                </Typography>
+                                                            )} */}
+                                                            <Typography sx={{ fontSize: "10px", color: "#8a8a8a" }}>
                                                                 Time: {newsItem.time}
                                                             </Typography>
                                                         </Grid2>

@@ -97,7 +97,7 @@ const SectionTables = ({ data, status, searchQuery, setFilteredData }) => {
                                 <Box sx={{ display: "flex" }}>
                                     <Grid container justifyContent="space-between">
                                         <Grid item xs={12} sm={12} md={6} lg={4}>
-                                            <Box sx={{ display: "flex", border: "1px solid #eee" }}>
+                                            <Box sx={{ display: "flex", }}>
                                                 <Typography
                                                     sx={{
                                                         fontSize: "12px",
@@ -129,9 +129,9 @@ const SectionTables = ({ data, status, searchQuery, setFilteredData }) => {
                                                     {`${filteredData[0]?.grade || "N/A"} - ${filteredData[0]?.section || "N/A"
                                                         }`}
                                                 </Typography>
-                                                <Typography sx={{ fontSize: "12px", color: "#000", px: 1 }}>
+                                                {/* <Typography sx={{ fontSize: "12px", color: "#000", px: 1 }}>
                                                     Class Teacher - {filteredData[0]?.classTeacher || "Not Assigned"}
-                                                </Typography>
+                                                </Typography> */}
                                             </Box>
                                         </Grid>
                                     </Grid>
@@ -707,8 +707,6 @@ export default function IrregularAttendeesPage({ onClose }) {
                         </Grid>
                     </Grid>
 
-
-
                     <Grid item xs={12} sm={12} md={8} lg={3.3} sx={{ mt: 0.5 }}>
                         <Grid container >
                             <Grid item xs={12} sm={12} md={12} lg={12} sx={{ display: "flex", justifyContent: "center" }}>
@@ -880,101 +878,106 @@ export default function IrregularAttendeesPage({ onClose }) {
                     </Grid>
                 </Grid>
 
-                <Box hidden={value !== 0} sx={{ maxHeight: "77vh", overflowY: "auto", }}>
-                    <SectionTables
-                        status={'Absent'}
-                        data={absentData}
-                        searchQuery={searchQuery}
-                        setFilteredData={setFilteredData}
-                    />
+                <Box hidden={value !== 0} >
+                    <Box sx={{ height: "77vh", overflowY: "auto", }}>
+                        <SectionTables
+                            status={'Absent'}
+                            data={absentData}
+                            searchQuery={searchQuery}
+                            setFilteredData={setFilteredData}
+                        />
+                    </Box>
 
+                    {userType !== "teacher" &&
+                        <Box sx={{ display: "flex", justifyContent: "center" }}>
+                            <Button
+                                variant="contained"
+                                onClick={() => handleNotifyClick("absent", absentData)}
+                                sx={{
+                                    bottom: '12px',
+                                    textTransform: 'none',
+                                    backgroundColor: websiteSettings.mainColor,
+                                    color: websiteSettings.textColor,
+                                    fontWeight: '600',
+                                    borderRadius: '50px',
+                                    paddingTop: '0px',
+                                    paddingBottom: '0px',
+                                    px: 3,
+                                    mt:3,
+                                    boxShadow: "none",
+                                }}
+                            >
+                                Notify Absentees
+                            </Button>
+                        </Box>
+                    }
+                </Box>
 
+                <Box hidden={value !== 1}>
+                    <Box sx={{ height: "77vh", overflowY: "auto", }}>
+                        <SectionTables
+                            status={'Leave'}
+                            data={leaveData}
+                            searchQuery={searchQuery}
+                            setFilteredData={setFilteredData}
+                        />
+                    </Box>
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <Button
-                            variant="contained"
-                            onClick={() => handleNotifyClick("absent", absentData)}
-                            sx={{
-                                position: 'absolute',
-                                bottom: '12px',
-                                textTransform: 'none',
-                                backgroundColor: websiteSettings.mainColor,
-                                color: websiteSettings.textColor,
-                                fontWeight: '600',
-                                borderRadius: '50px',
-                                paddingTop: '0px',
-                                paddingBottom: '0px',
-                                px: 3,
-                                boxShadow: "none",
-                            }}
-                        >
-                            Notify Absentees
-                        </Button>
+                        {userType !== "teacher" &&
+                            <Button
+                                variant="contained"
+                                onClick={() => handleNotifyClick("leave", leaveData)}
+                                sx={{
+                                    bottom: '12px',
+                                    textTransform: 'none',
+                                    backgroundColor: websiteSettings.mainColor,
+                                    color: websiteSettings.textColor,
+                                    fontWeight: '600',
+                                    borderRadius: '50px',
+                                    paddingTop: '0px',
+                                    paddingBottom: '0px',
+                                    px: 3,
+                                    mt:3,
+                                    boxShadow: "none",
+                                }}
+                            >
+                                Notify Leaves
+                            </Button>
+                        }
                     </Box>
                 </Box>
 
-                <Box hidden={value !== 1} sx={{ maxHeight: "77vh", overflowY: "auto", }}>
-
-                    <SectionTables
-                        status={'Leave'}
-                        data={leaveData}
-                        searchQuery={searchQuery}
-                        setFilteredData={setFilteredData}
-                    />
-
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <Button
-                            variant="contained"
-                            onClick={() => handleNotifyClick("leave", leaveData)}
-                            sx={{
-                                position: 'absolute',
-                                bottom: '12px',
-                                textTransform: 'none',
-                                backgroundColor: websiteSettings.mainColor,
-                                color: websiteSettings.textColor,
-                                fontWeight: '600',
-                                borderRadius: '50px',
-                                paddingTop: '0px',
-                                paddingBottom: '0px',
-                                px: 3,
-                                boxShadow: "none",
-                            }}
-                        >
-                            Notify Leaves
-                        </Button>
+                <Box hidden={value !== 2} >
+                    <Box sx={{ height: "77vh", overflowY: "auto", }}>
+                        <SectionTables
+                            status={'Late'}
+                            data={lateData}
+                            searchQuery={searchQuery}
+                            setFilteredData={setFilteredData}
+                        />
                     </Box>
-                </Box>
-
-                <Box hidden={value !== 2} sx={{ maxHeight: "77vh", overflowY: "auto", }}>
-
-
-                    <SectionTables
-                        status={'Late'}
-                        data={lateData}
-                        searchQuery={searchQuery}
-                        setFilteredData={setFilteredData}
-                    />
-
-
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <Button
-                            variant="contained"
-                            onClick={() => handleNotifyClick("late", lateData)}
-                            sx={{
-                                position: 'absolute',
-                                bottom: '12px',
-                                textTransform: 'none',
-                                backgroundColor: websiteSettings.mainColor,
-                                color: websiteSettings.textColor,
-                                fontWeight: '600',
-                                borderRadius: '50px',
-                                paddingTop: '0px',
-                                paddingBottom: '0px',
-                                px: 3,
-                                boxShadow: "none",
-                            }}
-                        >
-                            Notify Latecomers
-                        </Button>
+                        {userType !== "teacher" &&
+                            <Button
+                                variant="contained"
+                                onClick={() => handleNotifyClick("late", lateData)}
+                                sx={{
+                                    bottom: '12px',
+                                    textTransform: 'none',
+                                    backgroundColor: websiteSettings.mainColor,
+                                    color: websiteSettings.textColor,
+                                    fontWeight: '600',
+                                    borderRadius: '50px',
+                                    paddingTop: '0px',
+                                    paddingBottom: '0px',
+                                    px: 3,
+                                    mt:3,
+                                    boxShadow: "none",
+                                }}
+                            >
+                                Notify Latecomers
+                            </Button>
+                        }
                     </Box>
                 </Box>
 

@@ -306,7 +306,7 @@ export default function CreateTimeTablesPage() {
                             </Grid>
 
                             <Grid item lg={12}>
-                                <Typography sx={{ mb: 0.5, mt: 3, }}>Select Image</Typography>
+                                <Typography sx={{ mb: 0.5, mt: 3, }}>Upload Image</Typography>
                                 <Box sx={{ mt: 1, textAlign: "center" }}>
                                     <Box
                                         {...getRootProps()}
@@ -322,14 +322,14 @@ export default function CreateTimeTablesPage() {
                                         <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png" />
                                         <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                         <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                            Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
-                                        </Typography>
-                                        <Typography variant="caption" color="textSecondary">
-                                            Supported Format: JPG, JPEG, WebP, PNG
-                                        </Typography>
-                                        <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                            Maximum Size: 25MB
-                                        </Typography>
+                                            Drag and drop files here, or click to upload.
+                                            </Typography>
+                                            <Typography variant="caption" color="textSecondary">
+                                            Supported formats: JPG, JPEG, WebP, PNG 
+                                            </Typography>
+                                            <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
+                                            Max file size: 25MB
+                                            </Typography>
                                     </Box>
                                     {uploadedFiles.length > 0 && (
                                         <Box

@@ -1,7 +1,7 @@
 import { Box, createTheme, Grid, IconButton, ThemeProvider, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ProfileImage from '../../Images/PagesImage/profileimage.png'
+import ProfileImage from '../../Images/PagesImage/dummy-image.jpg'
 import TeachingIcon from '../../Images/Icons/human-male-board.png'
 import '../../Css/Page.css'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -12,6 +12,7 @@ import axios from "axios";
 import { DashboardBirthday } from "../../Api/Api";
 import Loader from "../Loader";
 import { useSelector } from "react-redux";
+import { selectWebsiteSettings } from "../../Redux/Slices/websiteSettingsSlice";
 
 export default function BirthdayPage() {
 
@@ -22,18 +23,14 @@ export default function BirthdayPage() {
     const [formattedDate, setFormattedDate] = useState(today.format('DD-MM-YYYY'));
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
+    const websiteSettings = useSelector(selectWebsiteSettings);
     const user = useSelector((state) => state.auth);
-  const rollNumber = user.rollNumber
-  const userType = user.userType
-  const userName = user.name
+    const rollNumber = user.rollNumber
+    const userType = user.userType
+    const userName = user.name
     const token = '123';
-
-    const [birthdayDetails, setBirthdayDetails] = useState([])
-    const [studentsBirthday, setStudentsBirthday] = useState([])
-    const [administrativeBirthday, setAdministrativeBirthday] = useState([])
-    const [operationalBirthday, setOperationalBirthday] = useState([])
-    const [extracurricularBirthday, setExtracurricularBirthday] = useState([])
+    const [birthdayDetails, setBirthdayDetails] = useState([]);
+    const [studentsBirthday, setStudentsBirthday] = useState([]);
 
     const darkTheme = createTheme({
         palette: {
@@ -67,15 +64,9 @@ export default function BirthdayPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            const combinedData = [
-                ...(res.data.staffsbirthday.Teaching || []),
-                ...(res.data.staffsbirthday.Support || []),
-                ...(res.data.staffsbirthday.Administrative || []),
-                ...(res.data.staffsbirthday.Operational || []),
-                ...(res.data.staffsbirthday.Extracurricular || []),
-            ];
-            setBirthdayDetails(combinedData);
-            setStudentsBirthday(res.data.studentsbirthday)
+            const AllData = res.data.staffsbirthday
+            setBirthdayDetails(AllData.teaching);
+            setStudentsBirthday(res.data.studentsbirthday);
 
         } catch (error) {
             console.error(error);
@@ -89,8 +80,8 @@ export default function BirthdayPage() {
             {/* {isLoading && <Loader />} */}
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 
-                <Typography variant="h5" sx={{ fontWeight: "600" }}>
-                    Birthday
+                <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                    Birthday Details
                     <Typography style={{ fontSize: "12px", color: "#777" }}>
                         {dayjs(selectedDate).format('DD MMMM YYYY')}
                     </Typography>
@@ -140,29 +131,32 @@ export default function BirthdayPage() {
                 <Grid container spacing={2} py={1}>
                     <Grid item xs={12} sm={12} md={6} lg={6} >
                         <Typography variant="h6" sx={{ fontWeight: "600", pb: 2 }}>
-                            Staffs Birthday
+                            Staff Birthdays
                         </Typography>
-                        <Box sx={{ maxHeight: "200px", overflowY: "auto", }}>
+                        <Box sx={{ maxHeight: "200px", overflowY: "auto"}}>
 
                             <Grid container spacing={2} py={1} >
-                                {birthdayDetails.length > 0 ? (
+                                {birthdayDetails && birthdayDetails.length > 0 ? (
                                     birthdayDetails.map((birthdayDetail, index) => (
-                                        <Grid key={index} item xs={12} sm={8} md={6} lg={6} sx={{ borderRight: "1px solid #ffefcd" }}>
+                                        <Grid key={index} item xs={12} sm={8} md={6} lg={6} sx={{ borderRight: `1px solid ${websiteSettings.lightColor}`, borderBottom: `1px solid ${websiteSettings.lightColor}` }}>
                                             <Box sx={{ display: "flex", alignItems: "center", mb: 2, }}>
                                                 <img
-                                                    src={birthdayDetail.filepath}
+                                                    src={birthdayDetail.filepath || ProfileImage}
+                                                    onError={(e) => { e.target.src = ProfileImage; }}
                                                     width={40}
                                                     height={40}
-                                                    style={{ marginRight: "10px" }}
+                                                    style={{ marginRight: "10px", borderRadius: "50%" }}
                                                     alt="profile"
                                                 />
+
                                                 <Box>
                                                     <Typography variant="body1" sx={{ fontWeight: "600" }}>
                                                         {birthdayDetail.name}
                                                     </Typography>
                                                     <Typography variant="body2" sx={{ fontSize: "10px", color: "#555" }}>
-                                                        {birthdayDetail.subject}
+                                                        {birthdayDetail.userType.charAt(0).toUpperCase() + birthdayDetail.userType.slice(1)} - {birthdayDetail.rollNumber}
                                                     </Typography>
+
                                                 </Box>
                                             </Box>
                                         </Grid>
@@ -178,27 +172,29 @@ export default function BirthdayPage() {
                     </Grid>
                     <Grid item xs={12} sm={12} md={6} lg={6} >
                         <Typography variant="h6" sx={{ fontWeight: "600", pb: 2 }}>
-                            Students Birthday
+                            Student Birthdays
                         </Typography>
                         <Box sx={{ maxHeight: "200px", overflowY: "auto", }}>
                             <Grid container spacing={2} py={1} >
-                                {birthdayDetails.length > 0 ? (
-                                    birthdayDetails.map((birthdayDetail, index) => (
-                                        <Grid key={index} item xs={12} sm={8} md={6} lg={6} sx={{ borderRight: "1px solid #ffefcd" }}>
+                                {studentsBirthday && studentsBirthday.length > 0 ? (
+                                    studentsBirthday.map((birthdayDetail, index) => (
+                                        <Grid key={index} item xs={12} sm={8} md={6} lg={6} sx={{ borderRight: `1px solid ${websiteSettings.lightColor}`, borderBottom: `1px solid ${websiteSettings.lightColor}` }}>
                                             <Box sx={{ display: "flex", alignItems: "center", mb: 2, }}>
                                                 <img
-                                                    src={birthdayDetail.filepath}
+                                                    src={birthdayDetail.filepath || ProfileImage}
+                                                    onError={(e) => { e.target.src = ProfileImage; }}
                                                     width={40}
                                                     height={40}
-                                                    style={{ marginRight: "10px" }}
+                                                    style={{ marginRight: "10px", borderRadius: "50%" }}
                                                     alt="profile"
                                                 />
+
                                                 <Box>
-                                                    <Typography variant="body1" sx={{ fontWeight: "600" }}>
+                                                    <Typography sx={{ fontWeight: "600", fontSize: "14px" }}>
                                                         {birthdayDetail.name}
                                                     </Typography>
                                                     <Typography variant="body2" sx={{ fontSize: "10px", color: "#555" }}>
-                                                        {birthdayDetail.subject}
+                                                        {birthdayDetail.rollNumber} ( {birthdayDetail.grade} - {birthdayDetail.section})
                                                     </Typography>
                                                 </Box>
                                             </Box>

@@ -265,7 +265,7 @@ export default function SchoolCalendarPage() {
                                                     }}
                                                 >
                                                     <Typography sx={{ fontSize: "14px", color: "#616161" }}>
-                                                        No Upcoming Events
+                                                    No Completed Events
                                                     </Typography>
                                                 </Box>
                                             ) : (

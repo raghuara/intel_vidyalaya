@@ -182,41 +182,39 @@ export default function UniformStatusPage() {
 
     const handleExportExcel = () => {
         const header = [
-            'S.No', 'Date', 'Roll Number', 'Student Name', 'Class', 'Section',
-            'Status', 'Remark'
+            'S.No', 'Student Name', 'Roll Number', 'Class', 'Section',
+            'Uniform', 'Ununiform', 'Permission', 'Total Days'
         ];
-
+    
         const data = exportData.map((row, index) => [
             index + 1,
-            row.date,
-            row.rollNumber,
             row.name,
+            row.rollNumber,
             row.grade,
             row.section,
-            row.status === "0"
-                ? "Ununiform"
-                : row.status === "1"
-                    ? "Uniform"
-                    : row.status === "2"
-                        ? "Permission"
-                        : "",
-
-            row.remarks
+            row.uniform,
+            row.unUniform,
+            row.permission,
+            row.noOfDays
         ]);
-
+    
         const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
-
+        XLSX.utils.book_append_sheet(wb, ws, 'Uniform Status');
+    
         const formattedFromDate = fromDate ? dayjs(fromDate).format("DD-MM-YYYY") : "";
         const formattedToDate = !onlyFromDate && toDate ? dayjs(toDate).format("DD-MM-YYYY") : "";
-
+    
+        const grade = selectedGradeId || exportData?.[0]?.grade || 'Class';
+        const section = selectedSection || exportData?.[0]?.section || 'Section';
+    
         const fileName = formattedToDate
-            ? `Homework Status ${formattedFromDate} - ${formattedToDate}.xlsx`
-            : `Homework Status ${formattedFromDate}.xlsx`;
-
+            ? `Uniform_Status_${formattedFromDate}_to_${formattedToDate}.xlsx`
+            : `Uniform_Status_${formattedFromDate}.xlsx`;
+    
         XLSX.writeFile(wb, fileName);
     };
+    
 
 
     useEffect(() => {

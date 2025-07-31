@@ -2,7 +2,7 @@ import { Autocomplete, Box, Button, createTheme, Dialog, DialogActions, DialogCo
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -20,10 +20,9 @@ import SnackBar from "../../SnackBar";
 import NoData from '../../../Images/Login/No Data.png'
 import { selectWebsiteSettings } from "../../../Redux/Slices/websiteSettingsSlice";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { selectGrades } from "../../../Redux/Slices/DropdownController";
 
 export default function QuestionsFeedBackPage() {
-
-
     const today = dayjs();
     const handleOpen = () => setOpenCal(true);
     const handleClose = () => setOpenCal(false);
@@ -32,39 +31,31 @@ export default function QuestionsFeedBackPage() {
     const [openCal, setOpenCal] = useState(false);
     const navigate = useNavigate();
     const websiteSettings = useSelector(selectWebsiteSettings);
-
     const [selectedFilter, setSelectedFilter] = useState("Communication");
     const [openAlert, setOpenAlert] = useState(false);
     const [openImage, setOpenImage] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
-
-
     const [newsData, setNewsData] = useState([]);
-
     const user = useSelector((state) => state.auth);
     const rollNumber = user.rollNumber
     const userType = user.userType
     const userName = user.name
     const [isLoading, setIsLoading] = useState(false);
     const token = '123';
-
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedNews, setExpandedNews] = useState({});
     const [deleteId, setDeleteId] = useState('');
-
     const location = useLocation();
     const value = location.state?.value || 'N';
     const [checked, setChecked] = useState(false);
     const [isMyProject, setIsMyProject] = useState('N');
-
-
     const [open, setOpen] = useState(false);
     const [status, setStatus] = useState(false);
     const [color, setColor] = useState(false);
     const [message, setMessage] = useState('');
-
     const [filter, setFilter] = useState('Suggestions');
-
+    const dispatch = useDispatch();
+    const grades = useSelector(selectGrades);
 
     useEffect(() => {
         if (value === 'Y') {
@@ -75,13 +66,6 @@ export default function QuestionsFeedBackPage() {
             setChecked(false);
         }
     }, [value]);
-
-    const handleCreateNews = () => {
-        navigate('create')
-    }
-    const handleEdit = (id) => {
-        navigate('edit', { state: { id } });
-    };
 
     const handleDelete = (id) => {
         setDeleteId(id);
@@ -98,17 +82,9 @@ export default function QuestionsFeedBackPage() {
         }
     };
 
-
-
-
     const handleImageClose = () => {
         setOpenImage(false);
     };
-
-    const handleFilterChange = (value) => {
-        setFilter(value);
-    };
-
 
     const darkTheme = createTheme({
         palette: {
@@ -129,10 +105,22 @@ export default function QuestionsFeedBackPage() {
     const boxRef = useRef(null);
 
 
-    function isYouTubeLink(url) {
-        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/[^\/]+\/|(?:v|e(?:mbed)?)\/|(?:watch\?v=|.+\/videoseries\?v=))|youtu\.be\/)[^&?\/\s]+/;
-        return youtubeRegex.test(url);
-    }
+    const getGradeNames = (gradeSegments) => {
+        return gradeSegments
+            .map((segment) => {
+                const grade = grades.find((g) => g.id === segment.gradeId);
+                if (!grade) return null;
+
+                const sections = segment.sections?.length
+                    ? `(${segment.sections.join(', ')})`
+                    : '';
+
+                // return `${grade.sign} ${sections}`;
+                return `${grade.sign}`;
+            })
+            .filter(Boolean)
+            .join(', ');
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -344,7 +332,7 @@ export default function QuestionsFeedBackPage() {
                                                             sx={{
                                                                 fontWeight: "600",
                                                                 fontSize: "12px",
-                                                                color: "#000",
+                                                                color: websiteSettings.textColor,
                                                                 textAlign: "center",
                                                             }}
                                                         >
@@ -377,6 +365,14 @@ export default function QuestionsFeedBackPage() {
                                                             <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
                                                                 {newsItem.heading}
                                                             </Typography>
+                                                            <Typography sx={{ fontSize: '12px', color: '#777' }}>
+                                                                    Delivered to:
+                                                                    {newsItem.feedBackGradeSegments?.length > 0 && (
+                                                                        <span style={{ fontSize: "10px" }}>
+                                                                            ({getGradeNames(newsItem.feedBackGradeSegments)})
+                                                                        </span>
+                                                                    )}
+                                                                </Typography>
                                                         </Grid>
                                                         <Grid
                                                             item

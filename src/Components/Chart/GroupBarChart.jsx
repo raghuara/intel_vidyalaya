@@ -69,7 +69,6 @@ function GroupBarChartPage({ }) {
     const token = '123';
     const handleOpen = () => setOpenCal(true);
     const handleClose = () => setOpenCal(false);
-
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -176,11 +175,11 @@ function GroupBarChartPage({ }) {
         }
     }, [selectedGroup, studentsGraphData]);
 
-
     if (!studentsGraphData) {
         return (
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>
                 <Typography variant="h6">No data to display</Typography>
+                {/* <CircularProgress  style={{color:websiteSettings.mainColor}}/> */}
             </div>
         );
     }
@@ -229,7 +228,7 @@ function GroupBarChartPage({ }) {
                 <Grid item xs={12} sm={12} md={12} lg={3.7} sx={{ display: "flex", justifyContent: "center" }}>
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                            Students Attendance
+                            Student Attendance
                             <Typography style={{ fontSize: "12px", color: "#777" }}>
                                 {dayjs(selectedDate).format('DD MMMM YYYY')}
                             </Typography>

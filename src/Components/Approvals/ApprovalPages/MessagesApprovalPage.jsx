@@ -55,6 +55,8 @@ export default function MessagesApprovalPage() {
     const [selectedValue, setSelectedValue] = useState("all");
     const dispatch = useDispatch();
     const grades = useSelector(selectGrades);
+    const [messageDetails, setMessageDetails] = useState(null);
+    const [openDeliveredAlert, setOpenDeliveredAlert] = useState(false);
 
     const toggleReadMore = (id) => {
         setExpandedMessageId((prevId) => (prevId === id ? null : id));
@@ -77,6 +79,15 @@ export default function MessagesApprovalPage() {
     };
     const handleViewReason = (id) => {
         setOpenAlert(id)
+    };
+    const handleDeliver = (messageItem) => {
+        setMessageDetails(messageItem)
+        setOpenDeliveredAlert(true);
+
+    };
+
+    const handleDeliveredCloseDialog = () => {
+        setOpenDeliveredAlert(false);
     };
 
     const handleDelete = (id) => {
@@ -113,17 +124,17 @@ export default function MessagesApprovalPage() {
             .map((segment) => {
                 const grade = grades.find((g) => g.id === segment.gradeId);
                 if (!grade) return null;
-    
+
                 const sectionList = segment.sections?.length
                     ? `(${segment.sections.join(', ')})`
                     : '';
-    
+
                 return `${grade.sign}${sectionList}`;
             })
             .filter(Boolean)
             .join(', ');
     };
-    
+
 
     const [showButton, setShowButton] = useState(false);
     const boxRef = useRef(null);
@@ -301,7 +312,7 @@ export default function MessagesApprovalPage() {
         <Box sx={{ width: "100%", }}>
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
             {isLoading && <Loader />}
-            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px", borderBottom:"1px solid #ddd", }}>
+            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px", borderBottom: "1px solid #ddd", }}>
                 <Grid2 container>
                     <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 12 }} sx={{ display: "flex", alignItems: "center", py: 1.5 }}>
                         <Link style={{ textDecoration: "none" }} to="/dashboardmenu/approvals">
@@ -361,18 +372,40 @@ export default function MessagesApprovalPage() {
                                                         {statusItem.headLine === null ? "" : statusItem.headLine}
                                                     </Typography>
                                                     <Grid2 container>
-                                                        <Grid2 size={{lg:8}}>
-                                                        <Typography sx={{ fontSize: '12px', color: '#777' }}>
-                                                        Delivered to: {capitalizeFirstLetter(statusItem.recipient)}&nbsp;
-                                                        {statusItem.recipient === "Students" &&
-                                                            <span style={{ fontSize: "10px" }}>
-                                                                ( {getGradeNames(statusItem.gradeSegments)} )
-                                                            </span>
-                                                        }
-                                                    </Typography>
+                                                        <Grid2 size={{ lg: 8 }}>
+                                                            <Box sx={{ display: "flex" }}>
+                                                                <Typography sx={{ fontSize: '12px', color: '#777' }}>
+                                                                    Delivered to: {
+                                                                        statusItem.everyone === "Y"
+                                                                            ? "Everyone"
+                                                                            : [
+                                                                                statusItem.students === "Y" ? "Students" : null,
+                                                                                statusItem.staffs === "Y" ? "Staffs" : null,
+                                                                                statusItem.specific === "Y" ? "Specific" : null
+                                                                            ].filter(Boolean).join(", ")
+                                                                    }
+                                                                </Typography>
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    sx={{
+                                                                        textTransform: "none",
+                                                                        width: "50px",
+                                                                        height: "20px",
+                                                                        borderRadius: "30px",
+                                                                        fontSize: "10px",
+                                                                        border: "1px solid #777",
+                                                                        color: '#777',
+                                                                        fontWeight: "600",
+                                                                        ml: 2
+                                                                    }}
+                                                                    onClick={() => handleDeliver(statusItem)}
+                                                                >
+                                                                    &nbsp;View
+                                                                </Button>
+                                                            </Box>
                                                         </Grid2>
                                                     </Grid2>
-                                                   
+
 
                                                 </Grid2>
                                                 <Grid2
@@ -782,21 +815,44 @@ export default function MessagesApprovalPage() {
                                             <Grid2 container>
                                                 <Grid2
                                                     size={{ xs: 12, sm: 12, lg: 9.8 }}
-                                                    
+
                                                 >
                                                     <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
                                                         {statusItem.headLine === null ? "" : statusItem.headLine}
                                                     </Typography>
                                                     <Grid2 container>
-                                                        <Grid2 size={{lg:8}}>
-                                                        <Typography sx={{ fontSize: '12px', color: '#777' }}>
-                                                        Delivered to: {capitalizeFirstLetter(statusItem.recipient)}&nbsp;
-                                                        {statusItem.recipient === "Students" &&
-                                                            <span style={{ fontSize: "10px" }}>
-                                                                ( {getGradeNames(statusItem.gradeSegments)} )
-                                                            </span>
-                                                        }
-                                                    </Typography>
+                                                        <Grid2 size={{ lg: 8 }}>
+                                                        <Box sx={{ display: "flex" }}>
+                                                                <Typography sx={{ fontSize: '12px', color: '#777' }}>
+                                                                    Delivered to: {
+                                                                        statusItem.everyone === "Y"
+                                                                            ? "Everyone"
+                                                                            : [
+                                                                                statusItem.students === "Y" ? "Students" : null,
+                                                                                statusItem.staffs === "Y" ? "Staffs" : null,
+                                                                                statusItem.specific === "Y" ? "Specific" : null
+                                                                            ].filter(Boolean).join(", ")
+                                                                    }
+                                                                </Typography>
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    sx={{
+                                                                        textTransform: "none",
+                                                                        width: "50px",
+                                                                        height: "20px",
+                                                                        borderRadius: "30px",
+                                                                        fontSize: "10px",
+                                                                        border: "1px solid #777",
+                                                                        color: '#777',
+                                                                        fontWeight: "600",
+                                                                        ml: 2
+                                                                    }}
+                                                                    onClick={() => handleDeliver(statusItem)}
+                                                                >
+                                                                    &nbsp;View
+                                                                </Button>
+                                                            </Box>
+
                                                         </Grid2>
                                                     </Grid2>
                                                 </Grid2>
@@ -1130,10 +1186,6 @@ export default function MessagesApprovalPage() {
                                                 </Box>
                                             </Dialog>
                                         </Box>
-
-
-
-
                                     </>
 
                                 );
@@ -1233,6 +1285,82 @@ export default function MessagesApprovalPage() {
                     </Fab>
                 )}
             </Box>
+            <Dialog open={openDeliveredAlert} onClose={() => setOpenDeliveredAlert(false)}>
+                <Box sx={{ display: "flex", justifyContent: "center", p: 2, backgroundColor: '#fff', }}>
+
+                    <Box sx={{
+                        backgroundColor: '#fff',
+                        p: 1,
+                    }}>
+                        <Typography sx={{ fontWeight: "600" }}>Delivered Details</Typography>
+                        <hr />
+                        <Box sx={{ maxHeight: "400px", overflowY: "auto", minHeight: "100px", minWidth: "400px" }}>
+                            {messageDetails?.everyone === "Y" ? (
+                                <Typography sx={{ fontWeight: "600", fontSize: "14px" }}>For everyone</Typography>
+                            ) : (
+                                <>
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Students:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "11.5px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.gradeSegments?.length > 0
+                                                ? getGradeNames(messageDetails.gradeSegments)
+                                                : "No students selected"}
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Staffs:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "12px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.staffUserTypes?.length > 0
+                                                ? messageDetails.staffUserTypes
+                                                    .map((type) => {
+                                                        if (type === "teaching") return "Teaching";
+                                                        if (type === "nonteaching") return "Non - Teaching";
+                                                        if (type === "supporting") return "Supporting";
+                                                        return type;
+                                                    })
+                                                    .join(', ')
+                                                : "No staff selected"}
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Users:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "12px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.specificUsers?.length > 0
+                                                ? messageDetails.specificUsers.join(', ')
+                                                : "No users selected"}
+                                        </Box>
+                                    </Typography>
+                                </>
+                            )}
+                        </Box>
+
+
+                        <DialogActions sx={{
+                            justifyContent: 'center',
+                            backgroundColor: '#fff',
+                            pt: 2
+                        }}>
+                            <Button
+                                onClick={() => handleDeliveredCloseDialog(false)}
+                                sx={{
+                                    textTransform: 'none',
+                                    width: "70px",
+                                    borderRadius: '30px',
+                                    fontSize: '12px',
+                                    py: 0.2,
+                                    border: '1px solid black',
+                                    color: 'black',
+                                }}
+                            >
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Box>
+
+                </Box>
+            </Dialog >
             <Dialog
                 open={openImage}
                 onClose={handleImageClose}

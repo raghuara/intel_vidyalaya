@@ -447,13 +447,13 @@ export default function ViewMarksPage() {
                     <Box sx={{ display: "flex" }}>
                         <Grid container sx={{ justifyContent: "space-between" }}>
                             <Grid item xs={12} sm={12} md={5} lg={3} >
-                                <Box sx={{ display: "flex", border: "1px solid #E8DDEA", mt: 2.8, width: "100%", }}>
+                                <Box sx={{ display: "flex", mt: 2.8, width: "100%", }}>
                                     <Typography sx={{ fontSize: "12px", color: "#fff", backgroundColor: "#307EB9", padding: "0px 5px 0px 5px", borderRadius: "4px 0px 0px 0px", fontWeight: "600", }}>
                                         {getData.gradeSection}
                                     </Typography>
-                                    <Typography sx={{ fontSize: "12px", color: "#000", px: 1, }}>
+                                    {/* <Typography sx={{ fontSize: "12px", color: "#000", px: 1, }}>
                                         Class Teacher - {getData.classTeacher || "Not Assigned"}
-                                    </Typography>
+                                    </Typography> */}
                                 </Box>
                             </Grid>
 

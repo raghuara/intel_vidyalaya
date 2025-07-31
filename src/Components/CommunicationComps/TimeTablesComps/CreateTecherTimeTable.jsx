@@ -264,7 +264,7 @@ export default function CreateTeacherTimeTablesPage() {
                         <TextField
                             fullWidth
                             variant="outlined"
-                            placeholder="Search by Teachers by Name or Emp No"
+                            placeholder="Search Teachers by Name or Employee Code"
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -420,7 +420,7 @@ export default function CreateTeacherTimeTablesPage() {
                             padding: "5px 0",
                         }}
                     >
-                        Teaching Staffs
+                        Teaching Staff
                     </Box>
 
                     <TableContainer

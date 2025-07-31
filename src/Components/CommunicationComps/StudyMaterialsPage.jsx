@@ -36,6 +36,10 @@ const getCategoryColors = (category) =>
 export default function StudyMaterialPage() {
     const navigate = useNavigate()
     const grades = useSelector(selectGrades);
+    const user = useSelector((state) => state.auth);
+    const rollNumber = user.rollNumber
+    const userType = user.userType
+    const userName = user.name
 
     const groupedGrades = grades.reduce((acc, item) => {
         const category = item.category || "Others";
@@ -60,7 +64,7 @@ export default function StudyMaterialPage() {
                     py: 1.5,
                     px: 2,
                     borderRadius: "10px 10px 10px 0px",
-                    borderBottom:"1px solid #ddd",
+                    borderBottom: "1px solid #ddd",
                     display: "flex",
                     justifyContent: "space-between",
                 }}
@@ -73,24 +77,26 @@ export default function StudyMaterialPage() {
                 >
                     Study Materials
                 </Typography>
-                <Button
-                    onClick={handleCreateNews}
-                    variant="outlined"
-                    sx={{
-                        borderColor: "#A9A9A9",
-                        backgroundColor: "#000",
-                        py: 0.3,
-                        width: "110px",
-                        height: "30px",
-                        color: "#fff",
-                        textTransform: "none",
-                        border: "none",
+                {userType !== "teacher" &&
+                    <Button
+                        onClick={handleCreateNews}
+                        variant="outlined"
+                        sx={{
+                            borderColor: "#A9A9A9",
+                            backgroundColor: "#000",
+                            py: 0.3,
+                            width: "110px",
+                            height: "30px",
+                            color: "#fff",
+                            textTransform: "none",
+                            border: "none",
 
-                    }}
-                >
-                    <AddIcon sx={{ fontSize: "20px" }} />
-                    &nbsp;Materials
-                </Button>
+                        }}
+                    >
+                        <AddIcon sx={{ fontSize: "20px" }} />
+                        &nbsp;Materials
+                    </Button>
+                }
             </Box>
             <Box sx={{ p: 2 }}>
                 <Box
@@ -139,7 +145,7 @@ export default function StudyMaterialPage() {
                                                 color: "#000",
                                             }}
                                         >
-                                            {category}
+                                            {category} Materials
                                         </Typography>
                                     </Box>
 

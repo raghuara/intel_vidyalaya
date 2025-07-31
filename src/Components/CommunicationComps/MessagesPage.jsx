@@ -23,6 +23,7 @@ import NoData from '../../Images/Login/No Data.png'
 import { selectGrades } from "../../Redux/Slices/DropdownController";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
+
 export default function MessagesPage() {
     const handleOpen = () => setOpenCal(true);
     const handleClose = () => setOpenCal(false);
@@ -33,6 +34,7 @@ export default function MessagesPage() {
     const websiteSettings = useSelector(selectWebsiteSettings);
     const [openAlert, setOpenAlert] = useState(false);
     const [openEditAlert, setOpenEditAlert] = useState(false);
+    const [openDeliveredAlert, setOpenDeliveredAlert] = useState(false);
     const [openImage, setOpenImage] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
     const [messageData, setMessageData] = useState([]);
@@ -56,6 +58,7 @@ export default function MessagesPage() {
     const [message, setMessage] = useState('');
     const [openBulkDeleteAlert, setOpenBulkDeleteAlert] = useState(false);
     const [editId, setEditId] = useState('');
+    const [messageDetails, setMessageDetails] = useState(null);
     const [classData, setClassData] = useState([]);
     const dispatch = useDispatch();
     const grades = useSelector(selectGrades);
@@ -91,6 +94,12 @@ export default function MessagesPage() {
         setOpenEditAlert(true);
 
     };
+
+    const handleDeliver = (messageItem) => {
+        setMessageDetails(messageItem)
+        setOpenDeliveredAlert(true);
+
+    };
     const handleClearDate = () => {
         setSelectedDate(null);
         setFormattedDate('');
@@ -108,6 +117,10 @@ export default function MessagesPage() {
             DeleteMessageApi(deleteId)
             setOpenAlert(false);
         }
+    };
+
+    const handleDeliveredCloseDialog = () => {
+        setOpenDeliveredAlert(false);
     };
 
     const handleEditCloseDialog = (edited) => {
@@ -179,19 +192,20 @@ export default function MessagesPage() {
         }
     };
 
-    const capitalizeFirstLetter = (str) => {
-        if (!str) return "";
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-    };
     const getGradeNames = (gradeSectionMappings) => {
         return gradeSectionMappings
             .map((mapping) => {
                 const grade = grades.find((g) => g.id === mapping.gradeId);
-                return grade ? grade.sign : null;
+                if (grade) {
+                    const sections = mapping.sections.join(', ');
+                    return `${grade.sign} (${sections})`;
+                }
+                return null;
             })
             .filter(Boolean)
             .join(', ');
     };
+
 
     const handleCloseBulkDeleteDialog = (deleted) => {
 
@@ -644,7 +658,7 @@ export default function MessagesPage() {
                     </Box>
                 </Dialog>
                 {userType === "superadmin" &&
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 2,alignItems:"center"}}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 2, alignItems: "center" }}>
                         {selectedMessageIds.length > 0 ? (
                             <Button
                                 variant="contained"
@@ -679,7 +693,7 @@ export default function MessagesPage() {
                         />
                     </Box>
                 }
-                <Box sx={{ px: 2, pb:2 }}>
+                <Box sx={{ px: 2, pb: 2 }}>
                     {filteredMessage.length > 0 && filteredMessage[0].messages[0]?.status === "schedule" && (
                         <Box sx={{ backgroundColor: "#8338EC", width: "200px", borderRadius: "50px", display: "flex", justifyContent: "center", alignItems: "center", mb: 2 }}>
                             <Typography
@@ -757,7 +771,7 @@ export default function MessagesPage() {
                                                                 sx={{
                                                                     fontWeight: "600",
                                                                     fontSize: "12px",
-                                                                    color: "#000",
+                                                                    color: websiteSettings.textColor,
                                                                     textAlign: "center",
                                                                 }}
                                                             >
@@ -796,16 +810,39 @@ export default function MessagesPage() {
                                                                     <Typography sx={{ fontWeight: "600", fontSize: "16px", height: "70px" }}>
                                                                         {messageItem.headLine}
                                                                     </Typography>
+                                                                    <Box sx={{ display: "flex" }}>
+                                                                        <Typography sx={{ fontSize: '12px', color: '#777' }}>
+                                                                            Delivered to: {
+                                                                                messageItem.everyone === "Y"
+                                                                                    ? "Everyone"
+                                                                                    : [
+                                                                                        messageItem.students === "Y" ? "Students" : null,
+                                                                                        messageItem.staffs === "Y" ? "Staffs" : null,
+                                                                                        messageItem.specific === "Y" ? "Specific" : null
+                                                                                    ].filter(Boolean).join(", ")
+                                                                            }
+                                                                        </Typography>
 
-                                                                    <Typography sx={{ fontSize: '12px', color: '#777' }}>
-                                                                        Delivered to: {capitalizeFirstLetter(messageItem.recipient)}&nbsp;
-                                                                        {messageItem.recipient === "Students" &&
-                                                                            <span style={{ fontSize: "10px" }}>
-                                                                                ( {getGradeNames(messageItem.gradeSectionMappings)} )
-                                                                            </span>
-                                                                        }
-                                                                    </Typography>
+                                                                        <Button
+                                                                            variant="outlined"
+                                                                            sx={{
+                                                                                textTransform: "none",
+                                                                                width: "50px",
+                                                                                height: "20px",
+                                                                                borderRadius: "30px",
+                                                                                fontSize: "10px",
+                                                                                border: "1px solid #777",
+                                                                                color: '#777',
+                                                                                fontWeight: "600",
+                                                                                ml: 2
+                                                                            }}
+                                                                            onClick={() => handleDeliver(messageItem)}
+                                                                        >
+                                                                            &nbsp;View
+                                                                        </Button>
 
+
+                                                                    </Box>
                                                                 </Box>
                                                             </Grid>
                                                             <Grid item xs={12} sm={12} lg={3} sx={{ textAlign: "right" }}>
@@ -1017,6 +1054,82 @@ export default function MessagesPage() {
                     </Fab>
                 )}
             </Box>
+            <Dialog open={openDeliveredAlert} onClose={() => setOpenDeliveredAlert(false)}>
+                <Box sx={{ display: "flex", justifyContent: "center", p: 2, backgroundColor: '#fff', }}>
+
+                    <Box sx={{
+                        backgroundColor: '#fff',
+                        p: 1,
+                    }}>
+                        <Typography sx={{fontWeight:"600"}}>Delivered Details</Typography>
+                        <hr />
+                        <Box sx={{ maxHeight: "400px", overflowY: "auto", minHeight:"100px", minWidth:"400px" }}>
+                            {messageDetails?.everyone === "Y" ? (
+                                <Typography sx={{fontWeight:"600", fontSize:"14px"}}>For everyone</Typography>
+                            ) : (
+                                <>
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Students:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "11.5px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.gradeSectionMappings?.length > 0
+                                                ? getGradeNames(messageDetails.gradeSectionMappings)
+                                                : "No students selected"}
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Staffs:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "12px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.staffUserTypes?.length > 0
+                                                ? messageDetails.staffUserTypes
+                                                    .map((type) => {
+                                                        if (type === "teaching") return "Teaching";
+                                                        if (type === "nonteaching") return "Non - Teaching";
+                                                        if (type === "supporting") return "Supporting";
+                                                        return type;
+                                                    })
+                                                    .join(', ')
+                                                : "No staff selected"}
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Users:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "12px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.specificUsers?.length > 0
+                                                ? messageDetails.specificUsers.join(', ')
+                                                : "No users selected"}
+                                        </Box>
+                                    </Typography>
+                                </>
+                            )}
+                        </Box>
+
+
+                        <DialogActions sx={{
+                            justifyContent: 'center',
+                            backgroundColor: '#fff',
+                            pt: 2
+                        }}>
+                            <Button
+                                onClick={() => handleDeliveredCloseDialog(false)}
+                                sx={{
+                                    textTransform: 'none',
+                                    width: "70px",
+                                    borderRadius: '30px',
+                                    fontSize: '12px',
+                                    py: 0.2,
+                                    border: '1px solid black',
+                                    color: 'black',
+                                }}
+                            >
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Box>
+
+                </Box>
+            </Dialog >
             <Dialog
                 open={openImage}
                 onClose={handleImageClose}
@@ -1047,6 +1160,6 @@ export default function MessagesPage() {
                     </IconButton>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </Box >
     );
 }

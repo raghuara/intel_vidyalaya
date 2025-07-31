@@ -289,39 +289,43 @@ export default function HomeWorkPage() {
         <Box sx={{ width: "100%", }}>
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
             {isLoading && <Loader />}
-            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px",   borderBottom:"1px solid #ddd",}}>
+            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px", borderBottom: "1px solid #ddd", }}>
                 <Grid container>
                     <Grid item xs={6} sm={6} md={3} lg={2.5} sx={{ display: "flex", alignItems: "center" }}>
 
                         <Typography sx={{ fontWeight: "600", fontSize: "20px" }} >Home Work</Typography>
                     </Grid>
                     <Grid item xs={6} sm={6} md={3} lg={2.5} sx={{ display: "flex", justifyContent: "center", alignItems: "center", pr: 2 }}>
-                        <Typography sx={{ fontWeight: "600", fontSize: "12px" }} >My Projects</Typography>
-                        <Switch
-                            checked={checked}
-                            onChange={handleCheck}
-                            inputProps={{ "aria-label": "controlled" }}
-                            sx={{
-                                "& .MuiSwitch-thumb": {
-                                    backgroundColor: checked ? websiteSettings.mainColor : "default",
-                                },
-                                "& .MuiSwitch-track": {
-                                    borderWidth: checked ? "0" : "1px",
-                                    borderStyle: "solid",
-                                    backgroundColor: checked ? `${websiteSettings.mainColor} !important` : "#fff",
-                                    // borderColor: checked ? websiteSettings.mainColor : "#bdbdbd",
-                                },
-                                "&.MuiSwitch-root.Mui-focusVisible .MuiSwitch-thumb": {
-                                    backgroundColor: checked ? websiteSettings.mainColor : "default",
-                                },
-                                "&.MuiSwitch-root.Mui-focusVisible .MuiSwitch-track": {
-                                    backgroundColor: checked ? websiteSettings.mainColor : "#bdbdbd",
-                                },
-                                "& .MuiSwitch-focusVisible": {
-                                    outline: "none !important",
-                                },
-                            }}
-                        />
+                        {userType !== "teacher" &&
+                            <>
+                                <Typography sx={{ fontWeight: "600", fontSize: "12px" }} >My Projects</Typography>
+                                <Switch
+                                    checked={checked}
+                                    onChange={handleCheck}
+                                    inputProps={{ "aria-label": "controlled" }}
+                                    sx={{
+                                        "& .MuiSwitch-thumb": {
+                                            backgroundColor: checked ? websiteSettings.mainColor : "default",
+                                        },
+                                        "& .MuiSwitch-track": {
+                                            borderWidth: checked ? "0" : "1px",
+                                            borderStyle: "solid",
+                                            backgroundColor: checked ? `${websiteSettings.mainColor} !important` : "#fff",
+                                            // borderColor: checked ? websiteSettings.mainColor : "#bdbdbd",
+                                        },
+                                        "&.MuiSwitch-root.Mui-focusVisible .MuiSwitch-thumb": {
+                                            backgroundColor: checked ? websiteSettings.mainColor : "default",
+                                        },
+                                        "&.MuiSwitch-root.Mui-focusVisible .MuiSwitch-track": {
+                                            backgroundColor: checked ? websiteSettings.mainColor : "#bdbdbd",
+                                        },
+                                        "& .MuiSwitch-focusVisible": {
+                                            outline: "none !important",
+                                        },
+                                    }}
+                                />
+                            </>
+                        }
                     </Grid>
                     <Grid item xs={12} sm={12} md={3} lg={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                         <Grid container spacing={2}>
@@ -484,24 +488,26 @@ export default function HomeWorkPage() {
                                 </LocalizationProvider>
                             </ThemeProvider>
                         </Box>
-                        <Button
-                            onClick={handleCreateNews}
-                            variant="outlined"
-                            sx={{
-                                borderColor: "#A9A9A9",
-                                backgroundColor: "#000",
-                                py: 0.3,
-                                width: "130px",
-                                height: "30px",
-                                color: "#fff",
-                                textTransform: "none",
-                                border: "none",
+                        {userType !== "teacher" &&
+                            <Button
+                                onClick={handleCreateNews}
+                                variant="outlined"
+                                sx={{
+                                    borderColor: "#A9A9A9",
+                                    backgroundColor: "#000",
+                                    py: 0.3,
+                                    width: "130px",
+                                    height: "30px",
+                                    color: "#fff",
+                                    textTransform: "none",
+                                    border: "none",
 
-                            }}
-                        >
-                            <AddIcon sx={{ fontSize: "20px" }} />
-                            &nbsp;Homework
-                        </Button>
+                                }}
+                            >
+                                <AddIcon sx={{ fontSize: "20px" }} />
+                                &nbsp;Homework
+                            </Button>
+                        }
                     </Grid>
                 </Grid>
             </Box>
@@ -716,7 +722,10 @@ export default function HomeWorkPage() {
                                                 {table.gradeSection}
                                             </Typography>
                                         </Box>
-                                        <Box sx={{ border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#fff" }}>
+                                        <Box sx={{ border: "1px solid #ccc", borderRadius: "0px 5px 5px 5px", backgroundColor: "#fff" }}>
+                                            <Box>
+                                                <Typography sx={{ fontWeight: "600", px: 2, minHeight: "60px", display: "flex", alignItems: "center" }}>{table.headLine}</Typography>
+                                            </Box>
                                             {table.fileType === "image" &&
                                                 <Box
                                                     sx={{
@@ -856,47 +865,49 @@ export default function HomeWorkPage() {
                                                 </Typography>
                                             </Box>
                                         </Box>
-                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                                            <Button
-                                                variant="outlined"
-                                                onClick={() => handleEdit(table.id)}
-                                                sx={{
-                                                    textTransform: 'none',
-                                                    width: '100px',
-                                                    height: '25px',
-                                                    mr: 1,
-                                                    borderRadius: '30px',
-                                                    fontSize: '10px',
-                                                    border: '1px solid black',
-                                                    color: 'black',
-                                                    fontWeight: '600',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                }}
-                                            >
-                                                <EditOutlinedIcon style={{ fontSize: '15px' }} />
-                                                &nbsp;Reupload
-                                            </Button>
+                                        {userType !== "teacher" &&
+                                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+                                                <Button
+                                                    variant="outlined"
+                                                    onClick={() => handleEdit(table.id)}
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        width: '100px',
+                                                        height: '25px',
+                                                        mr: 1,
+                                                        borderRadius: '30px',
+                                                        fontSize: '10px',
+                                                        border: '1px solid black',
+                                                        color: 'black',
+                                                        fontWeight: '600',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                    }}
+                                                >
+                                                    <EditOutlinedIcon style={{ fontSize: '15px' }} />
+                                                    &nbsp;Reupload
+                                                </Button>
 
-                                            <IconButton
-                                                onClick={() => handleDelete(table.id)}
-                                                sx={{
-                                                    border: '1px solid black',
-                                                    width: '25px',
-                                                    height: '25px',
-                                                }}
-                                            >
-                                                <DeleteOutlineOutlinedIcon style={{ fontSize: '15px', color: '#000' }} />
-                                            </IconButton>
-                                        </Box>
+                                                <IconButton
+                                                    onClick={() => handleDelete(table.id)}
+                                                    sx={{
+                                                        border: '1px solid black',
+                                                        width: '25px',
+                                                        height: '25px',
+                                                    }}
+                                                >
+                                                    <DeleteOutlineOutlinedIcon style={{ fontSize: '15px', color: '#000' }} />
+                                                </IconButton>
+                                            </Box>
+                                        }
                                     </Grid>
                                 ))}
                             </Grid>
                         </>
                     ) : (
                         <>
-                           {timeTableData.length > 0 && timeTableData[0].status === "schedule" && (
+                            {timeTableData.length > 0 && timeTableData[0].status === "schedule" && (
                                 <Box sx={{ backgroundColor: "#8338EC", width: "200px", borderRadius: "50px", display: "flex", justifyContent: "center", alignItems: "center", mb: 2 }}>
                                     <Typography
                                         sx={{
@@ -911,7 +922,7 @@ export default function HomeWorkPage() {
                                 </Box>
                             )}
 
-                            <Grid container spacing={1.5} sx={{mt:2}}>
+                            <Grid container spacing={1.5} sx={{ mt: 2 }}>
                                 {timeTableData.map((table, index) => (
                                     <Grid key={index} item lg={6} sx={{ position: 'relative' }}>
                                         <Typography sx={{ fontSize: '12px', color: '#595959', pb: 2 }}>
@@ -947,9 +958,12 @@ export default function HomeWorkPage() {
                                         <Item>
                                             <Grid container sx={{ py: 1 }}>
                                                 <Grid item xs={12} lg={6} sx={{ display: "flex", alignItems: "center" }}>
-                                                    <Typography sx={{ fontSize: '14px', color: '#000', fontWeight: '600' }}>
-                                                        {table.gradeSection}
-                                                    </Typography>
+                                                    <Box>
+                                                        <Typography sx={{ fontSize: '11px', }}>
+                                                            {table.gradeSection}
+                                                        </Typography>
+                                                        <Typography sx={{ fontWeight: "600", display: "flex", alignItems: "center" }}>{table.headLine}</Typography>
+                                                    </Box>
                                                 </Grid>
 
                                                 <Grid item xs={12} lg={6}>
@@ -985,23 +999,42 @@ export default function HomeWorkPage() {
                                                         </IconButton>
 
                                                         <Box sx={{ px: 1 }}>|</Box>
-
-                                                        <Button
-                                                            variant="outlined"
-                                                            onClick={() => handleViewClick("", table.filePath)}
-                                                            sx={{
-                                                                textTransform: 'none',
-                                                                px: 2,
-                                                                borderRadius: '30px',
-                                                                fontSize: '12px',
-                                                                color: '#E60154',
-                                                                fontWeight: '600',
-                                                                backgroundColor: '#fcf6f0',
-                                                                border: "none",
-                                                            }}
-                                                        >
-                                                            View Image
-                                                        </Button>
+                                                        {table.fileType === "image" &&
+                                                            <Button
+                                                                variant="outlined"
+                                                                onClick={() => handleViewClick("", table.filePath)}
+                                                                sx={{
+                                                                    textTransform: 'none',
+                                                                    px: 2,
+                                                                    borderRadius: '30px',
+                                                                    fontSize: '12px',
+                                                                    color: '#E60154',
+                                                                    fontWeight: '600',
+                                                                    backgroundColor: '#fcf6f0',
+                                                                    border: "none",
+                                                                }}
+                                                            >
+                                                                View Image
+                                                            </Button>
+                                                        }
+                                                        {table.fileType === "pdf" &&
+                                                            <Button
+                                                                variant="outlined"
+                                                                sx={{
+                                                                    textTransform: 'none',
+                                                                    px: 2,
+                                                                    borderRadius: '30px',
+                                                                    fontSize: '12px',
+                                                                    color: '#E60154',
+                                                                    fontWeight: '600',
+                                                                    backgroundColor: '#fcf6f0',
+                                                                    border: "none",
+                                                                }}
+                                                                onClick={() => handleViewClick("pdf", table.filePath)}
+                                                            >
+                                                                View PDF
+                                                            </Button>
+                                                        }
                                                     </Box>
                                                 </Grid>
                                             </Grid>

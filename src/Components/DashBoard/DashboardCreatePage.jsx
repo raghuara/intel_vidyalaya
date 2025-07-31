@@ -246,13 +246,13 @@ export default function CreateDashboardPage() {
                                         <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png" />
                                         <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                         <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                            Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                            Drag and drop files here, or click to upload.
                                         </Typography>
                                         <Typography variant="caption" color="textSecondary">
-                                            Supported Format: JPG, JPEG, WebP, PNG
+                                            Supported formats: JPG, JPEG, WebP, PNG
                                         </Typography>
                                         <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                            Maximum Size: 25MB
+                                            Max file size: 25MB
                                         </Typography>
                                     </Box>
                                     {uploadedFiles.length > 0 && (
@@ -449,13 +449,13 @@ export default function CreateDashboardPage() {
 
                         <Grid container>
                             {sliders.map((slider, index) => (
-                                <Grid key={index} item xs={12} sm={12} md={12} lg={4} sx={{ display: "flex", justifyContent: "center", mt: 2, px:0.5 }}>
+                                <Grid key={index} item xs={12} sm={12} md={12} lg={4} sx={{ display: "flex", justifyContent: "center", mt: 2, px: 0.5 }}>
                                     <Box
                                         sx={{
                                             position: "relative",
                                             width: "170px",
                                             height: "170px",
-                                            border:"1px solid #ccc",
+                                            border: "1px solid #ccc",
                                             "&:hover .overlay": {
                                                 opacity: 1,
                                             },

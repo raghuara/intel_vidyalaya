@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Grid, TextField, Typography, Button, Tabs, Tab, Switch, Stack, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, createTheme, ThemeProvider, Autocomplete, Paper, FormControl, Select, OutlinedInput, MenuItem, Checkbox, Popper, ClickAwayListener, AccordionSummary, Accordion, AccordionDetails } from "@mui/material";
+import { Box, Grid, TextField, Typography, Button, Tabs, Tab, Switch, Stack, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, createTheme, ThemeProvider, Autocomplete, Paper, FormControl, Select, OutlinedInput, MenuItem, Checkbox, Popper, ClickAwayListener, AccordionSummary, Accordion, AccordionDetails, FormControlLabel } from "@mui/material";
 import RichTextEditor from "../../TextEditor";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
@@ -12,17 +12,19 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectWebsiteSettings } from "../../../Redux/Slices/websiteSettingsSlice";
-import { GettingGrades, postCircular, postNews } from "../../../Api/Api";
+import { GettingGrades, GetUsersBaseDetails, postCircular, postNews } from "../../../Api/Api";
 import SnackBar from "../../SnackBar";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SimpleTextEditor from "../../EditTextEditor";
 import { selectGrades } from "../../../Redux/Slices/DropdownController";
 import Loader from "../../Loader";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddAdmissionNumbersDialog from "../../AddAdmissionNumberDialog";
 
 export default function CreateNewsPage() {
     const navigate = useNavigate()
     const ref = useRef();
+    const staffDropdownRef = useRef(null);
     const token = "123"
     const [heading, setHeading] = useState("");
     const [newsContentHTML, setNewsContentHTML] = useState("");
@@ -52,6 +54,18 @@ export default function CreateNewsPage() {
     const [changesHappended, setChangesHappended] = useState(false);
     const [expandedGrade, setExpandedGrade] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [isEveryone, setIsEveryone] = useState(false);
+    const [isPreview, setIsPreview] = useState(false);
+    const [specificNo, setSpecificNo] = useState("");
+    const [openTextarea, setOpenTextarea] = useState(false);
+    const [staffAnchorEl, setStaffAnchorEl] = useState(null);
+    const [selectedStaffs, setSelectedStaffs] = useState([]);
+    const [staffDropdownAnchorEl, setStaffDropdownAnchorEl] = useState(null);
+    const [selectedStaffOptions, setSelectedStaffOptions] = useState([]);
+    const [users, setUsers] = useState([]);
+    const staffOptions = ['Teaching', 'Non-Teaching', 'Supporting'];
+    const allSelected = staffOptions.every(option => selectedStaffOptions.includes(option));
+    const isIndeterminate = selectedStaffOptions.length > 0 && !allSelected;
 
     const [previewData, setPreviewData] = useState({
         heading: '',
@@ -174,6 +188,7 @@ export default function CreateNewsPage() {
 
 
     const handlePreview = () => {
+        setIsPreview(true)
         setPreviewData({
             heading,
             content: newsContentHTML,
@@ -214,9 +229,35 @@ export default function CreateNewsPage() {
         setFileType('')
     };
 
-    const handleRecipientChange = (event, value) => {
-        setChangesHappended(true)
-        setSelectedRecipient(value || "Everyone");
+    const handleEveryoneChange = (event) => {
+        setIsEveryone(event.target.checked);
+        setSelectedStaffOptions([])
+        setSelectedIds([])
+        setSpecificNo('')
+    };
+
+    const toggleStaffDropdown = () => {
+        setStaffDropdownAnchorEl(staffDropdownAnchorEl ? null : staffDropdownRef.current);
+    };
+
+    const handleStaffClickAway = () => {
+        setStaffDropdownAnchorEl(null);
+    };
+
+    const handleStaffOptionToggle = (option) => {
+        setSelectedStaffOptions((prev) =>
+            prev.includes(option)
+                ? prev.filter((item) => item !== option)
+                : [...prev, option]
+        );
+    };
+
+    const renderStaffValue = () => {
+        return selectedStaffOptions.length === 0 ? 'Select Staff' : selectedStaffOptions.join(', ');
+    };
+
+    const handleOpenTextArea = (value) => {
+        setOpenTextarea(value)
     };
 
     const handleDateChange = (newDTValue) => {
@@ -299,6 +340,10 @@ export default function CreateNewsPage() {
         return selectedData.length > 0 ? selectedData.join(", ") : "Select Class & Section";
     };
 
+    const handleShow = (event) => {
+        setIsPreview(false)
+    };
+
     useEffect(() => {
         fetchClass()
     }, []);
@@ -350,6 +395,33 @@ export default function CreateNewsPage() {
         }
     }, [uploadedFiles, pastedLink]);
 
+    useEffect(() => {
+        getUsers()
+    }, []);
+
+    const getUsers = async () => {
+        try {
+            const res = await axios.get(GetUsersBaseDetails, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setUsers(res.data.users)
+        } catch (error) {
+            console.error("Error while inserting news data:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const specificUsersArray = specificNo
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item !== "");
+
+    const staffUserTypesFormatted = selectedStaffOptions.map(item =>
+        item.toLowerCase().replace(/-/g, '')
+    );
 
     const handleInsertNewsData = async (status) => {
         setIsSubmitted(true);
@@ -361,6 +433,7 @@ export default function CreateNewsPage() {
             setColor(false);
             return;
         }
+
         if (!heading.trim()) {
             setMessage("Headline is required");
             setOpen(true);
@@ -368,6 +441,7 @@ export default function CreateNewsPage() {
             setStatus(false);
             return;
         }
+
         if (status === "post" || status === "schedule") {
             if (!newsContentHTML.trim()) {
                 setMessage("Description is required");
@@ -377,12 +451,11 @@ export default function CreateNewsPage() {
                 return;
             }
         }
-        setIsLoading(true);
 
+        setIsLoading(true);
 
         try {
             const sendData = new FormData();
-
             sendData.append("HeadLine", heading);
             sendData.append("Circular", newsContentHTML);
             sendData.append("UserType", userType);
@@ -393,8 +466,8 @@ export default function CreateNewsPage() {
             sendData.append("DraftedOn", status === 'draft' ? todayDateTime : "");
             sendData.append("FileType", fileType || "empty");
             sendData.append("File", uploadedFiles[0] || '');
-            sendData.append("Recipient", selectedRecipient);
-            sendData.append("GradeIds", gradeIds);
+            sendData.append("everyone", isEveryone ? "Y" : "");
+          
             const { gradeSections } = getGradeSectionsPayload();
             gradeSections.forEach((item, index) => {
                 sendData.append(`CircularGradeSections[${index}].GradeId`, item.gradeId);
@@ -402,6 +475,31 @@ export default function CreateNewsPage() {
                     sendData.append(`CircularGradeSections[${index}].Sections[${sIndex}]`, section);
                 });
             });
+
+            if (gradeSections.length > 0) {
+                sendData.append("students", "Y");
+            } else {
+                sendData.append("students", "");
+            }
+
+            if (selectedStaffOptions.length > 0) {
+                sendData.append("staffs", "Y");
+                staffUserTypesFormatted.forEach((type, index) => {
+                    sendData.append(`StaffUserTypes[${index}]`, type);
+                });
+            } else {
+                sendData.append("staffs", "");
+            }
+
+            if (specificUsersArray.length > 0) {
+                sendData.append("specific", "Y");
+
+                specificUsersArray.forEach((user, index) => {
+                    sendData.append(`SpecificUsers[${index}]`, user);
+                });
+            } else {
+                sendData.append("specific", "");
+            }
 
 
             const res = await axios.post(postCircular, sendData, {
@@ -470,209 +568,269 @@ export default function CreateNewsPage() {
                     <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "7px", mt: 4.5, maxHeight: "75.6vh", overflowY: "auto" }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <Typography sx={{ mb: 0.5 }}>Select Recipient</Typography>
-                                <Autocomplete
-                                    disablePortal
-                                    options={["Everyone", 'Students', 'Teachers']}
-                                    value={selectedRecipient}
-                                    onChange={handleRecipientChange}
+                                <FormControlLabel
                                     sx={{
-                                        width: "100%",
-                                        '& .MuiAutocomplete-inputRoot': {
-                                            height: '40px',
-                                        },
+                                        alignItems: 'center',
+                                        m: 0,
                                     }}
-                                    PaperComponent={(props) => (
-                                        <Paper
-                                            {...props}
-                                            style={{
-                                                ...props.style,
-                                                height: '100%',
-                                                fontSize: "6px",
-                                                backgroundColor: '#000',
-                                                color: '#fff',
-                                            }}
+                                    control={
+                                        <Checkbox
+                                            checked={isEveryone}
+                                            onChange={handleEveryoneChange}
+                                            color="primary"
+                                            sx={{ p: 0.5, mr: 1 }}
                                         />
-                                    )}
-                                    renderOption={(props, option) => (
-                                        <li
-                                            {...props}
-                                            style={{
-                                                ...props.style,
-                                                fontSize: "15px",
-                                            }}
-                                            className="classdropdownOptions"
-                                        >
-                                            {option}
-                                        </li>
-                                    )}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            //  label="Status"
-                                            {...params}
-
-                                            fullWidth
-                                            InputProps={{
-                                                ...params.InputProps,
-                                                endAdornment: params.InputProps.endAdornment,
-                                                sx: {
-                                                    paddingRight: 0,
-                                                    height: '33px',
-                                                    fontSize: "15px",
-                                                    backgroundColor: "#FFF"
-                                                },
-                                            }}
-                                        />
-                                    )}
+                                    }
+                                    label={
+                                        <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
+                                            Everyone
+                                        </Typography>
+                                    }
                                 />
+
                             </Grid>
-                            {selectedRecipient === "Students" &&
-                                <Grid item xs={12} sm={12} md={6} lg={6}>
-                                    <Typography sx={{ mb: 0.5, ml: 1 }}>Select Class</Typography>
-                                    <Box>
-                                        <Button
-                                            variant="outlined"
-                                            ref={ref}
-                                            onClick={toggleDropdown}
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                <Box>
+                                    <Button
+                                        variant="outlined"
+                                        ref={ref}
+                                        onClick={toggleDropdown}
+                                        disabled={isEveryone}
+                                        sx={{
+                                            width: "100%",
+                                            justifyContent: "flex-start",
+                                            textTransform: "none",
+                                            overflow: "hidden",
+                                            color: "#000",
+                                            border: "1px solid #ccc",
+                                            height: "40px",
+                                            textAlign: "left",
+                                            backgroundColor: "#fff",
+                                        }}
+                                    >
+                                        <Box
                                             sx={{
-                                                width: "100%",
-                                                justifyContent: "flex-start",
-                                                textTransform: "none",
                                                 overflow: "hidden",
-                                                color: "#000",
-                                                border: "1px solid #ccc",
-                                                height: "40px",
-                                                textAlign: "left",
-                                                backgroundColor: "#fff",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                width: "100%",
                                             }}
                                         >
-                                            <Box
-                                                sx={{
-                                                    overflow: "hidden",
-                                                    textOverflow: "ellipsis",
-                                                    whiteSpace: "nowrap",
-                                                    width: "100%",
-                                                }}
-                                            >
-                                                {renderValue()}
-                                            </Box>
-                                        </Button>
+                                            {renderValue()}
+                                        </Box>
+                                    </Button>
 
+                                    <Popper
+                                        open={Boolean(anchorEl)}
+                                        anchorEl={ref.current}
+                                        placement="bottom-start"
+                                        style={{ zIndex: 1300, width: ref.current?.offsetWidth }}
+                                    >
+                                        <ClickAwayListener onClickAway={handleClickAway}>
+                                            <Paper sx={{ maxHeight: 400, overflowY: "auto", bgcolor: "#000", color: "#fff", p: 1 }}>
 
-                                        <Popper
-                                            open={Boolean(anchorEl)}
-                                            anchorEl={ref.current}
-                                            placement="bottom-start"
-                                            style={{ zIndex: 1300, width: ref.current?.offsetWidth }}
-                                        >
-                                            <ClickAwayListener onClickAway={handleClickAway}>
-                                                <Paper sx={{ maxHeight: 400, overflowY: "auto", bgcolor: "#000", color: "#fff", p: 1 }}>
-
-                                                    <MenuItem
-                                                        onClick={handleSelectAll}
-                                                        sx={{ padding: "0px", mb: 1 }}
-                                                    >
-                                                        <Box sx={{
-                                                            border: "1px solid #fff",
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            backgroundColor: "#111",
-                                                            borderRadius: "3px",
-                                                            boxShadow: "none",
-                                                            border: "1px solid #333",
-                                                            width: "100%"
-                                                        }}>
-                                                            <Checkbox
-                                                                checked={isEveryoneChecked()}
-                                                                indeterminate={isEveryoneIndeterminate()}
-                                                                sx={{ color: "#fff", "&.Mui-checked": { color: "#fff" } }}
-                                                            />
-                                                            <Typography sx={{ fontSize: "14px" }}>Everyone</Typography>
-                                                        </Box>
-                                                    </MenuItem>
-                                                    {grades.map((grade) => (
-                                                        <Box key={grade.id} sx={{ mb: 1 }}>
-                                                            <Accordion
-                                                                expanded={expandedGrade === grade.id}
-                                                                onChange={() => { }}
-                                                                sx={{
-                                                                    backgroundColor: "#111",
-                                                                    boxShadow: "none",
-                                                                    border: "1px solid #333",
-                                                                }}
-                                                            >
-                                                                <AccordionSummary
-                                                                    sx={{ px: 1, pointerEvents: "none", }}
-                                                                    expandIcon={
-                                                                        <ExpandMoreIcon
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                setExpandedGrade(
-                                                                                    expandedGrade === grade.id ? null : grade.id
-                                                                                );
-                                                                            }}
-                                                                            sx={{ color: "#fff", pointerEvents: "auto" }}
-                                                                        />
-                                                                    }
-                                                                >
-                                                                    <Box
+                                                <MenuItem
+                                                    onClick={handleSelectAll}
+                                                    sx={{ padding: "0px", mb: 1 }}
+                                                >
+                                                    <Box sx={{
+                                                        border: "1px solid #fff",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        backgroundColor: "#111",
+                                                        borderRadius: "3px",
+                                                        boxShadow: "none",
+                                                        border: "1px solid #333",
+                                                        width: "100%"
+                                                    }}>
+                                                        <Checkbox
+                                                            checked={isEveryoneChecked()}
+                                                            indeterminate={isEveryoneIndeterminate()}
+                                                            sx={{ color: "#fff", "&.Mui-checked": { color: "#fff" } }}
+                                                        />
+                                                        <Typography sx={{ fontSize: "14px" }}>Everyone</Typography>
+                                                    </Box>
+                                                </MenuItem>
+                                                {grades.map((grade) => (
+                                                    <Box key={grade.id} sx={{ mb: 1 }}>
+                                                        <Accordion
+                                                            expanded={expandedGrade === grade.id}
+                                                            onChange={() => { }}
+                                                            sx={{
+                                                                backgroundColor: "#111",
+                                                                boxShadow: "none",
+                                                                border: "1px solid #333",
+                                                            }}
+                                                        >
+                                                            <AccordionSummary
+                                                                sx={{ px: 1, pointerEvents: "none", }}
+                                                                expandIcon={
+                                                                    <ExpandMoreIcon
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
-                                                                            handleGradeToggle(grade);
+                                                                            setExpandedGrade(
+                                                                                expandedGrade === grade.id ? null : grade.id
+                                                                            );
                                                                         }}
+                                                                        sx={{ color: "#fff", pointerEvents: "auto" }}
+                                                                    />
+                                                                }
+                                                            >
+                                                                <Box
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleGradeToggle(grade);
+                                                                    }}
+                                                                    sx={{
+                                                                        display: "flex",
+                                                                        alignItems: "center",
+                                                                        cursor: "pointer",
+                                                                        pointerEvents: "auto",
+                                                                    }}
+                                                                >
+                                                                    <Checkbox
+                                                                        checked={isGradeSelected(grade)}
+                                                                        indeterminate={
+                                                                            grade.sections.some((section) =>
+                                                                                selectedIds.includes(`${grade.id}-${section}`)
+                                                                            ) && !isGradeSelected(grade)
+                                                                        }
+                                                                        sx={{ color: "#fff", padding: "0px 10px 0px 0px", "&.Mui-checked": { color: "#fff" } }}
+                                                                    />
+                                                                    <Typography sx={{ fontSize: "14px", color: "white" }}>
+                                                                        {grade.sign}
+                                                                    </Typography>
+                                                                </Box>
+                                                            </AccordionSummary>
+                                                            <AccordionDetails>
+                                                                {grade.sections.map((section) => (
+                                                                    <MenuItem
+                                                                        key={section}
                                                                         sx={{
+                                                                            padding: "0px 10px 0px 30px",
                                                                             display: "flex",
                                                                             alignItems: "center",
-                                                                            cursor: "pointer",
-                                                                            pointerEvents: "auto",
+                                                                            color: "#fff",
                                                                         }}
+                                                                        onClick={() => handleSectionToggle(grade.id, section)}
                                                                     >
                                                                         <Checkbox
-                                                                            checked={isGradeSelected(grade)}
-                                                                            indeterminate={
-                                                                                grade.sections.some((section) =>
-                                                                                    selectedIds.includes(`${grade.id}-${section}`)
-                                                                                ) && !isGradeSelected(grade)
-                                                                            }
+                                                                            checked={selectedIds.includes(`${grade.id}-${section}`)}
                                                                             sx={{ color: "#fff", padding: "0px 10px 0px 0px", "&.Mui-checked": { color: "#fff" } }}
                                                                         />
-                                                                        <Typography sx={{ fontSize: "14px", color: "white" }}>
-                                                                            {grade.sign}
-                                                                        </Typography>
-                                                                    </Box>
-                                                                </AccordionSummary>
-                                                                <AccordionDetails>
-                                                                    {grade.sections.map((section) => (
-                                                                        <MenuItem
-                                                                            key={section}
-                                                                            sx={{
-                                                                                padding: "0px 10px 0px 30px",
-                                                                                display: "flex",
-                                                                                alignItems: "center",
-                                                                                color: "#fff",
-                                                                            }}
-                                                                            onClick={() => handleSectionToggle(grade.id, section)}
-                                                                        >
-                                                                            <Checkbox
-                                                                                checked={selectedIds.includes(`${grade.id}-${section}`)}
-                                                                                sx={{ color: "#fff", padding: "0px 10px 0px 0px", "&.Mui-checked": { color: "#fff" } }}
-                                                                            />
-                                                                            <Typography>{section}</Typography>
-                                                                        </MenuItem>
-                                                                    ))}
-                                                                </AccordionDetails>
-                                                            </Accordion>
-                                                        </Box>
-                                                    ))}
-                                                </Paper>
-                                            </ClickAwayListener>
-                                        </Popper>
-                                    </Box>
-                                </Grid>
+                                                                        <Typography>{section}</Typography>
+                                                                    </MenuItem>
+                                                                ))}
+                                                            </AccordionDetails>
+                                                        </Accordion>
+                                                    </Box>
+                                                ))}
+                                            </Paper>
+                                        </ClickAwayListener>
+                                    </Popper>
+                                </Box>
+                            </Grid>
+
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                <Button
+                                    disabled={isEveryone}
+                                    ref={staffDropdownRef}
+                                    onClick={toggleStaffDropdown}
+                                    sx={{
+                                        width: "100%",
+                                        justifyContent: "flex-start",
+                                        textTransform: "none",
+                                        overflow: "hidden",
+                                        color: "#000",
+                                        border: "1px solid #ccc",
+                                        height: "40px",
+                                        textAlign: "left",
+                                        backgroundColor: "#fff",
+                                    }}
+                                >
+                                    {renderStaffValue()}
+                                </Button>
+
+                                <Popper
+                                    open={Boolean(staffDropdownAnchorEl)}
+                                    anchorEl={staffDropdownAnchorEl}
+                                    style={{ zIndex: 1300, width: ref.current?.offsetWidth }}
+                                >
+                                    <ClickAwayListener onClickAway={handleStaffClickAway}>
+                                        <Paper sx={{ bgcolor: "#000", color: "#fff", p: 1 }}>
+                                            <Box sx={{ maxHeight: 300, overflowY: "auto" }}>
+                                                <MenuItem sx={{ py: 0 }} onClick={() => {
+                                                    if (allSelected) {
+                                                        setSelectedStaffOptions([]);
+                                                    } else {
+                                                        setSelectedStaffOptions(staffOptions);
+                                                    }
+                                                }}>
+                                                    <Checkbox
+                                                        style={{ color: "#fff" }}
+                                                        checked={allSelected}
+                                                        indeterminate={isIndeterminate}
+                                                    />
+                                                    Select All
+                                                </MenuItem>
+
+                                                {staffOptions.map((option) => (
+                                                    <MenuItem sx={{ py: 0 }} key={option} onClick={() => handleStaffOptionToggle(option)}>
+                                                        <Checkbox
+                                                            style={{ color: "#fff" }}
+                                                            checked={selectedStaffOptions.includes(option)}
+                                                        />
+                                                        {option}
+                                                    </MenuItem>
+                                                ))}
+                                            </Box>
+                                        </Paper>
+                                    </ClickAwayListener>
+                                </Popper>
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                {/* <Typography sx={{ mb: 0.5, ml: 1 }}>Add Admission Number</Typography> */}
+                                <Box>
+                                    <TextField
+                                        disabled={isEveryone}
+                                        value={specificNo}
+                                        placeholder="Specific Members"
+                                        size="small"
+                                        sx={{
+                                            width: "100%",
+                                            backgroundColor: "#fff",
+
+                                            '& .MuiInputBase-root': {
+                                                cursor: 'pointer',
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                cursor: 'pointer',
+                                            },
+                                            '& .MuiInputBase-input::placeholder': {
+                                                color: 'black',
+                                                opacity: 1,
+                                                fontSize: "14px"
+                                            },
+                                        }}
+                                        onClick={() => handleOpenTextArea(1)}
+                                    />
+                                </Box>
+                                <AddAdmissionNumbersDialog
+                                    open={openTextarea}
+                                    onClose={() => setOpenTextarea(false)}
+                                    users={users}
+                                    value={specificNo}
+                                    onSave={setSpecificNo}
+                                />
+
+                            </Grid>
+                            {isPreview &&
+                                <Box onClick={handleShow} sx={{ fontSize: "13px", ml: 2, mt: 0.5, cursor: "pointer", color: "#777", textDecoration: "underline" }}>Show selected items ᐅ</Box>
                             }
                         </Grid>
 
                         <Typography sx={{ mt: 2 }}>Add Heading <span style={{ color: "#777", fontSize: "13px", }}> (Required)</span></Typography>
+
                         <TextField
                             sx={{ backgroundColor: "#fff", }}
                             id="outlined-size-small"
@@ -682,6 +840,7 @@ export default function CreateNewsPage() {
                             value={heading}
                             onChange={handleHeadingChange}
                         />
+
                         {isSubmitted && !heading.trim() && (
                             <span style={{ color: "red", fontSize: "12px" }}>
                                 This field is required
@@ -690,7 +849,6 @@ export default function CreateNewsPage() {
                         <Typography sx={{ fontSize: "12px" }} color="textSecondary">
                             {`${heading.length}/100`}
                         </Typography>
-
 
                         <Typography sx={{ pt: 3 }}>Add Description<span style={{ color: "#777", fontSize: "13px" }}> (Required)</span></Typography>
 
@@ -727,14 +885,14 @@ export default function CreateNewsPage() {
                                     <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png, .pdf" />
                                     <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                     <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                        Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
-                                    </Typography>
-                                    <Typography variant="caption" color="textSecondary">
-                                        Supported Format: JPG, JPEG, WebP, PNG, PDF
-                                    </Typography>
-                                    <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                        Maximum Size: 25MB
-                                    </Typography>
+                                            Drag and drop files here, or click to upload.
+                                            </Typography>
+                                            <Typography variant="caption" color="textSecondary">
+                                            Supported formats: JPG, JPEG, WebP, PNG 
+                                            </Typography>
+                                            <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
+                                            Max file size: 25MB
+                                            </Typography>
                                 </Box>
                                 {uploadedFiles.length > 0 && (
                                     <Box
@@ -978,51 +1136,117 @@ export default function CreateNewsPage() {
 
                 <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
                     <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
-                        <Box>
-                            {previewData.heading && (
-                                <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                                    {previewData.heading}
+                        {!isPreview &&
+                            (isEveryone ? (
+                                <Typography sx={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                    For Everyone
                                 </Typography>
-                            )}
+                            ) : (
+                                <Box
+                                    sx={{
+                                        backgroundColor: "#f9f9f9",
+                                        borderRadius: "8px",
+                                        p: 2,
+                                        border: "1px solid #ddd",
+                                        boxShadow: "0px 1px 3px rgba(0,0,0,0.05)",
+                                    }}
+                                >
+                                    {/* Selected Students */}
+                                    <Box sx={{ mb: 2 }}>
+                                        <Typography sx={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                            Selected Class & Section
+                                        </Typography>
+                                        <Typography
+                                            sx={{
+                                                fontSize: "13px",
+                                                color: "#555",
+                                                mt: 0.5,
+                                                wordBreak: "break-word",
+                                            }}
+                                        >
+                                            {renderValue() || "None"}
+                                        </Typography>
+                                    </Box>
 
-                            {previewData.content && (
-                                <Typography
-                                    sx={{ fontSize: "14px", pt: 1 }}
-                                    dangerouslySetInnerHTML={{ __html: previewData.content }}
-                                />
-                            )}
+                                    {/* Selected Staffs */}
+                                    <Box sx={{ mb: 2 }}>
+                                        <Typography sx={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                            Selected Staff
+                                        </Typography>
+                                        <Typography
+                                            sx={{
+                                                fontSize: "13px",
+                                                color: "#555",
+                                                mt: 0.5,
+                                                wordBreak: "break-word",
+                                            }}
+                                        >
+                                            {selectedStaffOptions && selectedStaffOptions.length > 0
+                                                ? selectedStaffOptions.join(', ')
+                                                : "None"}
+                                        </Typography>
 
-                            <Grid container spacing={2} mt={2}>
-                                {previewData.uploadedFiles.map((file, index) => (
-                                    <Grid key={index} item xs={12} sm={12} md={5} lg={12} sx={{ display: "flex", py: 1 }}>
-                                        {fileType === "image" ? (
-                                            <img
-                                                src={URL.createObjectURL(file)}
-                                                width={'273px'}
-                                                height={'210px'}
-                                                alt={`Uploaded file ${index + 1}`}
-                                            />
-                                        ) : fileType === "pdf" ? (
-                                            <iframe
-                                                src={URL.createObjectURL(file)}
-                                                width="400px"
-                                                height="400px"
-                                                title={`Uploaded PDF ${index + 1}`}
-                                            ></iframe>
+                                    </Box>
 
-                                        ) : null}
-                                    </Grid>
-                                ))}
-                            </Grid>
+                                    {/* Specific */}
+                                    <Box>
+                                        <Typography sx={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                            Specific Members
+                                        </Typography>
+                                        <Typography
+                                            sx={{
+                                                fontSize: "13px",
+                                                color: "#555",
+                                                mt: 0.5,
+                                                wordBreak: "break-word",
+                                            }}
+                                        >
+                                            {specificNo || "None"}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            ))}
+                        {isPreview &&
+                            <Box>
+                                {previewData.heading && (
+                                    <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                                        {previewData.heading}
+                                    </Typography>
+                                )}
 
+                                {previewData.content && (
+                                    <Typography
+                                        sx={{ fontSize: "14px", pt: 1 }}
+                                        dangerouslySetInnerHTML={{ __html: previewData.content }}
+                                    />
+                                )}
 
+                                <Grid container spacing={2} mt={2}>
+                                    {previewData.uploadedFiles.map((file, index) => (
+                                        <Grid key={index} item xs={12} sm={12} md={5} lg={12} sx={{ display: "flex", py: 1 }}>
+                                            {fileType === "image" ? (
+                                                <img
+                                                    src={URL.createObjectURL(file)}
+                                                    width={'273px'}
+                                                    height={'210px'}
+                                                    alt={`Uploaded file ${index + 1}`}
+                                                />
+                                            ) : fileType === "pdf" ? (
+                                                <iframe
+                                                    src={URL.createObjectURL(file)}
+                                                    width="400px"
+                                                    height="400px"
+                                                    title={`Uploaded PDF ${index + 1}`}
+                                                ></iframe>
 
-
-
-
-                        </Box>
+                                            ) : null}
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Box>
+                        }
                     </Box>
                 </Grid>
 

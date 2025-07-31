@@ -12,7 +12,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import { attendanceReport } from '../../../Api/Api';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import * as XLSX from 'xlsx';
 
 export default function ExportAttendancePage() {
     const token = "123"
@@ -86,41 +86,44 @@ export default function ExportAttendancePage() {
         };
     }
 
-
     const handleClear = () => {
 
     };
 
     const handleExport = () => {
         const header = [
-            'S.No', 'Date', 'Roll Number', 'Student Name', 'Class', 'Section',
-            'Attendance Status', 'Attendance %'
+            'S.No', 'Roll Number', 'Student Name', 'Class', 'Section',
+            'Present', 'Late', 'Leave', 'Absent', 'Total Days', 'Attendance %'
         ];
-
+    
         const data = exportData.map((row, index) => [
             index + 1,
-            row.date,
             row.rollNumber,
             row.name,
             row.grade,
             row.section,
-            row.status,
+            row.present,
+            row.late,
+            row.leave,
+            row.absent,
+            row.noOfDays,
             row.percentage
         ]);
-
+    
         const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
-
+    
         const formattedFromDate = fromDate ? dayjs(fromDate).format("DD-MM-YYYY") : "";
         const formattedToDate = !onlyFromDate && toDate ? dayjs(toDate).format("DD-MM-YYYY") : "";
-
+    
         const fileName = formattedToDate
             ? `attendance_data_${formattedFromDate}-${formattedToDate}.xlsx`
             : `attendance_data_${formattedFromDate}.xlsx`;
-
+    
         XLSX.writeFile(wb, fileName);
     };
+    
 
     return (
         <Box>

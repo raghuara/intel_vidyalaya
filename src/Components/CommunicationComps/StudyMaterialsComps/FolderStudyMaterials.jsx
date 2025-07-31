@@ -164,6 +164,7 @@ export default function FolderStudyMaterialPage() {
                 </Box>
             </Box>
             <Box sx={{ p: 2 }}>
+                <Typography sx={{fontSize:"16px", fontWeight:"600", pl:1}}> {grade || grades?.[0]?.sign || ""}</Typography>
                 {folders.length === 0 && !isLoading ? (
                     <Box
                         sx={{
@@ -230,7 +231,7 @@ export default function FolderStudyMaterialPage() {
                                         </Typography>
                                     </Box>
                                 </CardActionArea>
-                                {(userType === "superadmin" || userType === "admin") &&
+                                {(userType === "superadmin" || userType === "admin" || userType === "staff") &&
                                     <IconButton sx={{
                                         position: "absolute",
                                         bottom: "13px",

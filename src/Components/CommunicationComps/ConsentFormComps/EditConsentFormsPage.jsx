@@ -603,7 +603,7 @@ export default function EditConsentFormsPage() {
 
                 <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5 }}>
                     <Box sx={{ backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>
                             {previewData.heading && (

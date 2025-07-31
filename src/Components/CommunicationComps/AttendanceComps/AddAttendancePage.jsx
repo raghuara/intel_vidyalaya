@@ -9,7 +9,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SimpleBarChartPage from "../../Chart/SimpleBarChart";
 import Loader from "../../Loader";
 import axios from "axios";
-import { DashboardTeachersAttendance, fetchAttendance, postAttendance, sectionsDropdown, updateAttendance } from "../../../Api/Api";
+import { DashboardStudentsAttendance, DashboardTeachersAttendance, fetchAttendance, postAttendance, sectionsDropdown, updateAttendance } from "../../../Api/Api";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -72,6 +72,7 @@ export default function AddAttendancePage() {
     const [selectedGradeId, setSelectedGradeId] = useState(null);
     const [selectedGradeSign, setSelectedGradeSign] = useState(null);
     const [selectedSection, setSelectedSection] = useState(null);
+    const [studentsGraphData, setStudentsGraphData] = useState([]);
 
     const selectedGrade = grades.find((grade) => grade.id === selectedGradeId);
     const sections = selectedGrade?.sections.map((section) => ({ sectionName: section })) || [];
@@ -81,6 +82,7 @@ export default function AddAttendancePage() {
             setSelectedSection(grades[0].sections[0]);
         }
     }, [grades]);
+
     const handleAttendanceChange = (rollNumber, value) => {
         setSelectedActions((prev) => ({
             ...prev,
@@ -109,7 +111,7 @@ export default function AddAttendancePage() {
 
     const data = { details: prepareAttendanceData() };
 
-const handleGradeChange = (newValue) => {
+    const handleGradeChange = (newValue) => {
         if (newValue) {
             setSelectedGradeId(newValue.id);
             setSelectedGradeSign(newValue.sign);
@@ -241,6 +243,7 @@ const handleGradeChange = (newValue) => {
 
     useEffect(() => {
         fetchAttendanceTable()
+        fetchStudentsGraphData();
     }, [formattedDate, selectedGradeSign, selectedSection, selectedFilter]);
 
     const fetchAttendanceTable = async () => {
@@ -250,8 +253,8 @@ const handleGradeChange = (newValue) => {
             const res = await axios.get(fetchAttendance, {
                 params: {
                     Date: formattedDate,
-                    Grade: selectedGradeSign || grades?.[0]?.sign || "",   
-                    Section: selectedSection || grades?.[0]?.sections?.[0] || "", 
+                    Grade: selectedGradeSign || grades?.[0]?.sign || "",
+                    Section: selectedSection || grades?.[0]?.sections?.[0] || "",
                     Status: selectedFilter || "overall",
                 },
                 headers: {
@@ -282,6 +285,27 @@ const handleGradeChange = (newValue) => {
             setFilteredData(filtered);
         } else {
             setFilteredData(attendanceTableData);
+        }
+    };
+
+    const fetchStudentsGraphData = async () => {
+        setIsLoading(true);
+        try {
+            const res = await axios.get(DashboardStudentsAttendance, {
+                params: {
+                    RollNumber: rollNumber,
+                    UserType: userType,
+                    Date: formattedDate,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setStudentsGraphData(res.data.studentsAttendance || {});
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -450,7 +474,7 @@ const handleGradeChange = (newValue) => {
                     <Grid item xs={12} sm={12} md={4} lg={7.5} sx={{ mt: 0.5, pl: 3 }}>
                         <Grid container spacing={1}>
                             <Grid item lg={2.4}>
-                            <Autocomplete
+                                <Autocomplete
                                     disablePortal
                                     options={grades}
                                     getOptionLabel={(option) => option.sign}
@@ -495,7 +519,7 @@ const handleGradeChange = (newValue) => {
                                 />
                             </Grid>
                             <Grid item lg={2.4}>
-                            <Autocomplete
+                                <Autocomplete
                                     disablePortal
                                     options={sections}
                                     getOptionLabel={(option) => option.sectionName}
@@ -641,171 +665,199 @@ const handleGradeChange = (newValue) => {
                 {/* <Box hidden={value !== 0}> */}
                 <Box sx={{ marginTop: "-10px" }}>
                     <Box sx={{ display: "flex" }}>
-                        <Grid container sx={{ justifyContent: "space-between" }}>
+                        <Grid container>
                             <Grid item xs={12} sm={12} md={5} lg={3} >
-                                <Box sx={{ display: "flex", border: "1px solid #E8DDEA", mt: 2.8, width: "100%", }}>
+                                <Box sx={{ display: "flex", mt: 2.8 }}>
                                     <Typography sx={{ fontSize: "12px", color: "#fff", backgroundColor: "#307EB9", padding: "0px 5px 0px 5px", borderRadius: "4px 0px 0px 0px", fontWeight: "600", }}>
-                                        {selectedClass} - {selectedClassSection}
+                                        {selectedGradeSign || "PREKG"} - {selectedSection}
                                     </Typography>
-                                    <Typography sx={{ fontSize: "12px", color: "#000", px: 1, }}>
+                                    {/* <Typography sx={{ fontSize: "12px", color: "#000", px: 1, }}>
                                         Class Teacher - {attendanceData.classTeacher}
+                                    </Typography> */}
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={5} lg={3} >
+                                </Grid>
+                            <Grid item xs={12} sm={12} md={5} lg={6} >
+                                <Box sx={{ display: "flex", mt: 2.8, px:2 }}>
+                                    <Grid container >
+                                        <Grid lg={3} sx={{display:"flex", justifyContent:"end"}}>
+                                        <Typography sx={{ fontSize: "14px", color: "#000", fontWeight: "600", }}>
+                                        Present: {attendanceData.present || 0}
                                     </Typography>
+                                        </Grid>
+                                        <Grid lg={3} sx={{display:"flex", justifyContent:"end"}}>
+                                        <Typography sx={{ fontSize: "14px", color: "#000", fontWeight: "600", }}>
+                                        Absent: {attendanceData.absent || 0}
+                                    </Typography>
+                                        </Grid>
+                                        <Grid lg={3} sx={{display:"flex", justifyContent:"end"}}>
+                                        <Typography sx={{ fontSize: "14px", color: "#000", fontWeight: "600", }}>
+                                        Leave: {attendanceData.leave || 0}
+                                    </Typography>
+                                        </Grid>
+                                        <Grid lg={3} sx={{display:"flex", justifyContent:"end"}}>
+                                        <Typography sx={{ fontSize: "14px", color: "#000", fontWeight: "600", }}>
+                                        Late: {attendanceData.late || 0}
+                                    </Typography>
+                                        </Grid>
+                                    </Grid>
                                 </Box>
                             </Grid>
 
                         </Grid>
                     </Box>
-                    <Box sx={{width:"100%", overflowX:"auto"}}>
-                    <TableContainer
-                        sx={{
-                            border: "1px solid #E8DDEA",
-                            maxHeight: "74vh",
-                            width:"77vw",
-                            overflowY: "auto",
+                    <Box sx={{ width: "100%", overflowX: "auto" }}>
+                        <TableContainer
+                            sx={{
+                                border: "1px solid #E8DDEA",
+                                maxHeight: "74vh",
+                                width: "77vw",
+                                overflowY: "auto",
 
-                        }}
-                    >
-                        <Table stickyHeader aria-label="attendance table" sx={{ minWidth: '100%' }}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        S.No
-                                    </TableCell>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        Roll Number
-                                    </TableCell>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        Student Name
-                                    </TableCell>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        Class
-                                    </TableCell>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        Student Picture
-                                    </TableCell>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        Attendance Action
-                                    </TableCell>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        Current Status
-                                    </TableCell>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        Attendance%
-                                    </TableCell>
-                                    <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
-                                        Student History
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {filteredData.map((row, index) => (
-                                    <TableRow key={row.rollNumber}>
-                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center" }}>
-                                            {index + 1}
+                            }}
+                        >
+                            <Table stickyHeader aria-label="attendance table" sx={{ minWidth: '100%' }}>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            S.No
                                         </TableCell>
-                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center" }}>
-                                            {row.rollNumber}
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            Roll Number
                                         </TableCell>
-                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center" }}>
-                                            {row.studentName}
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            Student Name
                                         </TableCell>
-                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", }}>{row.section}</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                borderRight: 1,
-                                                borderColor: "#E8DDEA",
-                                                textAlign: "center",
-                                            }}
-                                        >
-                                            <Button
-                                                sx={{ color: "#000", textTransform: "none" }}
-                                                onClick={() => handleViewClick(row.studentPicture)}
-                                            >
-                                                <ImageIcon sx={{ color: "#000", marginRight: 1 }} />
-                                                View
-                                            </Button>
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            Class
                                         </TableCell>
-
-                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA",pl:1, py:0,pr:0, width:"180px" }}>
-                                            <FormControl>
-                                                <RadioGroup
-                                                    value={selectedActions[row.rollNumber] ||
-                                                        (row.attendanceAction?.toLowerCase() === "no data" ? "present" : row.attendanceAction?.toLowerCase())}
-                                                    onChange={(e) => handleAttendanceChange(row.rollNumber, e.target.value)}
-                                                >
-                                                    <Grid container>
-                                                        {["present", "absent", "leave", "late"].map((status, index) => (
-                                                            <Grid
-                                                                key={status}
-                                                                item
-                                                                lg={6}
-                                                                // sx={{ marginTop: index === 0 ? 0 : "-15px" }}
-                                                            >
-                                                                <FormControlLabel
-                                                                    value={status}
-                                                                    control={
-                                                                        <Radio
-                                                                            sx={{
-                                                                                transform: "scale(0.8)",
-                                                                                marginRight: "-10px",
-                                                                                color: "#777",
-                                                                                "&.Mui-checked": {
-                                                                                    color: getColor(status),
-                                                                                },
-                                                                                ...(index === 1 && { marginLeft: "0px" }),
-                                                                            }}
-                                                                        />
-                                                                    }
-                                                                    label={status.charAt(0).toUpperCase() + status.slice(1)}
-                                                                    sx={{ marginRight: "0", "& .MuiTypography-root": { fontSize: "14px" } }}
-                                                                />
-                                                            </Grid>
-                                                        ))}
-                                                    </Grid>
-                                                </RadioGroup>
-                                            </FormControl>
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            Student Picture
                                         </TableCell>
-
-                                        <TableCell
-                                            sx={{
-                                                borderRight: 1,
-                                                borderColor: "#E8DDEA",
-                                                textAlign: "center",
-                                            }}
-                                        >
-                                            <Box
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            Attendance Action
+                                        </TableCell>
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            Current Status
+                                        </TableCell>
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            Attendance%
+                                        </TableCell>
+                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", backgroundColor: "#faf6fc" }}>
+                                            Student History
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {filteredData.map((row, index) => (
+                                        <TableRow key={row.rollNumber}>
+                                            <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center" }}>
+                                                {index + 1}
+                                            </TableCell>
+                                            <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center" }}>
+                                                {row.rollNumber}
+                                            </TableCell>
+                                            <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center" }}>
+                                                {row.studentName}
+                                            </TableCell>
+                                            <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", }}>{row.section}</TableCell>
+                                            <TableCell
                                                 sx={{
-                                                    backgroundColor: (() => {
-                                                        const value =
-                                                            selectedActions[row.rollNumber] ||
-                                                            (row.attendanceAction?.toLowerCase() === "no data" ? "Present" : row.attendanceAction);
-                                                        switch (value.toLowerCase()) {
-                                                            case "present":
-                                                                return "#018535";
-                                                            case "absent":
-                                                                return "#D84600";
-                                                            case "leave":
-                                                                return "#9E35C7";
-                                                            case "late":
-                                                                return "#3D49D6";
-                                                            default:
-                                                                return "#ccc";
-                                                        }
-                                                    })(),
-                                                    color: "#fff",
-                                                    borderRadius: "30px",
-                                                    px: 1,
-                                                    py: 0.5,
+                                                    borderRight: 1,
+                                                    borderColor: "#E8DDEA",
+                                                    textAlign: "center",
                                                 }}
                                             >
-                                                {capitalizeFirstLetter(
-                                                    selectedActions[row.rollNumber] ||
-                                                    (row.attendanceAction?.toLowerCase() === "no data" ? "Present" : row.attendanceAction)
-                                                )}
-                                            </Box>
-                                        </TableCell>
+                                                <Button
+                                                    sx={{ color: "#000", textTransform: "none" }}
+                                                    onClick={() => handleViewClick(row.studentPicture)}
+                                                >
+                                                    <ImageIcon sx={{ color: "#000", marginRight: 1 }} />
+                                                    View
+                                                </Button>
+                                            </TableCell>
 
-                                        {/* <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center" }}>
+                                            <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", pl: 1, py: 0, pr: 0, width: "180px" }}>
+                                                <FormControl>
+                                                    <RadioGroup
+                                                        value={selectedActions[row.rollNumber] ||
+                                                            (row.attendanceAction?.toLowerCase() === "no data" ? "present" : row.attendanceAction?.toLowerCase())}
+                                                        onChange={(e) => handleAttendanceChange(row.rollNumber, e.target.value)}
+                                                    >
+                                                        <Grid container>
+                                                            {["present", "absent", "leave", "late"].map((status, index) => (
+                                                                <Grid
+                                                                    key={status}
+                                                                    item
+                                                                    lg={6}
+                                                                // sx={{ marginTop: index === 0 ? 0 : "-15px" }}
+                                                                >
+                                                                    <FormControlLabel
+                                                                        value={status}
+                                                                        control={
+                                                                            <Radio
+                                                                                sx={{
+                                                                                    transform: "scale(0.8)",
+                                                                                    marginRight: "-10px",
+                                                                                    color: "#777",
+                                                                                    "&.Mui-checked": {
+                                                                                        color: getColor(status),
+                                                                                    },
+                                                                                    ...(index === 1 && { marginLeft: "0px" }),
+                                                                                }}
+                                                                            />
+                                                                        }
+                                                                        label={status.charAt(0).toUpperCase() + status.slice(1)}
+                                                                        sx={{ marginRight: "0", "& .MuiTypography-root": { fontSize: "14px" } }}
+                                                                    />
+                                                                </Grid>
+                                                            ))}
+                                                        </Grid>
+                                                    </RadioGroup>
+                                                </FormControl>
+                                            </TableCell>
+
+                                            <TableCell
+                                                sx={{
+                                                    borderRight: 1,
+                                                    borderColor: "#E8DDEA",
+                                                    textAlign: "center",
+                                                }}
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        backgroundColor: (() => {
+                                                            const value =
+                                                                selectedActions[row.rollNumber] ||
+                                                                (row.attendanceAction?.toLowerCase() === "no data" ? "Present" : row.attendanceAction);
+                                                            switch (value.toLowerCase()) {
+                                                                case "present":
+                                                                    return "#018535";
+                                                                case "absent":
+                                                                    return "#D84600";
+                                                                case "leave":
+                                                                    return "#9E35C7";
+                                                                case "late":
+                                                                    return "#3D49D6";
+                                                                default:
+                                                                    return "#ccc";
+                                                            }
+                                                        })(),
+                                                        color: "#fff",
+                                                        borderRadius: "30px",
+                                                        px: 1,
+                                                        py: 0.5,
+                                                    }}
+                                                >
+                                                    {capitalizeFirstLetter(
+                                                        selectedActions[row.rollNumber] ||
+                                                        (row.attendanceAction?.toLowerCase() === "no data" ? "Present" : row.attendanceAction)
+                                                    )}
+                                                </Box>
+                                            </TableCell>
+
+                                            {/* <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center" }}>
                                             <Box
                                                 sx={{
                                                     backgroundColor:
@@ -826,96 +878,96 @@ const handleGradeChange = (newValue) => {
                                             </Box>
                                         </TableCell> */}
 
-                                        <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", }}>{row.attendancePercent}%</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                borderRight: 1,
-                                                borderColor: "#E8DDEA",
-                                                textAlign: "center",
-                                            }}
-                                        >
-                                            <Button sx={{ color: "#000", textTransform: "none" }}>
-                                                View Details
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                        {/* <Box sx={{ height: '50px' }}></Box> */}
-                    </TableContainer>
+                                            <TableCell sx={{ borderRight: 1, borderColor: "#E8DDEA", textAlign: "center", }}>{row.attendancePercent}%</TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    borderRight: 1,
+                                                    borderColor: "#E8DDEA",
+                                                    textAlign: "center",
+                                                }}
+                                            >
+                                                <Button sx={{ color: "#000", textTransform: "none" }}>
+                                                    View Details
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            {/* <Box sx={{ height: '50px' }}></Box> */}
+                        </TableContainer>
                     </Box>
-                   
+
                 </Box>
                 {dayjs().isSame(selectedDate, 'day') && (
-                        <Box sx={{ display: "flex", justifyContent: "center"}}>
-                            {attendanceData.isAttendanceAdded === "N" &&
-                                <Button
-                                    onClick={handleSaveAttendance}
-                                    variant="contained"
-                                    sx={{
-                                        textTransform: 'none',
-                                        backgroundColor: websiteSettings.mainColor,
-                                        color: websiteSettings.textColor,
-                                        fontWeight: '600',
-                                        borderRadius: '50px',
-                                        paddingTop: '0px',
-                                        paddingBottom: '0px',
-                                        px: 3,
-                                        boxShadow: "none",
-                                        mt:2
-                                    }}
-                                >
-                                    Save
-                                </Button>
-                            }
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        {attendanceData.isAttendanceAdded === "N" &&
+                            <Button
+                                onClick={handleSaveAttendance}
+                                variant="contained"
+                                sx={{
+                                    textTransform: 'none',
+                                    backgroundColor: websiteSettings.mainColor,
+                                    color: websiteSettings.textColor,
+                                    fontWeight: '600',
+                                    borderRadius: '50px',
+                                    paddingTop: '0px',
+                                    paddingBottom: '0px',
+                                    px: 3,
+                                    boxShadow: "none",
+                                    mt: 2
+                                }}
+                            >
+                                Save
+                            </Button>
+                        }
 
-                            {attendanceData.isUpdateAvailable === "Y" &&
-                                <Button
-                                    onClick={handleUpdateAttendance}
-                                    variant="contained"
-                                    sx={{
-                                        textTransform: 'none',
-                                        backgroundColor: websiteSettings.mainColor,
-                                        color: websiteSettings.textColor,
-                                        fontWeight: '600',
-                                        borderRadius: '50px',
-                                        paddingTop: '0px',
-                                        paddingBottom: '0px',
-                                        px: 3,
-                                        boxShadow: "none",
-                                        mt:2
-                                    }}
-                                >
-                                    Update
-                                    
-                                </Button>
-                            }
-                            {(attendanceData.isAttendanceAdded === "N" || attendanceData.isUpdateAvailable === "Y") &&
+                        {attendanceData.isUpdateAvailable === "Y" &&
+                            <Button
+                                onClick={handleUpdateAttendance}
+                                variant="contained"
+                                sx={{
+                                    textTransform: 'none',
+                                    backgroundColor: websiteSettings.mainColor,
+                                    color: websiteSettings.textColor,
+                                    fontWeight: '600',
+                                    borderRadius: '50px',
+                                    paddingTop: '0px',
+                                    paddingBottom: '0px',
+                                    px: 3,
+                                    boxShadow: "none",
+                                    mt: 2
+                                }}
+                            >
+                                Update
 
-                                <Button
-                                    variant="outlined"
-                                    onClick={handleCancel}
-                                    sx={{
-                                        backgroundColor: '#fff',
-                                        textTransform: 'none',
-                                        color: '#000',
-                                        fontWeight: '600',
-                                        borderRadius: '50px',
-                                        paddingTop: '0px',
-                                        paddingBottom: '0px',
-                                        borderColor: "black",
-                                        px: 3,
-                                        boxShadow: "none",
-                                        ml:2,
-                                        mt:2
-                                    }}
-                                >   
-                                    Cancel
-                                </Button>
-                            }
-                        </Box>
-                    )}
+                            </Button>
+                        }
+                        {(attendanceData.isAttendanceAdded === "N" || attendanceData.isUpdateAvailable === "Y") &&
+
+                            <Button
+                                variant="outlined"
+                                onClick={handleCancel}
+                                sx={{
+                                    backgroundColor: '#fff',
+                                    textTransform: 'none',
+                                    color: '#000',
+                                    fontWeight: '600',
+                                    borderRadius: '50px',
+                                    paddingTop: '0px',
+                                    paddingBottom: '0px',
+                                    borderColor: "black",
+                                    px: 3,
+                                    boxShadow: "none",
+                                    ml: 2,
+                                    mt: 2
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        }
+                    </Box>
+                )}
 
                 <Dialog
                     open={openImage}
@@ -933,7 +985,7 @@ const handleGradeChange = (newValue) => {
                         style: { backgroundColor: 'rgba(0, 0, 0, 0.8)' },
                     }}
                 >
-                     <img
+                    <img
                         src={imageUrl || fallbackImage}
                         alt="Popup"
                         onError={(e) => {

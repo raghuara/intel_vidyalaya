@@ -274,7 +274,7 @@ export default function FeedBackPage() {
             <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px",borderBottom:"1px solid #ddd",  }}>
                 <Grid container py={1}>
                     <Grid item xs={6} sm={6} md={3} lg={4.3} sx={{ display: "flex", alignItems: "center" }}>
-                        <Typography sx={{ fontWeight: "600", fontSize: "20px" }} >Feedback From Parents</Typography>
+                        <Typography sx={{ fontWeight: "600", fontSize: "20px" }} >Feedback from Parents</Typography>
                     </Grid>
                     <Grid item xs={6} sm={6} md={3} lg={2} sx={{ display: "flex", justifyContent: "center", alignItems: "center", pt: 1 }}>
                         <Link to='questions'>
@@ -366,7 +366,7 @@ export default function FeedBackPage() {
                             }}
                         >
                             <AddIcon sx={{ fontSize: "20px" }} />
-                            &nbsp; Feed Back
+                            &nbsp; Feedback
                         </Button>
                     </Grid>
                 </Grid>
@@ -460,7 +460,7 @@ export default function FeedBackPage() {
                                                             sx={{
                                                                 fontWeight: "600",
                                                                 fontSize: "12px",
-                                                                color: "#000",
+                                                                color: websiteSettings.textColor,
                                                                 textAlign: "center",
                                                             }}
                                                         >
@@ -499,10 +499,13 @@ export default function FeedBackPage() {
                                                             sx={{ textAlign: "right" }}
                                                         >
                                                             <Typography sx={{ fontSize: "11px", color: "#8a8a8a" }}>
-                                                                Posted by: {newsItem.userType}
+                                                                Posted by: {newsItem.name} - {newsItem.rollNumber}
                                                             </Typography>
                                                             <Typography sx={{ fontSize: "11px", color: "#8a8a8a" }}>
-                                                                Time: {newsItem.time}
+                                                                Class: {newsItem.grade} - {newsItem.section}
+                                                            </Typography>
+                                                            <Typography sx={{ fontSize: "11px", color: "#8a8a8a" }}>
+                                                                Posted on:{dateGroup.postedOn}
                                                             </Typography>
                                                         </Grid>
                                                     </Grid>

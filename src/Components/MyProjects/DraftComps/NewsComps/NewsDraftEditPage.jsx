@@ -374,6 +374,7 @@ export default function NewsDraftEditPage() {
             sendData.append("Link", pastedLink || '');
             sendData.append("ScheduleOn", formattedDTValue || dateTimeValue || "");
             sendData.append("PostedOn", todayDateTime || "");
+            sendData.append("UpdatedOn", todayDateTime || "");
 
             const res = await axios.put(updateNews, sendData, {
                 headers: {
@@ -414,8 +415,6 @@ export default function NewsDraftEditPage() {
             setIsLoading(false);
         }
     };
-
-
 
     return (
         <Box sx={{ width: "100%" }}>
@@ -506,13 +505,13 @@ export default function NewsDraftEditPage() {
                                         <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png" />
                                         <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                         <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                            Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                            Drag and drop files here, or click to upload.
                                         </Typography>
                                         <Typography variant="caption" color="textSecondary">
-                                            Supported Format: JPG, JPEG, WebP, PNG
+                                            Supported formats: JPG, JPEG, WebP, PNG
                                         </Typography>
                                         <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                            Maximum Size: 25MB
+                                            Max file size: 25MB
                                         </Typography>
                                     </Box>
                                     {uploadedFiles.length > 0 && (
@@ -602,7 +601,6 @@ export default function NewsDraftEditPage() {
                                             </Box>
                                         </Box>
                                     )}
-
 
                                 </Box>
                             )}
@@ -804,7 +802,7 @@ export default function NewsDraftEditPage() {
 
                 <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
                     <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box p={1}>
                             {previewData.heading && (

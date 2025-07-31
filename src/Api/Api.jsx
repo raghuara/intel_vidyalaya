@@ -1,4 +1,4 @@
-// Production Link
+// Production Link 
 const baseApiurl = `https://schoolcommunicationintelwebapi.azurewebsites.net/api/`;
 
 // UAT Link
@@ -9,6 +9,8 @@ const Login = `${baseApiurl}Login`;
 // Common Apis 
 const sectionsDropdown = `${baseApiurl}attendance/sectionsDropdown`;
 const GettingGradesData = `${baseApiurl}GradeValueFetch/GettingGrades`;
+const GetUsersBaseDetails = `${baseApiurl}Dashboard/GetUsersBaseDetails`;
+const LoginList = `${baseApiurl}Dashboard/LoginList`;
 
 // Dashboard 
 const Dashboard = `${baseApiurl}Dashboard/`;
@@ -90,11 +92,13 @@ const postHomeWork = `${homeWork}postHomeWork`;
 const HomeWorkFetch = `${homeWork}HomeWorkFetch`;
 const FindHomeWork = `${baseApiurl}changeHomeWork/FindHomeWork`;
 const DeleteHomeWork = `${baseApiurl}changeHomeWork/DeleteHomeWork`;
-const updateHomeWork = `${baseApiurl}changeHomeWork/updateHomeWork`; 
-const fetchHomeworkStatus = `${baseApiurl}changeHomeWork/fetchHomeworkStatus`; 
-const postHomeworkStatus = `${baseApiurl}changeHomeWork/postHomeworkStatus`; 
-const updateHomeworkStatus = `${baseApiurl}changeHomeWork/updateHomeworkStatus`; 
-const homeworkStatusReport = `${baseApiurl}changeHomeWork/homeworkStatusReport`; 
+const updateHomeWork = `${baseApiurl}changeHomeWork/updateHomeWork`;
+const ApprovalStatusHomeWorkFetch = `${homeWork}ApprovalStatusHomeWorkFetch`;
+const updateHomeWorkApprovalAction = `${homeWork}updateHomeWorkApprovalAction`;
+const fetchHomeworkStatus = `${baseApiurl}changeHomeWork/fetchHomeworkStatus`;
+const postHomeworkStatus = `${baseApiurl}changeHomeWork/postHomeworkStatus`;
+const updateHomeworkStatus = `${baseApiurl}changeHomeWork/updateHomeworkStatus`;
+const homeworkStatusReport = `${baseApiurl}changeHomeWork/homeworkStatusReport`;
 
 // Exam Time Tables 
 const examtimetable = `${baseApiurl}examtimetable/`;
@@ -200,21 +204,12 @@ const GetStudentsInformation = `${studentManagement}GetStudentsInformation`;
 
 export {
     poststudyMaterial,
-    fetchHomeworkStatus,
-    updateHomeworkStatus,
-    fetchDairyStatus,
-    updateDairyStatus,
-    fetchDressCodeStatus,
-    updateDressCodeStatus,
-    homeworkStatusReport,
-    dairyStatusReport,
-    dresscodeStatusReport,
     deleteDashboardSlider,
-    postHomeworkStatus,
+    LoginList,
+    ApprovalStatusHomeWorkFetch,
+    updateHomeWorkApprovalAction,
+    GetUsersBaseDetails,
     BulkDeleteCircular,
-    postDairyStatus,
-    postDresscodeStatus,
-    attendanceReport,
     BulkDeleteNews,
     BulkDeleteMessage,
     postNotification,
@@ -230,6 +225,19 @@ export {
     updateConsentForm,
     GetConsentFormById,
     postAttendanceMessage,
+    attendanceReport,
+    postDairyStatus,
+    postDresscodeStatus,
+    fetchDairyStatus,
+    fetchDressCodeStatus,
+    updateDairyStatus,
+    updateDressCodeStatus,
+    dairyStatusReport,
+    dresscodeStatusReport,
+    fetchHomeworkStatus,
+    postHomeworkStatus,
+    updateHomeworkStatus,
+    homeworkStatusReport,
     NewsFetchDraft,
     updateFeedBack,
     MessageFetchDraft,

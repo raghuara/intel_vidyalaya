@@ -47,6 +47,13 @@ export default function MessagesApprovalEditPage() {
     const [formattedDTValue, setFormattedDTValue] = useState(null);
     const [newsStatus, setNewsStatus] = useState("");
     const [dateTimeValue, setDateTimeValue] = useState("");
+    const [gradeDetails, setGradeDetails] = useState([]);
+    const [isEveryone, setIsEveryone] = useState("");
+    const [isStudents, setIsStudents] = useState("");
+    const [isStaffs, setIsStaffs] = useState("");
+    const [isSpecific, setIsSpecific] = useState("");
+    const [selectedStaffs, setSelectedStaffs] = useState("");
+    const [specificUsers, setSpecificUsers] = useState("");
 
     dayjs.extend(utc);
     dayjs.extend(timezone);
@@ -232,6 +239,14 @@ export default function MessagesApprovalEditPage() {
             setHeading(res.data.headLine)
             setNewsContentHTML(res.data.message)
             setNewsStatus(res.data.status)
+            setIsEveryone(res.data.everyone)
+            setIsStudents(res.data.students)
+            setIsStaffs(res.data.staffs)
+            setIsSpecific(res.data.specific)
+            setSelectedStaffs(res.data.staffUserTypes)
+            setSpecificUsers(res.data.specificUsers)
+            setGradeDetails(res.data.gradeDetails)
+
             if (res.data.scheduleOn) {
                 console.log("scheduleOn", "true")
                 const parsedDate = dayjs(res.data.scheduleOn, "DD-MM-YYYY hh:mm A");
@@ -247,15 +262,6 @@ export default function MessagesApprovalEditPage() {
                 setDTValue(null);
                 setDateTimeValue(null);
             }
-            const recipient = res.data.recipient;
-            const formattedRecipient =
-                recipient.charAt(0) === recipient.charAt(0).toUpperCase()
-                    ? recipient
-                    : recipient.replace(/^\w/, (c) => c.toUpperCase());
-
-            setSelectedRecipient(formattedRecipient);
-            setSelectedGrade(res.data.grade)
-            setSelectedIds(res.data.gradeDetails)
         } catch (error) {
             console.error('Error deleting news:', error);
         } finally {
@@ -289,11 +295,16 @@ export default function MessagesApprovalEditPage() {
                 message: newsContentHTML,
                 userType: userType,
                 rollNumber: rollNumber,
-                recipient: selectedRecipient,
-                gradeAssignments: selectedIds,
+                gradeAssignments: gradeDetails,
                 scheduleOn: formattedDTValue || dateTimeValue || "",
                 updatedOn: todayDateTime,
-                action: "accept"
+                action: "accept",
+                everyone: isEveryone || "",
+                students: isStudents || "",
+                staffs: isStaffs || "",
+                specific: isSpecific || "",
+                staffUserTypes: selectedStaffs || [],
+                specificUsers: specificUsers || [],
             };
 
             const res = await axios.put(updateMessage, sendData, {
@@ -313,7 +324,7 @@ export default function MessagesApprovalEditPage() {
 
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {
-                setMessage(error.response.data.message);  // Display error from API
+                setMessage(error.response.data.message); 
             } else {
                 setMessage("An error occurred while updating the message.");
             }
@@ -694,7 +705,7 @@ export default function MessagesApprovalEditPage() {
 
                 <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
                     <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>
                             {previewData.heading && (

@@ -58,6 +58,12 @@ export default function EditNewsPage() {
     const grades = useSelector(selectGrades);
     const [newsStatus, setNewsStatus] = useState("");
     const [dateTimeValue, setDateTimeValue] = useState("");
+    const [isEveryone, setIsEveryone] = useState("");
+    const [isStudents, setIsStudents] = useState("");
+    const [isStaffs, setIsStaffs] = useState("");
+    const [isSpecific, setIsSpecific] = useState("");
+    const [selectedStaffs, setSelectedStaffs] = useState("");
+    const [specificUsers, setSpecificUsers] = useState("");
 
     const [previewData, setPreviewData] = useState({
         heading: '',
@@ -310,6 +316,12 @@ export default function EditNewsPage() {
             setSelectedCircularData(res.data)
             setHeading(res.data.headLine)
             setNewsStatus(res.data.status)
+            setIsEveryone(res.data.everyone)
+            setIsStudents(res.data.students)
+            setIsStaffs(res.data.staffs)
+            setIsSpecific(res.data.specific)
+            setSelectedStaffs(res.data.staffUserTypes)
+            setSpecificUsers(res.data.specificUsers)
             if (res.data.scheduleOn) {
                 console.log("scheduleOn", "true")
                 const parsedDate = dayjs(res.data.scheduleOn, "DD-MM-YYYY hh:mm A");
@@ -339,13 +351,6 @@ export default function EditNewsPage() {
                 setFileType("empty");
             }
 
-            const recipient = res.data.recipient;
-            const formattedRecipient =
-                recipient.charAt(0) === recipient.charAt(0).toUpperCase()
-                    ? recipient
-                    : recipient.replace(/^\w/, (c) => c.toUpperCase());
-
-            setSelectedRecipient(formattedRecipient);
             setSelectedGrade(res.data.grade)
             const transformedGradeDetails = res.data.gradeDetails.flatMap(item =>
                 item.sections.map(section => `${item.gradeId}-${section}`)
@@ -418,7 +423,10 @@ export default function EditNewsPage() {
             sendData.append("FileType", fileType);
             sendData.append("ScheduleOn", formattedDTValue || dateTimeValue || "");
             sendData.append("UpdatedOn", todayDateTime || "");
-            sendData.append("Recipient", selectedRecipient);
+            sendData.append("Everyone", isEveryone || "");
+            sendData.append("Students", isStudents || "");
+            sendData.append("Staffs", isStaffs || "");
+            sendData.append("Specific", isSpecific || "");
 
             const { gradeSections } = getGradeSectionsPayload();
             gradeSections.forEach((item, index) => {
@@ -428,6 +436,17 @@ export default function EditNewsPage() {
                 });
             });
 
+            if (selectedStaffs.length > 0) {
+                selectedStaffs.forEach((type, index) => {
+                    sendData.append(`StaffUserTypes[${index}]`, type);
+                });
+            }
+
+            if (specificUsers.length > 0) {
+                specificUsers.forEach((userId, index) => {
+                    sendData.append(`SpecificUsers[${index}]`, userId);
+                });
+            }
 
             const res = await axios.put(updateCircular, sendData, {
                 headers: {
@@ -532,13 +551,13 @@ export default function EditNewsPage() {
                                     <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png, .pdf" />
                                     <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                     <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                        Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                        Drag and drop files here, or click to upload.
                                     </Typography>
                                     <Typography variant="caption" color="textSecondary">
-                                        Supported Format: JPG, JPEG, WebP, PNG, PDF
+                                        Supported formats: JPG, JPEG, WebP, PNG
                                     </Typography>
                                     <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                        Maximum Size: 25MB
+                                        Max file size: 25MB
                                     </Typography>
                                 </Box>
                                 {uploadedFiles.length > 0 && (
@@ -816,7 +835,7 @@ export default function EditNewsPage() {
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
                     <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>
                             {previewData.heading && (

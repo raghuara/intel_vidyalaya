@@ -47,6 +47,7 @@ export default function EditHomeWorkPage() {
     const [fileType, setFileType] = useState('');
     const [dateTimeValue, setDateTimeValue] = useState("");
     const [newsStatus, setNewsStatus] = useState("");
+    const [heading, setHeading] = useState("");
     const theme = createTheme({
         palette: {
             mode: 'dark',
@@ -127,7 +128,16 @@ export default function EditHomeWorkPage() {
         setSelectedSection(null);
     };
 
+    const handleHeadingChange = (e) => {
+        setChangesHappended(true)
+        const newValue = e.target.value;
+        if (newValue.length <= 100) {
+            setHeading(newValue);
+        }
+    };
+
     const [previewData, setPreviewData] = useState({
+        heading: '',
         uploadedFiles: [],
     });
 
@@ -145,6 +155,7 @@ export default function EditHomeWorkPage() {
 
     const handlePreview = () => {
         setPreviewData({
+            heading,
             uploadedFiles,
         });
     };
@@ -215,6 +226,7 @@ export default function EditHomeWorkPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            setHeading(res.data.headLine)
             setSelectedSection(res.data.section)
             setSelectedGradeId(res.data.gradeId)
             setNewsStatus(res.data.status)
@@ -256,6 +268,7 @@ export default function EditHomeWorkPage() {
             sendData.append("Id", id);
             sendData.append("UserType", userType);
             sendData.append("RollNumber", rollNumber);
+            sendData.append("HeadLine", heading);
             sendData.append("FileType", fileType);
             sendData.append("File", uploadedFiles[0] || '');
             sendData.append("Status", status);
@@ -375,6 +388,18 @@ export default function EditHomeWorkPage() {
                             </Grid>
 
                             <Grid item lg={12}>
+                                <Typography sx={{ mt: 2 }}>Add Heading</Typography>
+                                <TextField
+                                    id="outlined-size-small"
+                                    size="small"
+                                    fullWidth
+                                    value={heading}
+                                    sx={{ backgroundColor: "#fff", }}
+                                    onChange={handleHeadingChange}
+                                />
+                            </Grid>
+
+                            <Grid item lg={12}>
                                 <Typography sx={{ mb: 0.5, mt: 3, }}>Select Recipient</Typography>
                                 <Box sx={{ mt: 1, textAlign: "center" }}>
                                     <Box
@@ -391,13 +416,13 @@ export default function EditHomeWorkPage() {
                                         <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png, .pdf" />
                                         <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                         <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                            Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                            Drag and drop files here, or click to upload.
                                         </Typography>
                                         <Typography variant="caption" color="textSecondary">
-                                            Supported Format: JPG, JPEG, WebP, PNG, PDF
+                                            Supported formats: JPG, JPEG, WebP, PNG
                                         </Typography>
                                         <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                            Maximum Size: 25MB
+                                            Max file size: 25MB
                                         </Typography>
                                     </Box>
                                     {uploadedFiles.length > 0 && (
@@ -433,7 +458,6 @@ export default function EditHomeWorkPage() {
                                                     <IconButton
                                                         sx={{
                                                             position: "absolute",
-
                                                             top: -15,
                                                             right: -15,
                                                         }}
@@ -598,9 +622,14 @@ export default function EditHomeWorkPage() {
 
                 <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
                     <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>
+                        {previewData.heading && (
+                                <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                                    {previewData.heading}
+                                </Typography>
+                            )}
                             <Grid container spacing={2}>
                                 {previewData.uploadedFiles.map((file, index) => (
                                     <Grid key={index} item xs={12} sm={12} md={5} lg={12} sx={{ display: "flex", py: 1 }}>

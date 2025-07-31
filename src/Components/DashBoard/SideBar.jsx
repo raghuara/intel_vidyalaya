@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Button, Typography, Box, List, ListItem, ListItemText, ListItemIcon, useMediaQuery, useTheme, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Tooltip, styled, tooltipClasses } from '@mui/material';
-import DashboardIcon from '../../Images/Icons/view-dashboard-outline.png';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -241,7 +240,6 @@ function SideBarPage({ mobileOpen, setMobileOpen }) {
       <Box sx={{ px: 3, pt: 2 }}>
         {isExpanded ? (
           <>
-
             <Box sx={{ backgroundColor: "#fff", borderRadius: "10px" }}>
 
               <CustomTooltip title="Edit Profile" arrow placement="right-start">
@@ -260,7 +258,7 @@ function SideBarPage({ mobileOpen, setMobileOpen }) {
                 </IconButton>
               </CustomTooltip>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                   {!imageError && newsDetails.filepath ? (
                     <img
                       src={newsDetails.filepath}
@@ -283,7 +281,7 @@ function SideBarPage({ mobileOpen, setMobileOpen }) {
             </Box>
           </>
         ) : (
-          <Box sx={{ display: "flex", justifyContent: "center", px: 2, pt:2, pb:6}}>
+          <Box sx={{ display: "flex", justifyContent: "center", px: 2, pt: 2, pb: 6 }}>
             {!imageError && newsDetails.filepath ? (
               <img
                 src={newsDetails.filepath}
@@ -922,25 +920,29 @@ function SideBarPage({ mobileOpen, setMobileOpen }) {
             </Box>
           )}
 
-
           <Box px={3}>
             <hr style={{ color: "#fff" }} />
           </Box>
 
-          {isExpanded ?
-            <Box px={5}>
-              <Typography className="activeSidebarText" sx={{ fontWeight: "600", fontSize: "15px" }}>
-                Manage
-              </Typography>
-            </Box>
-            :
-            <Box px={2}>
+          {userType !== "teacher" &&
+            <Box>
+              {isExpanded ?
+                <Box px={5}>
+                  <Typography className="activeSidebarText" sx={{ fontWeight: "600", fontSize: "15px" }}>
+                    Manage
+                  </Typography>
+                </Box>
+                :
+                <Box px={2}>
 
-              <Typography className="activeSidebarText" sx={{ fontWeight: "600", fontSize: "12px" }}>
-                Manage
-              </Typography>
+                  <Typography className="activeSidebarText" sx={{ fontWeight: "600", fontSize: "12px" }}>
+                    Manage
+                  </Typography>
+                </Box>
+              }
             </Box>
           }
+
           {/* Approvals Tab */}
 
           {(userType === "superadmin" || userType === "admin") && (
@@ -1018,104 +1020,58 @@ function SideBarPage({ mobileOpen, setMobileOpen }) {
             </ListItem>
           )}
 
-          {/* ERP Tab */}
-          <ListItem
-            onClick={() => !isDisabled && handleMenuClickOne('erp')}
-            sx={{
-              borderRadius: 2,
-              px: 3,
-              paddingTop: '3px',
-              paddingBottom: '3px',
-              cursor: isDisabled ? 'not-allowed' : 'pointer',
-              opacity: isDisabled ? 0.5 : 1,
-              pointerEvents: isDisabled ? 'none' : 'auto',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingTop: '2px',
-                paddingBottom: '2px',
-                borderRadius: '5px',
-                boxShadow: isActive('/dashboardmenu/erp') && !isDisabled ? '1px 1px 2px 0.5px rgba(0, 0, 0, 0.4)' : 'inherit',
-                width: '100%',
-                backgroundColor: isDisabled
-                  ? ''
-                  : isActive('/dashboardmenu/erp')
-                    ? websiteSettings.mainColor
-                    : 'inherit',
-                color: isDisabled
-                  ? '#A0A0A0'
-                  : isActive('/dashboardmenu/erp')
-                    ? websiteSettings.textColor
-                    : '#000',
-                position: 'relative',
-                '&:hover': {
-                  backgroundColor: isDisabled
-                    ? 'none' // Prevent hover styles when disabled
-                    : !isActive('/dashboardmenu/erp')
-                      ? websiteSettings.lightColor
-                      : 'none',
-                },
-              }}
-            >
-              {isExpanded && (
+          {(userType === "superadmin" || userType === "admin" || userType === "staff") && (
+            <ListItem onClick={() => handleMenuClickOne('access')} sx={{ borderRadius: 2, px: 3, paddingTop: '3px', paddingBottom: '3px' }}>
+              <CustomTooltip title={isExpanded ? "" : "Access Control"} arrow placement="right-start">
                 <Box
                   sx={{
-                    width: '5px',
-                    backgroundColor: isDisabled
-                      ? 'transparent' // No indicator when disabled
-                      : isActive('/dashboardmenu/erp')
-                        ? websiteSettings.darkColor
-                        : 'inherit',
-                    height: '100%',
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    borderTopLeftRadius: '5px',
-                    borderBottomLeftRadius: '5px',
+                    display: 'flex',
+                    justifyContent: "center",
+                    alignItems: 'center',
+                    paddingTop: '2px',
+                    paddingBottom: '2px',
+                    borderRadius: '5px',
+                    boxShadow: isActive('/dashboardmenu/access') ? '1px 1px 2px 0.5px rgba(0, 0, 0, 0.4)' : 'inherit',
+                    width: '100%',
+                    backgroundColor: isActive('/dashboardmenu/access') ? websiteSettings.mainColor : 'inherit',
+                    color: isActive('/dashboardmenu/access') ? websiteSettings.textColor : '#000',
+                    position: 'relative',
+                    '&:hover': { backgroundColor: 'none' },
+                    cursor: "pointer",
+                    '&:hover': {
+                      backgroundColor: !isActive('/dashboardmenu/access') ? websiteSettings.lightColor : 'none',
+                    }
                   }}
-                />
-              )}
-              <ListItemIcon
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <KeyIcon
-                  style={{
-                    color: isDisabled
-                      ? '#000' // Disabled icon color
-                      : isActive('/dashboardmenu/erp')
-                        ? websiteSettings.textColor
-                        : '#000',
-                  }}
-                />
-              </ListItemIcon>
-              {isExpanded && (
-                <ListItemText>
-                  <Typography
-                    className="activeSidebarText"
-                    sx={{
-                      color: isDisabled
-                        ? '#000' // Disabled text color
-                        : isActive('/dashboardmenu/erp')
-                          ? websiteSettings.textColor
-                          : '#000',
-                    }}
-                  >
-                    Access Control
-                  </Typography>
-                </ListItemText>
-              )}
-            </Box>
-          </ListItem>
+                >
+                  {isExpanded && (
+                    <Box
+                      sx={{
+                        width: '5px',
+                        backgroundColor: isActive('/dashboardmenu/access') ? websiteSettings.darkColor : 'inherit',
+                        height: '100%',
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        borderTopLeftRadius: '5px',
+                        borderBottomLeftRadius: '5px',
+                      }}
+                    />
+                  )}
+                  <ListItemIcon sx={{ display: "flex", justifyContent: "center", alignItems: "center", }}>
+                    <KeyIcon style={{ color: isActive('/dashboardmenu/access') ? websiteSettings.textColor : '#000', }} />
+                  </ListItemIcon>
+                  {isExpanded && (
+                    <ListItemText>
+                      <Typography className="activeSidebarText" sx={{ color: isActive('/dashboardmenu/access') ? websiteSettings.textColor : '#000' }}>
+                        Access Control
+                      </Typography>
+                    </ListItemText>
+                  )}
+                </Box>
+              </CustomTooltip>
+            </ListItem>
+          )}
         </Box>
-
 
         <Box sx={{ display: "flex", justifyContent: "center", backgroundColor: websiteSettings.backgroundColor }}>
           {isExpanded ?

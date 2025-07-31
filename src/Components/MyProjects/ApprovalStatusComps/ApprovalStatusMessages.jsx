@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { selectWebsiteSettings } from "../../../Redux/Slices/websiteSettingsSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -20,6 +20,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { selectGrades } from "../../../Redux/Slices/DropdownController";
 
 export default function ApprovalStatusMessagesPage() {
     const handleOpen = () => setOpenCal(true);
@@ -56,6 +57,11 @@ export default function ApprovalStatusMessagesPage() {
     const [value, setValue] = useState(0);
     const tabValues = ["all", "pending", "declined"];
     const [selectedValue, setSelectedValue] = useState("all");
+    const [messageDetails, setMessageDetails] = useState(null);
+    const [openDeliveredAlert, setOpenDeliveredAlert] = useState(false);
+    const dispatch = useDispatch();
+    const grades = useSelector(selectGrades);
+
 
     const toggleReadMore = (id) => {
         setExpandedMessageId((prevId) => (prevId === id ? null : id));
@@ -69,7 +75,27 @@ export default function ApprovalStatusMessagesPage() {
         setImageUrl(url);
         setOpenImage(true);
     };
+    const handleDeliver = (messageItem) => {
+        setMessageDetails(messageItem)
+        setOpenDeliveredAlert(true);
 
+    };
+    const getGradeNames = (gradeSectionMappings) => {
+        return gradeSectionMappings
+            .map((mapping) => {
+                const grade = grades.find((g) => g.id === mapping.gradeId);
+                if (grade) {
+                    const sections = mapping.sections.join(', ');
+                    return `${grade.sign} (${sections})`;
+                }
+                return null;
+            })
+            .filter(Boolean)
+            .join(', ');
+    };
+    const handleDeliveredCloseDialog = () => {
+        setOpenDeliveredAlert(false);
+    };
     const handleImageClose = () => {
         setOpenImage(false);
     };
@@ -210,14 +236,14 @@ export default function ApprovalStatusMessagesPage() {
             setIsLoading(false);
         }
     };
-    if ( userType !== "admin" && userType !== "staff") {
+    if (userType !== "admin" && userType !== "staff") {
         return <Navigate to="/dashboardmenu/dashboard" replace />;
     }
     return (
         <Box sx={{ width: "100%", }}>
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
             {isLoading && <Loader />}
-            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px",  borderBottom:"1px solid #ddd", }}>
+            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px", borderBottom: "1px solid #ddd", }}>
                 <Grid2 container>
                     <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6.5 }} sx={{ display: "flex", alignItems: "center", py: 1.5 }}>
                         <Link style={{ textDecoration: "none" }} to="/dashboardmenu/status">
@@ -264,7 +290,7 @@ export default function ApprovalStatusMessagesPage() {
                     <Grid2 size={{ xs: 6, sm: 6, md: 3, lg: 1.5 }} sx={{ display: "flex", justifyContent: "end", alignItems: "center", px: 1 }}>
                         <Box sx={{ px: 1, }}>
                             <ThemeProvider theme={darkTheme}>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
                                         open={openCal}
                                         onClose={handleClose}
@@ -301,21 +327,21 @@ export default function ApprovalStatusMessagesPage() {
                                         <CalendarMonthIcon style={{ color: "#000" }} />
                                     </IconButton>
                                     {selectedDate ? (
-                                      <Tooltip title="Clear Date">
-                                      <IconButton sx={{
-                                          marginTop: '10px', 
-                                          width: '40px',
-                                          mt: 0.8,
-                                          height: '40px',
-                                          transition: 'color 0.3s, background-color 0.3s',
-                                          '&:hover': {
-                                              color: '#fff',
-                                              backgroundColor: 'rgba(0,0,0,0.1)',
-                                          },
-                                      }} onClick={handleClearDate}>
-                                          <HighlightOffIcon style={{ color: "#000" }} />
-                                      </IconButton>
-                                  </Tooltip>
+                                        <Tooltip title="Clear Date">
+                                            <IconButton sx={{
+                                                marginTop: '10px',
+                                                width: '40px',
+                                                mt: 0.8,
+                                                height: '40px',
+                                                transition: 'color 0.3s, background-color 0.3s',
+                                                '&:hover': {
+                                                    color: '#fff',
+                                                    backgroundColor: 'rgba(0,0,0,0.1)',
+                                                },
+                                            }} onClick={handleClearDate}>
+                                                <HighlightOffIcon style={{ color: "#000" }} />
+                                            </IconButton>
+                                        </Tooltip>
                                     ) : (
                                         <Box sx={{ width: "80px" }}>
                                         </Box>
@@ -396,9 +422,44 @@ export default function ApprovalStatusMessagesPage() {
                                                         size={{ xs: 12, sm: 12, lg: 8 }}
                                                         sx={{ display: "flex", alignItems: "center", }}
                                                     >
-                                                        <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                                                            {statusItem.headLine === null ? "" : statusItem.headLine}
-                                                        </Typography>
+                                                        <Box>
+                                                            <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                                                                {statusItem.headLine === null ? "" : statusItem.headLine}
+                                                            </Typography>
+                                                            <Box sx={{ display: "flex" }}>
+                                                                <Typography sx={{ fontSize: '12px', color: '#777' }}>
+                                                                    Delivered to: {
+                                                                        statusItem.everyone === "Y"
+                                                                            ? "Everyone"
+                                                                            : [
+                                                                                statusItem.students === "Y" ? "Students" : null,
+                                                                                statusItem.staffs === "Y" ? "Staffs" : null,
+                                                                                statusItem.specific === "Y" ? "Specific" : null
+                                                                            ].filter(Boolean).join(", ")
+                                                                    }
+                                                                </Typography>
+
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    sx={{
+                                                                        textTransform: "none",
+                                                                        width: "50px",
+                                                                        height: "20px",
+                                                                        borderRadius: "30px",
+                                                                        fontSize: "10px",
+                                                                        border: "1px solid #777",
+                                                                        color: '#777',
+                                                                        fontWeight: "600",
+                                                                        ml: 2
+                                                                    }}
+                                                                    onClick={() => handleDeliver(statusItem)}
+                                                                >
+                                                                    &nbsp;View
+                                                                </Button>
+
+
+                                                            </Box>
+                                                        </Box>
                                                     </Grid2>
                                                     <Grid2
                                                         size={{ xs: 12, sm: 12, lg: 4 }}
@@ -757,6 +818,82 @@ export default function ApprovalStatusMessagesPage() {
                     </IconButton>
                 </DialogActions>
             </Dialog>
+            <Dialog open={openDeliveredAlert} onClose={() => setOpenDeliveredAlert(false)}>
+                <Box sx={{ display: "flex", justifyContent: "center", p: 2, backgroundColor: '#fff', }}>
+
+                    <Box sx={{
+                        backgroundColor: '#fff',
+                        p: 1,
+                    }}>
+                        <Typography sx={{ fontWeight: "600" }}>Delivered Details</Typography>
+                        <hr />
+                        <Box sx={{ maxHeight: "400px", overflowY: "auto", minHeight: "100px", minWidth: "400px" }}>
+                            {messageDetails?.everyone === "Y" ? (
+                                <Typography sx={{ fontWeight: "600", fontSize: "14px" }}>For everyone</Typography>
+                            ) : (
+                                <>
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Students:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "11.5px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.gradeSegments?.length > 0
+                                                ? getGradeNames(messageDetails.gradeSegments)
+                                                : "No students selected"}
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Staffs:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "12px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.staffUserTypes?.length > 0
+                                                ? messageDetails.staffUserTypes
+                                                    .map((type) => {
+                                                        if (type === "teaching") return "Teaching";
+                                                        if (type === "nonteaching") return "Non - Teaching";
+                                                        if (type === "supporting") return "Supporting";
+                                                        return type;
+                                                    })
+                                                    .join(', ')
+                                                : "No staff selected"}
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "#333", mb: 2 }}>
+                                        Selected Users:&nbsp;
+                                        <Box component="span" sx={{ fontSize: "12px", fontWeight: 500, color: "#555" }}>
+                                            {messageDetails?.specificUsers?.length > 0
+                                                ? messageDetails.specificUsers.join(', ')
+                                                : "No users selected"}
+                                        </Box>
+                                    </Typography>
+                                </>
+                            )}
+                        </Box>
+
+
+                        <DialogActions sx={{
+                            justifyContent: 'center',
+                            backgroundColor: '#fff',
+                            pt: 2
+                        }}>
+                            <Button
+                                onClick={() => handleDeliveredCloseDialog(false)}
+                                sx={{
+                                    textTransform: 'none',
+                                    width: "70px",
+                                    borderRadius: '30px',
+                                    fontSize: '12px',
+                                    py: 0.2,
+                                    border: '1px solid black',
+                                    color: 'black',
+                                }}
+                            >
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Box>
+
+                </Box>
+            </Dialog >
         </Box >
     );
 }

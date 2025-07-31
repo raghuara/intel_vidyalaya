@@ -47,6 +47,7 @@ export default function CreateHomeWorkPage() {
     const selectedGrade = grades.find(grade => grade.id === selectedGradeId);
     const sections = selectedGrade?.sections.map(section => ({ sectionName: section })) || [];
     const [formattedDTValue, setFormattedDTValue] = useState(null);
+    const [heading, setHeading] = useState("");
     const theme = createTheme({
         palette: {
             mode: 'dark',
@@ -127,7 +128,13 @@ export default function CreateHomeWorkPage() {
         setSelectedSection(null);
         setGradeError(false);
     };
-
+    const handleHeadingChange = (e) => {
+        setChangesHappended(true)
+        const newValue = e.target.value;
+        if (newValue.length <= 100) {
+            setHeading(newValue);
+        }
+    };
     const handleSectionChange = (event, newValue) => {
         setChangesHappended(true)
         setSelectedSection(newValue?.sectionName || null);
@@ -233,6 +240,7 @@ export default function CreateHomeWorkPage() {
             sendData.append("Section", selectedSection);
             sendData.append("UserType", userType);
             sendData.append("RollNumber", rollNumber);
+            sendData.append("HeadLine", heading);
             sendData.append("FileType", fileType);
             sendData.append("File", uploadedFiles[0] || '');
             sendData.append("Status", status);
@@ -391,6 +399,18 @@ export default function CreateHomeWorkPage() {
                             </Grid>
 
                             <Grid item lg={12}>
+
+                                <Typography sx={{ mt: 2 }}>Add Heading</Typography>
+                                <TextField
+                                    id="outlined-size-small"
+                                    size="small"
+                                    fullWidth
+                                    value={heading}
+                                    sx={{ backgroundColor: "#fff", }}
+                                    onChange={handleHeadingChange}
+                                />
+                            </Grid>
+                            <Grid item lg={12}>
                                 <Typography sx={{ mb: 0.5, mt: 2, }}>Select Image</Typography>
                                 <Box sx={{ mt: 1, textAlign: "center" }}>
                                     <Box
@@ -407,13 +427,13 @@ export default function CreateHomeWorkPage() {
                                         <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png, .pdf" />
                                         <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                         <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                            Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                            Drag and drop files here, or click to upload.
                                         </Typography>
                                         <Typography variant="caption" color="textSecondary">
-                                            Supported Format: JPG, JPEG, WebP, PNG, PDF
+                                            Supported formats: JPG, JPEG, WebP, PNG
                                         </Typography>
                                         <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                            Maximum Size: 25MB
+                                            Max file size: 25MB
                                         </Typography>
                                     </Box>
                                     {uploadedFiles.length > 0 && (
@@ -533,12 +553,10 @@ export default function CreateHomeWorkPage() {
 
                             </Box>
                         </Dialog>
-                        <Box sx={{ mt: 18.5, px: 2 }}>
+                        <Box sx={{ mt: 6, px: 2 }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6} sm={6} md={6} lg={4}>
-
+                                <Grid item xs={6} sm={6} md={6} lg={3.5}>
                                 </Grid>
-
                                 <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
                                     <Button
                                         sx={{
@@ -570,49 +588,74 @@ export default function CreateHomeWorkPage() {
                                         Cancel
                                     </Button>
                                 </Grid>
-                                {!DTValue && (
-                                    <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{ display: "flex", justifyContent: "end" }}>
-                                        <Button
-                                            sx={{
-                                                textTransform: 'none',
-                                                backgroundColor: websiteSettings.mainColor,
-                                                width: "80px",
-                                                borderRadius: '30px',
-                                                fontSize: '12px',
-                                                py: 0.2,
-                                                color: websiteSettings.textColor,
-                                                fontWeight: "600",
-                                            }}
-                                            onClick={() => handleSubmit('post')}>
-                                            Publish
-                                        </Button>
-                                    </Grid>
-                                )}
-                                {DTValue && (
-                                    <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{ display: "flex", justifyContent: "end" }}>
-                                        <Button
-                                            sx={{
-                                                textTransform: 'none',
-                                                backgroundColor: websiteSettings.mainColor,
-                                                width: "80px",
-                                                borderRadius: '30px',
-                                                fontSize: '12px',
-                                                py: 0.2,
-                                                color: websiteSettings.textColor,
-                                                fontWeight: "600",
-                                            }}
-                                            onClick={() => handleSubmit('schedule')}>
-                                            Schedule
-                                        </Button>
-                                    </Grid>
-                                )}
+                                {userType === "superadmin" &&
+                                    <>
+                                        {!DTValue && (
+                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
+                                                <Button
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        backgroundColor: websiteSettings.mainColor,
+                                                        width: "80px",
+                                                        borderRadius: '30px',
+                                                        fontSize: '12px',
+                                                        py: 0.2,
+                                                        color: websiteSettings.textColor,
+                                                        fontWeight: "600",
+                                                    }}
+                                                    onClick={() => handleSubmit('post')}>
+                                                    Publish
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                        {DTValue && (
+                                            <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
+                                                <Button
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        backgroundColor: websiteSettings.mainColor,
+                                                        width: "80px",
+                                                        borderRadius: '30px',
+                                                        fontSize: '12px',
+                                                        py: 0.2,
+                                                        color: websiteSettings.textColor,
+                                                        fontWeight: "600",
+                                                    }}
+                                                    onClick={() => handleSubmit('schedule')}>
+                                                    Schedule
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                    </>}
+
+                                {userType !== "superadmin" &&
+                                    <>
+                                        <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "end" }}>
+
+                                            <Button
+                                                sx={{
+                                                    textTransform: 'none',
+                                                    backgroundColor: websiteSettings.mainColor,
+                                                    width: "100px",
+                                                    borderRadius: '30px',
+                                                    fontSize: '12px',
+                                                    py: 0.2,
+                                                    color: websiteSettings.textColor,
+                                                    fontWeight: "600",
+                                                }}
+                                                onClick={() => handleSubmit(DTValue ? 'schedule' : 'post')}>
+                                                Request Now
+                                            </Button>
+                                        </Grid>
+                                    </>
+                                }
                             </Grid>
                         </Box>
                     </Box>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, pr: 2, mt: 6.5 }}>
                     <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>
                             <Grid container spacing={2}>

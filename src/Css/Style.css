@@ -6,28 +6,4 @@
     border-radius: 0px !important;
     box-shadow: none !important;
   }
-  .certificate {
-    width: 800px;
-    height: 600px;
-    border: 5px solid #444;
-    padding: 40px;
-    text-align: center;
-    background: white;
-    margin-bottom: 20px;
-    font-family: 'Times New Roman', Times, serif;
-  }
-  
-  /* Different formats */
-  .format1 {
-    background-color: #fdf6e3;
-    border-color: #d3af37;
-  }
-  .format2 {
-    background-color: #eef2f3;
-    border-color: #2c3e50;
-  }
-  .format3 {
-    background-color: #fff5f7;
-    border-color: #b23cfd;
-  }
   

@@ -9,12 +9,13 @@ import MessagesIcon from "../../Images/Icons/message.png";
 import CircularsIcon from "../../Images/Icons/circulars.png";
 import { Link, Navigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
+import HomeWorkIcon from "../../Images/Icons/class-homework 1.png";
 
 const items = [
     { color: "#A749CC", icon: NewsIcon, text: "News", bgColor: "#FBF9FC", iconBgColor: "#F7F0F9", path: 'news', },
     { color: "#ED9146", icon: MessagesIcon, text: "Messages", bgColor: "#FCFBF9", iconBgColor: "#FBF4EF", path: 'messages' },
     { color: "#7DC353", icon: CircularsIcon, text: "Circulars", bgColor: "#F9FBF7", iconBgColor: "#F2F8EE", path: 'circulars' },
+    { color: "#E10052", icon: HomeWorkIcon, text: "Homeworks", bgColor: "#FCF8F9", iconBgColor: "#FBEBF1", path: 'homework' },
 ];
 
 export default function ApprovalStatusPage() {

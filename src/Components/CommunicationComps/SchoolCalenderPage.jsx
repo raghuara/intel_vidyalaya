@@ -593,7 +593,7 @@ export default function SchoolCalendarPage() {
         <Box sx={{ width: "100%" }}>
             {isLoading && <Loader />}
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
-            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px", borderBottom:"1px solid #ddd", }}>
+            <Box sx={{ backgroundColor: "#f2f2f2", px: 2, borderRadius: "10px 10px 10px 0px", borderBottom: "1px solid #ddd", }}>
                 <Grid container sx={{ py: 1.5 }}>
                     <Grid item lg={6} sx={{ display: "flex", alignItems: "center" }}>
                         <Typography sx={{ fontWeight: "600", fontSize: "20px" }}>School Calendar</Typography>
@@ -610,7 +610,7 @@ export default function SchoolCalendarPage() {
                         xs: "100%",
                         lg: "83vh",
                     },
-                    overflowY:"auto"
+                    overflowY: "auto"
                 }}>
                     <Grid
                         container
@@ -623,7 +623,7 @@ export default function SchoolCalendarPage() {
                             height: "100%",
                         }}
                         >
-                            <Box sx={{ display: "flex", justifyContent: "center", zIndex: 1,}}>
+                            <Box sx={{ display: "flex", justifyContent: "center", zIndex: 1, }}>
                                 <Calendar
                                     numberOfMonths={1}
                                     highlightToday
@@ -1070,7 +1070,7 @@ export default function SchoolCalendarPage() {
                                             height: "100%",
                                             display: "flex",
                                             justifyContent: "center",
-                                            pt:1
+                                            pt: 1
                                         }}
                                     >
                                         <Grid item xs={12}>
@@ -1388,7 +1388,7 @@ export default function SchoolCalendarPage() {
                                             <Typography
                                                 sx={{ fontWeight: 500, mb: 1, display: "flex", alignItems: "center", gap: 1 }}
                                             >
-                                                Pick an event color
+                                                Choose Event Color
                                                 <Tooltip
                                                     title={
                                                         <Typography sx={{ fontSize: 12, maxWidth: 200 }}>
@@ -1428,13 +1428,13 @@ export default function SchoolCalendarPage() {
 
                                                         />
                                                     }
-                                                    label="Important Event"
+                                                    label="Add as Important Event"
                                                 />
                                             </Box>
                                         </Grid>
                                         <Grid item sm={12} xs={12} lg={6}>
                                             <Typography>
-                                                From Date <span style={{ color: "#777", fontSize: "13px" }}> (Required)</span>
+                                                Start Date <span style={{ color: "#777", fontSize: "13px" }}> (Required)</span>
                                             </Typography>
                                             <TextField
                                                 id="to-date"
@@ -1450,7 +1450,7 @@ export default function SchoolCalendarPage() {
                                         {!onlyFrom && (
                                             <Grid item sm={12} xs={12} lg={6}>
                                                 <Typography>
-                                                    To Date <span style={{ color: "#777", fontSize: "13px" }}> (Required)</span>
+                                                    Due Date <span style={{ color: "#777", fontSize: "13px" }}> (Required)</span>
                                                 </Typography>
                                                 <TextField
                                                     id="to-date"
@@ -1477,7 +1477,7 @@ export default function SchoolCalendarPage() {
                                             />
                                         }
                                         label={
-                                            <Typography sx={{ fontSize: "12px" }}>Only From</Typography>
+                                            <Typography sx={{ fontSize: "12px" }}>Single Date</Typography>
                                         }
                                         sx={{
                                             mt: 1,
@@ -1488,7 +1488,7 @@ export default function SchoolCalendarPage() {
                                         }}
                                     />
                                 </Box>
-                                <Typography sx={{ pt: 1 }}>Add Heading <span style={{ color: "#777", fontSize: "13px", }}> (Required)</span></Typography>
+                                <Typography sx={{ pt: 1 }}>Event Title <span style={{ color: "#777", fontSize: "13px", }}> (Required)</span></Typography>
                                 <TextField
                                     id="outlined-size-small"
                                     size="small"
@@ -1551,13 +1551,13 @@ export default function SchoolCalendarPage() {
                                                 <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png" />
                                                 <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                                 <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                                    Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                                    Drag and drop files here, or click to upload.
                                                 </Typography>
                                                 <Typography variant="caption" color="textSecondary">
-                                                    Supported Format: JPG, JPEG, WebP, PNG
+                                                    Supported formats: JPG, JPEG, WebP, PNG
                                                 </Typography>
                                                 <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                                    Maximum Size: 25MB
+                                                    Max file size: 25MB
                                                 </Typography>
                                             </Box>
                                             {uploadedFiles.length > 0 && (
@@ -1778,13 +1778,13 @@ export default function SchoolCalendarPage() {
                                                                     <input {...getInputPropsAnother()} accept=".jpg, .jpeg, .webp, .png" />
                                                                     <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                                                     <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                                                        Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                                                        Drag and drop files here, or click to upload.
                                                                     </Typography>
                                                                     <Typography variant="caption" color="textSecondary">
-                                                                        Supported Format: JPG, JPEG, WebP, PNG
+                                                                        Supported formats: JPG, JPEG, WebP, PNG
                                                                     </Typography>
                                                                     <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                                                        Maximum Size: 25MB
+                                                                        Max file size: 25MB
                                                                     </Typography>
                                                                 </Box>
                                                                 {editUploadedFiles.length > 0 && (
@@ -2076,7 +2076,7 @@ export default function SchoolCalendarPage() {
             }
             {
                 userType === "teacher" &&
-                <Box sx={{ height: "83vh", overflowY:"auto"}}>
+                <Box sx={{ height: "83vh", overflowY: "auto" }}>
                     <Grid
                         container
                         justifyContent="center"
@@ -2096,8 +2096,8 @@ export default function SchoolCalendarPage() {
                                 alignItems: "center",
                             }}
                         >
-                            <Box sx={{ display: "flex", justifyContent: "center"}}>
-                            <Calendar
+                            <Box sx={{ display: "flex", justifyContent: "center" }}>
+                                <Calendar
                                     numberOfMonths={1}
                                     highlightToday
                                     showOtherDays={false}
@@ -2236,10 +2236,10 @@ export default function SchoolCalendarPage() {
                         </Dialog>
 
 
-                        <Grid item sm={12} xs={12} lg={6} sx={{ borderLeft: 1, borderColor:"divider", pt:3 }}>
+                        <Grid item sm={12} xs={12} lg={6} sx={{ borderLeft: 1, borderColor: "divider", pt: 3 }}>
 
-                        <Box sx={{ width: '100%', pb:2 }}>
-                                <Box sx={{display: 'flex', justifyContent: 'center', }}>
+                            <Box sx={{ width: '100%', pb: 2 }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', }}>
                                     <Tabs textColor={websiteSettings.mainColor}
                                         indicatorColor={websiteSettings.mainColor}
                                         sx={{

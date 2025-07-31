@@ -2,22 +2,15 @@ import { Box, Button, createTheme, Grid, IconButton, Tab, Tabs, ThemeProvider, T
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import NewsImage from '../Images/PagesImage/image.png'
 import SliderComponent from "../Components/Slider/SlickSlider";
 import BirthdayPage from "../Components/DashBoard/BirthdayPage";
-import { DashboardManagement, DashboardNews, DashboardStudentsAttendance, DashboardTeachersAttendance } from "../Api/Api";
+import { DashboardManagement, DashboardNews,  DashboardTeachersAttendance } from "../Api/Api";
 import axios from "axios";
-import BarChartPage from "../Components/Chart/BarChart";
 import GroupBarChartPage from "../Components/Chart/GroupBarChart";
 import dayjs from "dayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import Loader from "../Components/Loader";
 import CircularSlider from "../Components/Slider/CircularSlider";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { delay } from "lodash";
 import AddIcon from '@mui/icons-material/Add';
 import AttendanceTablePage from "../Components/Chart/GroupTable";
 
@@ -272,7 +265,7 @@ export default function DashBoardPage() {
                                         borderColor: "#A9A9A9",
                                         backgroundColor: "#000",
                                         py: 0.3,
-                                        width: "130px",
+                                        width: "150px",
                                         height: "30px",
                                         color: "#fff",
                                         textTransform: "none",
@@ -281,7 +274,7 @@ export default function DashBoardPage() {
                                     }}
                                 >
                                     <AddIcon sx={{ fontSize: "20px" }} />
-                                    &nbsp;Dashboard
+                                    &nbsp;Carousel Post
                                 </Button>
                             }
                         </Box>
@@ -313,8 +306,8 @@ export default function DashBoardPage() {
                                                 borderBottomLeftRadius: '5px',
                                             }}
                                         />
-                                        <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            Schoolmate - <br /> Lite
+                                        <Typography sx={{ fontWeight: "600", display: 'flex', py:1.6, justifyContent: 'space-between', alignItems: 'center' }}>
+                                            Schoolmate - Lite
                                             <Box sx={{ display: "flex", alignItems: 'center' }}>
 
                                                 <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#D5004D" }} />
@@ -352,9 +345,8 @@ export default function DashBoardPage() {
                                                 borderBottomLeftRadius: '5px',
                                             }}
                                         />
-                                        <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            Schoolmate -
-                                            <br /> Pro
+                                        <Typography sx={{ fontWeight: "600",py:1.6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            Schoolmate - Pro
                                             <Box sx={{ display: "flex", alignItems: 'center' }}>
                                                 <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#2BA95A" }} />
                                             </Box>
@@ -391,9 +383,8 @@ export default function DashBoardPage() {
                                                 borderBottomLeftRadius: '5px',
                                             }}
                                         />
-                                        <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            Schoolmate -
-                                            <br />Plus
+                                        <Typography sx={{ fontWeight: "600",py:1.6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            Schoolmate - Plus
                                             <Box sx={{ display: "flex", alignItems: 'center' }}>
 
                                                 <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#984FC0" }} />
@@ -431,9 +422,8 @@ export default function DashBoardPage() {
                                                 borderBottomLeftRadius: '5px',
                                             }}
                                         />
-                                        <Typography sx={{ fontWeight: "600", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            Schoolmate -
-                                            <br />360
+                                        <Typography sx={{ fontWeight: "600",py:1.6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            Schoolmate - 360
                                             <Box sx={{ display: "flex", alignItems: 'center' }}>
 
                                                 <ArrowForwardIcon className="arrowIcon" sx={{ opacity: 0, transition: 'opacity 0.3s ease', color: "#EF8E15" }} />
@@ -573,7 +563,10 @@ export default function DashBoardPage() {
                                 )} */}
                                 <Box px={1} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                     <Typography variant="h6" sx={{ fontWeight: "600" }}>
-                                        Circulars
+                                        Circular
+                                        <span style={{ fontSize: "11px", color: "#777" }}>
+                                            &nbsp; Latest Update
+                                        </span>
                                     </Typography>
                                     <Link to="/dashboardmenu/circulars" style={{ textDecoration: "none" }}>
                                         <Typography

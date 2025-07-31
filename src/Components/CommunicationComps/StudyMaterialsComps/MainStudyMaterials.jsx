@@ -70,7 +70,7 @@ export default function MainStudyMaterialsPage() {
     const [view, setView] = useState('grid');
     const [grade, setGrade] = useState("");
     const [gradeId, setGradeId] = useState("");
-    
+
     useEffect(() => {
         const stored = localStorage.getItem("studyMaterialGrade");
         if (stored) {
@@ -110,15 +110,15 @@ export default function MainStudyMaterialsPage() {
     const handleSubjectChange = (event, newValue) => {
         setSelectedSubject(newValue ? newValue.sectionName : null);
     };
-    
+
 
     const handleClearDate = () => {
         setSelectedDate(null);
         setFormattedDate('');
     };
-    
-    
-    
+
+
+
 
     const groupedData = timeTableData.reduce((acc, table) => {
 
@@ -170,7 +170,7 @@ export default function MainStudyMaterialsPage() {
         if (newValue) {
             setSelectedGradeId(newValue.id);
             setSelectedSection(newValue.sections[0]);
-            
+
         } else {
             setSelectedGradeId(null);
             setSelectedSection(null);
@@ -336,7 +336,7 @@ export default function MainStudyMaterialsPage() {
         <Box sx={{ width: "100%", }}>
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
             {isLoading && <Loader />}
-            <Box sx={{ backgroundColor: "#f2f2f2", px: 1, borderRadius: "10px 10px 10px 0px",  borderBottom:"1px solid #ddd",}}>
+            <Box sx={{ backgroundColor: "#f2f2f2", px: 1, borderRadius: "10px 10px 10px 0px", borderBottom: "1px solid #ddd", }}>
                 <Grid container>
                     <Grid item xs={6} sm={6} md={6} lg={2.5} sx={{ display: "flex", alignItems: "center" }}>
                         <Link style={{ textDecoration: "none" }} to="/dashboardmenu/studymaterials/folder">
@@ -353,102 +353,106 @@ export default function MainStudyMaterialsPage() {
                             </Box>
 
                             <Box
-                        sx={{
-                            position: "fixed",
-                            top: "120px",
-                            right: "20px",
-                            zIndex: 999,
-                        }}
-                    >
-                        {userType !== "teacher" && (
-                            <ToggleButtonGroup
-                                value={view}
-                                exclusive
-                                onChange={handleViewChange}
-                                sx={{ marginBottom: 2 }}
-                                aria-label="View Toggle"
+                                sx={{
+                                    position: "fixed",
+                                    top: "120px",
+                                    right: "20px",
+                                    zIndex: 999,
+                                }}
                             >
-                                <ToggleButton
-                                    value="grid"
-                                    aria-label="Grid View"
-                                    sx={{
-                                        borderRadius: "50px",
-                                        pl: 2,
-                                        pt: 0.3,
-                                        pb: 0.3,
-                                        color: "#000",
-                                        backgroundColor: "#E3E3E5",
-                                        '&:hover': {
-                                            backgroundColor: "#d0d0d0",
-                                        },
-                                        '&.Mui-selected': {
-                                            backgroundColor: websiteSettings.mainColor,
-                                            color: '#000',
-                                            '&:hover': {
-                                                backgroundColor: websiteSettings.mainColor,
-                                            },
-                                        },
-                                    }}
-                                >
-                                    <GridViewIcon sx={{ fontSize: "18px" }} />
-                                </ToggleButton>
+                                {userType !== "teacher" && (
+                                    <ToggleButtonGroup
+                                        value={view}
+                                        exclusive
+                                        onChange={handleViewChange}
+                                        sx={{ marginBottom: 2 }}
+                                        aria-label="View Toggle"
+                                    >
+                                        <ToggleButton
+                                            value="grid"
+                                            aria-label="Grid View"
+                                            sx={{
+                                                borderRadius: "50px",
+                                                pl: 2,
+                                                pt: 0.3,
+                                                pb: 0.3,
+                                                color: "#000",
+                                                backgroundColor: "#E3E3E5",
+                                                '&:hover': {
+                                                    backgroundColor: "#d0d0d0",
+                                                },
+                                                '&.Mui-selected': {
+                                                    backgroundColor: websiteSettings.mainColor,
+                                                    color: '#000',
+                                                    '&:hover': {
+                                                        backgroundColor: websiteSettings.mainColor,
+                                                    },
+                                                },
+                                            }}
+                                        >
+                                            <GridViewIcon sx={{ fontSize: "18px" }} />
+                                        </ToggleButton>
 
-                                <ToggleButton
-                                    value="list"
-                                    aria-label="List View"
-                                    sx={{
-                                        borderRadius: "50px",
-                                        pr: 2,
-                                        pt: 0.3,
-                                        pb: 0.3,
-                                        color: "#000",
-                                        backgroundColor: "#E3E3E5",
-                                        '&:hover': {
-                                            backgroundColor: "#d0d0d0",
-                                        },
-                                        '&.Mui-selected': {
-                                            backgroundColor: websiteSettings.mainColor,
-                                            color: '#000',
-                                            '&:hover': {
-                                                backgroundColor: websiteSettings.mainColor,
-                                            },
-                                        },
-                                    }}
-                                >
-                                    <FormatListBulletedIcon sx={{ fontSize: "18px" }} />
-                                </ToggleButton>
-                            </ToggleButtonGroup>
-                        )}
-                    </Box>
+                                        <ToggleButton
+                                            value="list"
+                                            aria-label="List View"
+                                            sx={{
+                                                borderRadius: "50px",
+                                                pr: 2,
+                                                pt: 0.3,
+                                                pb: 0.3,
+                                                color: "#000",
+                                                backgroundColor: "#E3E3E5",
+                                                '&:hover': {
+                                                    backgroundColor: "#d0d0d0",
+                                                },
+                                                '&.Mui-selected': {
+                                                    backgroundColor: websiteSettings.mainColor,
+                                                    color: '#000',
+                                                    '&:hover': {
+                                                        backgroundColor: websiteSettings.mainColor,
+                                                    },
+                                                },
+                                            }}
+                                        >
+                                            <FormatListBulletedIcon sx={{ fontSize: "18px" }} />
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
+                                )}
+                            </Box>
                         </Box>
                     </Grid>
                     <Grid item xs={6} sm={6} md={6} lg={3} sx={{ display: "flex", justifyContent: "center", alignItems: "center", pr: 2 }}>
-                        <Typography sx={{ fontWeight: "600", fontSize: "12px" }} >My Projects</Typography>
-                        <Switch
-                            checked={checked}
-                            onChange={handleCheck}
-                            inputProps={{ "aria-label": "controlled" }}
-                            sx={{
-                                "& .MuiSwitch-thumb": {
-                                    backgroundColor: checked ? websiteSettings.mainColor : "default",
-                                },
-                                "& .MuiSwitch-track": {
-                                    borderWidth: checked ? "0" : "1px",
-                                    borderStyle: "solid",
-                                    backgroundColor: checked ? `${websiteSettings.mainColor} !important` : "#fff",
-                                    // borderColor: checked ? websiteSettings.mainColor : "#bdbdbd",
-                                },
-                                "&.MuiSwitch-root.Mui-focusVisible .MuiSwitch-thumb": {
-                                    backgroundColor: checked ? websiteSettings.mainColor : "default",
-                                },
-                                "&.MuiSwitch-root.Mui-focusVisible .MuiSwitch-track": {
-                                    backgroundColor: checked ? websiteSettings.mainColor : "#bdbdbd",
-                                },
-                                "& .MuiSwitch-focusVisible": {
-                                    outline: "none !important",
-                                },
-                            }}
-                        />
+                        {userType !== "teacher" &&
+                            <>
+                                <Typography sx={{ fontWeight: "600", fontSize: "12px" }} >My Projects</Typography>
+                                <Switch
+                                    checked={checked}
+                                    onChange={handleCheck}
+                                    inputProps={{ "aria-label": "controlled" }}
+                                    sx={{
+                                        "& .MuiSwitch-thumb": {
+                                            backgroundColor: checked ? websiteSettings.mainColor : "default",
+                                        },
+                                        "& .MuiSwitch-track": {
+                                            borderWidth: checked ? "0" : "1px",
+                                            borderStyle: "solid",
+                                            backgroundColor: checked ? `${websiteSettings.mainColor} !important` : "#fff",
+                                            // borderColor: checked ? websiteSettings.mainColor : "#bdbdbd",
+                                        },
+                                        "&.MuiSwitch-root.Mui-focusVisible .MuiSwitch-thumb": {
+                                            backgroundColor: checked ? websiteSettings.mainColor : "default",
+                                        },
+                                        "&.MuiSwitch-root.Mui-focusVisible .MuiSwitch-track": {
+                                            backgroundColor: checked ? websiteSettings.mainColor : "#bdbdbd",
+                                        },
+                                        "& .MuiSwitch-focusVisible": {
+                                            outline: "none !important",
+                                        },
+                                    }}
+                                />
+                            </>
+                        }
                     </Grid>
                     <Grid item xs={12} sm={12} md={6} lg={5} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                         <Grid container spacing={2}>
@@ -597,9 +601,9 @@ export default function MainStudyMaterialsPage() {
                     </Grid>
 
                     <Grid item xs={8} sm={8} md={6} lg={1.5} sx={{ display: "flex", justifyContent: "end", alignItems: "center", px: 1 }}>
-                        <Box sx={{width:"100px"}}>
+                        <Box sx={{ width: "100px" }}>
                             <ThemeProvider theme={darkTheme}>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
                                         open={openCal}
                                         onClose={handleClose}
@@ -636,21 +640,21 @@ export default function MainStudyMaterialsPage() {
                                         <CalendarMonthIcon style={{ color: "#000" }} />
                                     </IconButton>
                                     {selectedDate ? (
-                                      <Tooltip title="Clear Date">
-                                      <IconButton sx={{
-                                          marginTop: '10px', 
-                                          width: '40px',
-                                          mt: 0.8,
-                                          height: '40px',
-                                          transition: 'color 0.3s, background-color 0.3s',
-                                          '&:hover': {
-                                              color: '#fff',
-                                              backgroundColor: 'rgba(0,0,0,0.1)',
-                                          },
-                                      }} onClick={handleClearDate}>
-                                          <HighlightOffIcon style={{ color: "#000" }} />
-                                      </IconButton>
-                                  </Tooltip>
+                                        <Tooltip title="Clear Date">
+                                            <IconButton sx={{
+                                                marginTop: '10px',
+                                                width: '40px',
+                                                mt: 0.8,
+                                                height: '40px',
+                                                transition: 'color 0.3s, background-color 0.3s',
+                                                '&:hover': {
+                                                    color: '#fff',
+                                                    backgroundColor: 'rgba(0,0,0,0.1)',
+                                                },
+                                            }} onClick={handleClearDate}>
+                                                <HighlightOffIcon style={{ color: "#000" }} />
+                                            </IconButton>
+                                        </Tooltip>
                                     ) : (
                                         <Box sx={{ width: "80px" }}>
                                         </Box>
@@ -910,8 +914,8 @@ export default function MainStudyMaterialsPage() {
                                                     <Box
                                                         sx={{
                                                             position: 'relative',
-                                                            display:"flex",
-                                                            justifyContent:"center",
+                                                            display: "flex",
+                                                            justifyContent: "center",
                                                             '&:hover .overlay': {
                                                                 opacity: 1,
                                                             },

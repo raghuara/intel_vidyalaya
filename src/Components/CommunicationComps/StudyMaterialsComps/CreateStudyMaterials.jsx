@@ -319,8 +319,8 @@ export default function CreateStudyMaterialsPage() {
                 alignItems: "center",
                 width: "100%",
                 py: 1.5,
-                borderBottom:"1px solid #ddd",
-                px:2,
+                borderBottom: "1px solid #ddd",
+                px: 2,
                 marginTop: "-2px"
             }}>
                 <Link style={{ textDecoration: "none" }} to="/dashboardmenu/studymaterials">
@@ -328,11 +328,11 @@ export default function CreateStudyMaterialsPage() {
                         <ArrowBackIcon sx={{ fontSize: 20, color: "#000" }} />
                     </IconButton>
                 </Link>
-                <Typography sx={{ fontWeight: "600", fontSize: "20px" }}>Create Study Materials</Typography>
+                <Typography sx={{ fontWeight: "600", fontSize: "20px" }}>Create Study Material</Typography>
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{ border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", py: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", py: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
                         <Grid container spacing={2} sx={{ px: 2 }}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5 }}>Select Class <span style={{ color: "#777", fontSize: "13px" }}> (Required)</span></Typography>
@@ -513,7 +513,7 @@ export default function CreateStudyMaterialsPage() {
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5, }}>Select Folder<span style={{ color: "#777", fontSize: "13px" }}> (Required)</span></Typography>
                                 <Grid container sx={{ display: "flex", alignItems: "center" }}>
-                                    <Grid lg={userType === "superadmin" || userType === "admin" ? 10.5 : 12}>
+                                    <Grid lg={userType === "superadmin" || userType === "admin" || userType === "staff" ? 10.5 : 12}>
                                         <Autocomplete
                                             disabled={!selectedGradeId}
                                             disablePortal
@@ -565,7 +565,7 @@ export default function CreateStudyMaterialsPage() {
                                         />
 
                                     </Grid>
-                                    {(userType === "superadmin" || userType === "admin") &&
+                                    {(userType === "superadmin" || userType === "admin" || userType === "staff") &&
                                         <Grid item lg={1.5} sx={{ display: "flex", justifyContent: "end" }}>
                                             <IconButton
                                                 disabled={!selectedGrade}
@@ -802,7 +802,7 @@ export default function CreateStudyMaterialsPage() {
                                     id="outlined-size-small"
                                     size="small"
                                     fullWidth
-                                    sx={{ width: "100%",  backgroundColor: "#fff", }}
+                                    sx={{ width: "100%", backgroundColor: "#fff", }}
                                     required
                                     value={heading}
                                     onChange={handleHeadingChange}
@@ -834,13 +834,13 @@ export default function CreateStudyMaterialsPage() {
                                         <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png, .pdf" />
                                         <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                         <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                            Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                            Drag and drop files here, or click to upload.
                                         </Typography>
                                         <Typography variant="caption" color="textSecondary">
-                                            Supported Format: JPG, JPEG, WebP, PNG, PDF
+                                            Supported formats: JPG, JPEG, WebP, PNG
                                         </Typography>
                                         <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                            Maximum Size: 25MB
+                                            Max file size: 25MB
                                         </Typography>
                                     </Box>
                                     {uploadedFiles.length > 0 && (
@@ -942,9 +942,9 @@ export default function CreateStudyMaterialsPage() {
                     </Box>
                 </Grid >
 
-                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr:2 }}>
-                    <Box sx={{border:"1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, mt: 6.5, pr: 2 }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>
                             {previewData.heading && (

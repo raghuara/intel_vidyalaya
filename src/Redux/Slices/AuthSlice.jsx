@@ -6,6 +6,7 @@ const initialState = {
     userType: '',
     grade: '',
     section: '',
+    sessionId: '',
     isAuthenticated: false,
 };
 
@@ -14,16 +15,24 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         loginSuccess: (state, action) => {
-            const { name, rollNumber, userType, grade, section } = action.payload;
+            const { name, rollNumber, userType, grade, section, sessionId } = action.payload;
             state.name = name;
             state.rollNumber = rollNumber;
             state.userType = userType;
             state.grade = grade;
             state.section = section;
+            state.sessionId = sessionId;
             state.isAuthenticated = true;
         },
         logout: (state) => {
-            return initialState;
+            state.name = '';
+            state.rollNumber = '';
+            state.userType = '';
+            state.grade = '';
+            state.section = '';
+            state.sessionId = '';
+            state.isAuthenticated = false;
+            localStorage.removeItem("sessionId");
         },
     },
 });

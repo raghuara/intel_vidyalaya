@@ -186,7 +186,7 @@ export default function EditTimeTablesPage() {
 
     return (
         <Box sx={{ width: "100%" }}>
-             {isLoading && <Loader />}
+            {isLoading && <Loader />}
             <SnackBar open={open} color={color} setOpen={setOpen} status={status} message={message} />
             <Box sx={{
                 position: "fixed",
@@ -194,8 +194,8 @@ export default function EditTimeTablesPage() {
                 backgroundColor: "#f2f2f2",
                 display: "flex",
                 alignItems: "center",
-                borderBottom:"1px solid #ddd",
-                px:2,
+                borderBottom: "1px solid #ddd",
+                px: 2,
                 width: "100%",
                 py: 1.5,
                 marginTop: "-2px"
@@ -207,7 +207,7 @@ export default function EditTimeTablesPage() {
             </Box>
             <Grid container >
                 <Grid item xs={12} sm={12} md={6} lg={6} mt={2} p={2}>
-                    <Box sx={{ border: "1px solid #E0E0E0",backgroundColor: "#fbfbfb", py: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", py: 2, borderRadius: "7px", mt: 4.5, height: "75.6vh", overflowY: "auto", position: "relative" }}>
                         <Grid container spacing={2} sx={{ px: 2 }}>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5 }}>Select Class </Typography>
@@ -249,7 +249,7 @@ export default function EditTimeTablesPage() {
                                                     height: "40px",
                                                     fontSize: "13px",
                                                     fontWeight: "600",
-                                                    backgroundColor:"#fff"
+                                                    backgroundColor: "#fff"
                                                 },
                                             }}
                                         />
@@ -260,7 +260,7 @@ export default function EditTimeTablesPage() {
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography sx={{ mb: 0.5, ml: 1 }}>Select Section</Typography>
                                 <TextField
-                                sx={{backgroundColor:"#fff"}}
+                                    sx={{ backgroundColor: "#fff" }}
                                     id="outlined-size-small"
                                     size="small"
                                     fullWidth
@@ -287,13 +287,13 @@ export default function EditTimeTablesPage() {
                                         <input {...getInputProps()} accept=".jpg, .jpeg, .webp, .png" />
                                         <UploadFileIcon sx={{ fontSize: 40, color: "#000" }} />
                                         <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                            Drag and Drop files here or <Typography component="span" color="primary">Choose file</Typography>
+                                            Drag and drop files here, or click to upload.
                                         </Typography>
                                         <Typography variant="caption" color="textSecondary">
-                                            Supported Format: JPG, JPEG, WebP, PNG
+                                            Supported formats: JPG, JPEG, WebP, PNG
                                         </Typography>
                                         <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                                            Maximum Size: 25MB
+                                            Max file size: 25MB
                                         </Typography>
                                     </Box>
                                     {uploadedFiles.length > 0 && (
@@ -454,8 +454,8 @@ export default function EditTimeTablesPage() {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={6} lg={6} sx={{ py: 2, pr: 2, mt: 6.5 }}>
-                    <Box sx={{border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
-                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Preview Screen</Typography>
+                    <Box sx={{ border: "1px solid #E0E0E0", backgroundColor: "#fbfbfb", p: 2, borderRadius: "6px", height: "75.6vh", overflowY: "auto" }}>
+                        <Typography sx={{ fontSize: "14px", color: "rgba(0,0,0,0.7)" }}>Live Preview</Typography>
                         <hr style={{ border: "0.5px solid #CFCFCF" }} />
                         <Box>
                             <Grid container spacing={2}>
